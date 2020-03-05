@@ -1,8 +1,0 @@
-41a675ddbeefd6a93664a4dc52f302fe3086a933		branch 'master' of https://github.com/kana/vim-textobj-user
-ce6525f798583532f9dc126ef31df64587c7e0c8	not-for-merge	branch 'fix-moves-with-counts' of https://github.com/kana/vim-textobj-user
-46770cfee64d4374b12197e19dc5853d89a59889	not-for-merge	branch 'fix-the-equivalent-pattern-problem' of https://github.com/kana/vim-textobj-user
-26a1a127b1c0e921da4b346f4854f9e712a451c4	not-for-merge	branch 'prototype-to-keep-last-visual-mode' of https://github.com/kana/vim-textobj-user
-4e0f310993226b441aeb15580a9ebdc414e3feae	not-for-merge	branch 'rebirth' of https://github.com/kana/vim-textobj-user
-4581f4b7126a05d293ef7146dbca2681e574b02e	not-for-merge	branch 'support-scan' of https://github.com/kana/vim-textobj-user
-c333951bddb36a5ecd15d4f8cc6a9882ef0ec85d	not-for-merge	branch 'support-scan-line' of https://github.com/kana/vim-textobj-user
-d4051ac35ef0964f3a30478f7d8ee0365821abfa	not-for-merge	branch 'support-scan-nearest' of https://github.com/kana/vim-textobj-user
