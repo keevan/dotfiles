@@ -99,10 +99,9 @@ let g:coc_node_path=$HOME . '/.nvm/versions/node/v13.8.0/bin/node'
 	set ignorecase
 	set smartcase
 
-" Clear highlighting with ENTER
-	" nnoremap <CR> :noh<CR
-	nnoremap <silent><esc> :noh<CR>
-	nnoremap <esc>[ <esc>[>
+" Clear highlighting with ENTER ENTER (one enter breaks normal vim by putting
+" it in replace mode on open)
+	nnoremap <esc><esc> :noh<return><esc>
 
 " VIM Key mappings
 	imap jk <Esc>
