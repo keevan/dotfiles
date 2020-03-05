@@ -1,0 +1,434 @@
+" TODO: Cleanup this file, add sections, mark important blocks
+"
+" TODO: F13-37 mappings
+" Do not include these letters (use other keys for them)
+" Q and W is to quit so don't remap the shift version
+" E is currently for URLS (kitty)
+" T is currently used for new terminal tab
+" I can be used to inspect or to change the colorscheme/settings. Probably can
+" be mapped to something more useful and less likely to change
+" ctrl-shift-d to map to yyp
+" ctrl-shift-f to map to grep/rg or similar to find in project
+" TODO: ctrl-alt-. (close matching tag)
+" TODO: Relative path (ctrl-shift-x)
+" TODO: Close other tabs (alt-shift-o)
+" TODO: pane splitting shortcuts and movement of tabs
+" TODO: MARK words and replace all occurences in function/motion more easily,
+" or learn the VIM way of doing it s/abc/def/ etc
+" TODO: mark a word/target, co-iv/f/etc to change the marked word in the
+" view/function/etc
+" TODO: Inner any pair (add missing pairs)
+" TODO: fold, change, indent, tag,
+" TODO: Inner any quote (map to iq) e.g. "something"
+" TODO: With forwarding might try to find a matching char to start from, then
+" do the normal motion instead?
+" TODO: Get NARROW/HELM to work in a similar way to ATOM's plugin
+" TODO: Auto close tags, brackets, etc
+" TODO: Match ) > } etc with forwarding
+" TODO: ctrl-shift-x or similar to copy current relative path (from project root)
+" TODO: Set up NERDTree mappings such that it matches with existing atom setup
+" (and have hjkl for tree navigation)
+
+scriptencoding utf-8
+set encoding=utf-8
+
+" Fix for nvm node path
+let g:coc_node_path=$HOME . '/.nvm/versions/node/v13.8.0/bin/node'
+
+" Set Leader Key to space
+	let mapleader=' '
+
+" Theme and Syntax
+	set t_Co=256
+	syntax on
+	colorscheme jellybeans
+
+" Editor tab widths and preferences
+	set tabstop=2
+	set softtabstop=0 noexpandtab
+	set shiftwidth=2
+	set number
+	set mouse=a
+	set nowrap
+	set relativenumber
+
+	set breakindent " Wrapped lines will preserve indentation from start of line
+	set sidescrolloff=5 " Ensures horizontally scrolling will show at least X amount of chars either way
+	set scrolloff=2 " Ensures horizontally scrolling will show at least X amount of chars either way
+	set cursorline " Highlight the current cursor line
+	set noerrorbells " Disable beep on errors.
+	" set title " Set the window’s title, reflecting the file currently being edited.
+
+	set foldmethod=indent " Fold based on indention levels.
+	set foldnestmax=3 " Only fold up to three nested levels.
+	set nofoldenable " Disable folding by default.
+	" set noswapfile " Disable swap files.
+
+
+" Remaps (in case of typo)
+	command! W :w
+
+	" Pressing enter after visual selection will use that word and continue the
+	" search
+	" noremap <m> viw<esc>/<C-r><C-w><cr>#
+	" vnoremap <cr> :s/\<<C-r><C-w>\>//g<left><left>
+
+" 4) switch splits easily
+	nnoremap <c-j> <c-w>j
+	nnoremap <c-k> <c-w>k
+	nnoremap <c-h> <c-w>h
+	nnoremap <c-l> <c-w>l
+
+" Toggle line wrap
+	nnoremap <leader>tw :set wrap!<cr>
+	nnoremap <leader>ti :set list!<cr>
+	set listchars=tab:»\ ,space:·,eol:¬
+
+" Save with space-w and close with space-q
+	nnoremap <Leader>w :w<cr>
+	nnoremap <Leader>q :q<cr>
+	" nnoremap <c-l> <c-w>l
+
+" Soft wrap movement
+	nnoremap j gj
+	nnoremap k gk
+
+" 5) better searches
+	set hlsearch
+	set incsearch
+	set ignorecase
+	set smartcase
+
+" Clear highlighting with ENTER
+	" nnoremap <CR> :noh<CR
+	nnoremap <silent><esc> :noh<CR>
+	nnoremap <esc>[ <esc>[>
+
+" VIM Key mappings
+	imap jk <Esc>
+
+" Keybindings that make more sense (shortcuts / sugar)
+"
+	" Yank / Delete paragraph"
+	" nnoremap yp yip
+	" nnoremap dp dip
+	omap p ip
+
+	" Center the cursor
+	nnoremap <CR> zz
+	" Yank till end of line
+	nnoremap Y y$
+
+" Strip Whitespace
+	autocmd BufWritePre * %s/\s\+$//e
+
+" Ensure Term Colours issues is fixed
+	set termguicolors
+	" set nocompatible              " be iMproved, required
+	" set notermguicolors
+
+
+" Allowing it to be ovveridden in the case of SSHRC
+	if !exists('g:dot_vim_path')
+		let g:dot_vim_path = '~/.vim'
+	endif
+
+" Plugin Related Stuff
+	" if empty(glob(g:dot_vim_path . '/autoload/plug.vim'))
+	" 	silent !curl -fLo (g:dot_vim_path . /autoload/plug.vim) --create-dirs
+	" 		\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	" 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+	" endif
+
+call plug#begin(g:dot_vim_path . '/plugged')
+
+	" Multiple cusors
+		" Plug 'terryma/vim-multiple-cursors'
+		" let g:multi_cursor_start_word_key      = '<C-d>'
+		" let g:multi_cursor_select_all_word_key = '<A-d>'
+		" let g:multi_cursor_start_key           = 'g<C-d>'
+		" let g:multi_cursor_select_all_key      = 'g<A-s>'
+		" let g:multi_cursor_next_key            = '<C-s>'
+		" let g:multi_cursor_prev_key            = '<C-p>'
+		" let g:multi_cursor_skip_key            = '<C-k>'
+		" let g:multi_cursor_quit_key            = '<Esc>'
+
+	" Commenting plugin (seems to be the one with the least issues and being
+	" tpope's plugin it's probably minimal and pure vim)
+		Plug 'tpope/vim-commentary'
+
+	Plug 'vim-airline/vim-airline'
+		set noshowmode  " to get rid of thing like --INSERT-- since we are using vim-airline
+
+	" Syntax error highlighting?
+		Plug 'sheerun/vim-polyglot'
+
+	" Plug 'scrooloose/syntastic'
+
+	Plug 'junegunn/fzf', { 'do': './install --bin' }
+		nnoremap <Leader>f :FZF --reverse<cr>
+		nnoremap <silent> <c-p> :FZF --reverse<cr>
+		nnoremap <silent> <c-t> :FZF --reverse<cr>
+
+	Plug 'tpope/vim-fugitive' " Git related plugin
+
+	Plug 'neoclide/coc.nvim', { 'branch': 'release', 'on': [] }
+	" Plug 'neoclide/coc-snippets'
+
+	Plug 'machakann/vim-highlightedyank'
+		let g:highlightedyank_highlight_duration = 80
+
+	" Moves to the edge with [ and ]
+		Plug 'haya14busa/vim-edgemotion'
+		map <nowait> [ <Plug>(edgemotion-k)
+		map <nowait> ] <Plug>(edgemotion-j)
+		" Remove other [ ] mappings that prevent this from immediately executing
+		" Internal plugin mapping http://ftp.vim.org/pub/vim/runtime/macros/matchit.txt
+		" [%	Go to [count] previous unmatched group, which is like the previous
+		" group of pairs
+		let no_plugin_maps = 1 " ftplugin to not map square brackets
+
+	Plug 'vim-scripts/ReplaceWithRegister' " Like Kana's replace operator and VMP replace
+		nmap -  <Plug>ReplaceWithRegisterOperator
+		nmap -l <Plug>ReplaceWithRegisterLine
+		omap - c
+		xmap -  <Plug>ReplaceWithRegisterVisual
+
+	" Plug 'osyo-manga/vim-operator-stay-cursor' " Doesn't work
+
+	Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+		" Check if NERDTree is open or active
+			function! IsNERDTreeOpen()
+				return exists('t:NERDTreeBufName') && (bufwinnr(t:NERDTreeBufName) != -1)
+			endfunction
+
+		" Highlight currently open buffer in NERDTree
+			" autocmd BufEnter * call SyncTree()
+
+		" Function to toggle the Nerd Tree
+			function! ToggleNerdTree()
+				"if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
+				if &modifiable && strlen(expand('%')) > 0 && !&diff
+					NERDTreeFind
+					" wincmd p
+				else
+					NERDTreeToggle
+				endif
+			endfunction
+
+			nmap <C-\> :call ToggleNerdTree()<CR>
+
+	" Move lines up and down using alt+k or alt+j
+		nnoremap <A-k> :m .-2<CR>==
+		nnoremap <A-j> :m .+1<CR>==
+		inoremap <A-j> <Esc>:m .+1<CR>==gi
+		inoremap <A-k> <Esc>:m .-2<CR>==gi
+		vnoremap <A-j> :m '>+1<CR>gv=gv
+		vnoremap <A-k> :m '<-2<CR>gv=gv
+
+	Plug 'kana/vim-textobj-user'
+	Plug 'tpope/vim-surround'
+	" To allow certain mappings to be able to repeat itself via the dot command
+		Plug 'tpope/vim-repeat'
+
+	Plug 'kana/vim-textobj-entire'
+	Plug 'kana/vim-textobj-line'
+	Plug 'keevan/vim-textobj-anypair'
+	" Any pairs (list derived from VMP that should be supported: ['DoubleQuote', 'SingleQuote', 'BackTick', 'CurlyBracket', 'AngleBracket', 'SquareBracket', 'Parenthesis'])"
+	" Will be a superset of these text-objects (not sure why it isn't already a seperate plugin)
+	"
+
+	" if has('nvim')
+	" 	Plug 'shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
+	" else
+	" 	Plug 'shougo/denite.nvim'
+	" 	Plug 'roxma/nvim-yarp'
+	" 	Plug 'roxma/vim-hug-neovim-rpc'
+	" endif
+
+	" Note, requires pip3 install --user pynvim for neovim
+
+	" Focus mode (single buffer) (space-o)
+		Plug 'junegunn/goyo.vim'
+		map <leader>o :Goyo<cr>
+
+	" Smooth scroll (cool but not essential)
+	" Plug 'yuttie/comfortable-motion.vim'
+
+	" Sort vs gs operator
+	Plug 'christoomey/vim-sort-motion'
+
+call plug#end()
+
+augroup load_on_insert
+  autocmd!
+  autocmd InsertEnter * call plug#load('coc.nvim')
+                     \| autocmd! load_on_insert
+augroup END
+
+" Snippets
+
+let s:subword_regex_pattern='[A-Z]\?[a-z]\+'
+function! MoveSubword(direction, count, mode)
+
+	if a:mode == 'v'
+		" Visual mode was left when calling this function. Reselecting the current
+		" selection returns to visual mode and allows to call search() and issue
+		" normal mode motions while staying in visual mode.
+		normal! gv
+	endif
+
+	let l:i = 0
+	while l:i < a:count
+		call search(s:subword_regex_pattern, 'W' . a:direction)
+    let l:i = l:i + 1
+	endwhile
+endfunction
+
+" TestOkaSubwordTestOkaySubwordTestOkay
+" 1234578912301729178293123
+" subword_test_okay
+" subwordTestOkay
+" "/\()"':,.;<>~!@#$%^&*|+=[]{}`?-…" // non-word-characters
+" ^[\t\s]*$|[A-Z]?[a-z]+|[A-Z]+(?![a-z])|\\d+
+
+" Motion (normal, operator, visual)
+	for s:mode in ['n', 'o', 'v']
+		for s:motion in ['w', 'b', 'e']
+			let s:targetMapping = 'g' . s:motion
+			execute s:mode . 'noremap <silent> ' . s:targetMapping .
+				\ ' :<C-U>call MoveSubword(''' . s:motion . ''',v:count1,''' . s:mode . ''')<CR>'
+		endfor
+	endfor
+
+" txtObj for smart word (VMP) which is just like a word, but includes the '-'
+" Note 'c' is used instead of 'ac' or 'ic' because that is reserved for
+" inner/around latest change (textobj)
+call textobj#user#plugin('custom', {
+\   'smartword': {
+\     'pattern': '[-a-zA-Z0-9_]\+',
+\     'select': ['c', 'ic'],
+\   },
+\   'subwordsimple': {
+\     'pattern': s:subword_regex_pattern,
+\     'select': ['ad', 'id'],
+\   },
+\ })
+
+" nnoremap gw :exec search('[A-Z]\?[a-z]\+')<cr>
+
+" Normal mode mapping for S to be surround smart word (e.g. smart-word-is-this)
+	nmap S ysic
+" Don't re-target selection, but do the default 'change'
+	xunmap c
+" Operator shortcuts
+	nmap cd cid
+
+" Define ad/id to select a date such as 2013-03-16, and define at/it to select
+" a time such as 22:04:21
+
+" Operator pending mode shortcuts
+
+
+" Install plugins and reload .vimrc
+	" nnoremap <F6> :so $MYVIMRC<CR>:PlugInstall<CR>
+	" nnoremap <F6> :exec 'so' g:dot_vim_path<CR>:PlugInstall<CR>
+	nnoremap <F6> :exec 'so' g:dot_vim_path . '/../.vimrc'<CR>:PlugInstall<CR>
+	" nnoremap <F6> :so ~/.vimrc<CR>:PlugInstall<CR>
+
+" Install vim-gtk for paste support (Ubuntu, for windows it needs to just be
+" unnamed)
+	set clipboard=unnamedplus
+
+" Quickly open this .vimrc file (ctrl-p)
+	nnoremap <C-S-p> :tabe ~/.vimrc<CR>
+	nnoremap <C-,> :tabe ~/.vimrc<CR>
+	" nnoremap <C-,> :tabe ~/.vimrc<CR>
+	" pEC rEC
+	" nnoremap <ESC>_KpGp<key><ESC>\ :tabe ~/.vimrc<CR>
+	" Map ctrl+, to F13, map F13 to gcc
+	nmap <silent> <F13> gcc
+	nmap <silent> g/ gc
+	nmap <silent> <c-/> gcc
+	nnoremap <silent> <F14> :tabe ~/.vimrc<CR>
+
+" coc.nvim configs (autocomplete)
+	set updatetime=100
+
+" Use <c-space> to trigger completion.
+	inoremap <silent><expr> <c-space> coc#refresh()
+
+" Tab autocompletion
+	inoremap <silent><expr> <TAB>
+				\ pumvisible() ? "\<C-n>" :
+				\ <SID>check_back_space() ? "\<TAB>" :
+				\ coc#refresh()
+	inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Required for tab completion, a function to check backspace for any
+" characters (to avoid the no function defined error)
+	function! s:check_back_space() abort
+		let col = col('.') - 1
+		return !col || getline('.')[col - 1]  =~# '\s'
+	endfunction
+
+" GoTo code navigation.
+	nmap <silent> gd <Plug>(coc-definition)
+	nmap <silent> gy <Plug>(coc-type-definition)
+	nmap <silent> gi <Plug>(coc-implementation)
+	nmap <silent> gr <Plug>(coc-references)
+
+" Symbol renaming.
+	nmap <leader>rn <Plug>(coc-rename)
+
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+	" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Denite mappings
+	" if exists('g:loaded_denite')
+	" 	autocmd FileType denite call s:denite_my_settings()
+	" 	function! s:denite_my_settings() abort
+	" 		nnoremap <silent><buffer><expr> <CR>
+	" 		\ denite#do_map('do_action')
+	" 		nnoremap <silent><buffer><expr> d
+	" 		\ denite#do_map('do_action', 'delete')
+	" 		nnoremap <silent><buffer><expr> p
+	" 		\ denite#do_map('do_action', 'preview')
+	" 		nnoremap <silent><buffer><expr> q
+	" 		\ denite#do_map('quit')
+	" 		nnoremap <silent><buffer><expr> i
+	" 		\ denite#do_map('open_filter_buffer')
+	" 		nnoremap <silent><buffer><expr> <Space>
+	" 		\ denite#do_map('toggle_select').'j'
+	" 	endfunction
+
+	" 	autocmd FileType denite-filter call s:denite_filter_my_settings()
+	" 	function! s:denite_filter_my_settings() abort
+	" 		imap <silent><buffer> <C-o> <Plug>(denite_filter_quit)
+	" 	endfunction
+
+
+	" 	call denite#custom#option('default', { 'prompt': '❯' })
+	" 	call denite#custom#var('file/rec', 'command',
+	" 				\ ['fd', '-H', '--full-path'])
+	" 	call denite#custom#var('grep', 'command', ['rg'])
+	" 	call denite#custom#var('grep', 'default_opts',
+	" 				\ ['--hidden', '--vimgrep', '--smart-case'])
+	" 	call denite#custom#var('grep', 'recursive_opts', [])
+	" 	call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+	" 	call denite#custom#var('grep', 'separator', ['--'])
+	" 	call denite#custom#var('grep', 'final_opts', [])
+	" 	call denite#custom#option('_', 'max_dynamic_update_candidates', 100000)
+	" 	call denite#custom#option('_', {
+	" 				\ 'split': 'floating',
+	" 				\ 'highlight_matched_char': 'Underlined',
+	" 				\ 'highlight_matched_range': 'NormalFloat',
+	" 				\ 'wincol': &columns / 6,
+	" 				\ 'winwidth': &columns * 2 / 3,
+	" 				\ 'winrow': &lines / 6,
+	" 				\ 'winheight': &lines * 2 / 3
+	" 				\ })
+
+	" endif

@@ -1,0 +1,11 @@
+#/usr/bin/bash
+
+# Set vim to nvim if nvim exists on the system
+	command -v nvim > /dev/null && {
+		alias vim='nvim'
+	}
+
+alias 'du.'='du -hsx * | sort -rh | head -10'
+alias copy='xclip -sel clip'
+alias za='tree -aL 4 -I ".git" '
+alias reload='source ~/.aliases'
