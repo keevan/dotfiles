@@ -1,0 +1,6 @@
+{
+ "snippets.extends": {
+    "typescript": ["javascript"],
+    "javascriptreact": ["javascript"]
+  }
+}
