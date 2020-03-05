@@ -139,7 +139,7 @@ let g:coc_node_path=$HOME . '/.nvm/versions/node/v13.8.0/bin/node'
 	" 	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 	" endif
 
-call plug#begin(g:dot_vim_path . '/plugged')
+silent! call plug#begin(g:dot_vim_path . '/plugged')
 
 	" Multiple cusors
 		" Plug 'terryma/vim-multiple-cursors'
