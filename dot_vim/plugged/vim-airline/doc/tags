@@ -43,6 +43,7 @@ airline-keymap	airline.txt	/*airline-keymap*
 airline-languageclient	airline.txt	/*airline-languageclient*
 airline-license	airline.txt	/*airline-license*
 airline-localsearch	airline.txt	/*airline-localsearch*
+airline-lsp	airline.txt	/*airline-lsp*
 airline-name	airline.txt	/*airline-name*
 airline-neomake	airline.txt	/*airline-neomake*
 airline-nerdtree	airline.txt	/*airline-nerdtree*
