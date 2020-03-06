@@ -1,32 +1,352 @@
-# Your keymap
-#
-# Atom keymaps work similarly to style sheets. Just as style sheets use
-# selectors to apply styles to elements, Atom keymaps use selectors to associate
-# keystrokes with events in specific contexts. Unlike style sheets however,
-# each selector can only be declared once.
-#
-# You can create a new keybinding in this file by typing "key" and then hitting
-# tab.
-#
-# Here's an example taken from Atom's built-in keymap:
-#
-# 'atom-text-editor':
-#   'enter': 'editor:newline'
-#
-# 'atom-workspace':
-#   'ctrl-shift-p': 'core:move-up'
-#   'ctrl-p': 'core:move-down'
-#
-# You can find more information about keymaps in these guides:
-# * http://flight-manual.atom.io/using-atom/sections/basic-customization/#customizing-keybindings
-# * http://flight-manual.atom.io/behind-atom/sections/keymaps-in-depth/
-#
-# If you're having trouble with your keybindings not working, try the
-# Keybinding Resolver: `Cmd+.` on macOS and `Ctrl+.` on other platforms. See the
-# Debugging Guide for more information:
-# * http://flight-manual.atom.io/hacking-atom/sections/debugging/#check-the-keybindings
-#
-# This file uses CoffeeScript Object Notation (CSON).
-# If you are unfamiliar with CSON, you can read more about it in the
-# Atom Flight Manual:
-# http://flight-manual.atom.io/using-atom/sections/basic-customization/#configuring-with-cson
+# My Keymappings - some experimental
+# Requires - https://atom.io/packages/disable-keybindings with ctrl-k disabled
+# apm install disable-keybindings
+# Tree-view navigation
+'atom-workspace .tree-view': # something
+  'g g': 'core:move-to-top'
+  'r': 'tree-view:move'
+  'G': 'core:move-to-bottom'
+  'ctrl-h': 'window:focus-pane-on-left'
+  'ctrl-l': 'window:focus-pane-on-right'
+  # '\\': 'choose-pane:start'
+  # 'q': 'choose-pane:start'
+
+# 'atom-text-editor#choose-pane-editor':
+  # '\\': 'choose-pane:last-focused'
+  # 'q': 'choose-pane:last-focused'
+
+# Demo Mode
+'atom-workspace.demo-mode-active atom-text-editor.vim-mode-plus:not(.insert-mode)':
+  'up': 'demo-mode:move-hover-up'
+  'down': 'demo-mode:move-hover-down'
+  'left': 'demo-mode:move-hover-left'
+  'right': 'demo-mode:move-hover-right'
+
+  'q': 'demo-mode:clear'
+
+'atom-text-editor.vim-mode-plus.normal-mode:not(.narrow-editor)':
+  'ctrl-h': 'window:focus-pane-on-left'
+  'ctrl-j': 'window:focus-pane-below'
+  'ctrl-k': 'window:focus-pane-above'
+  'ctrl-l': 'window:focus-pane-on-right'
+  'space f': 'fuzzy-finder:toggle-file-finder'
+  'space t I': 'editor:toggle-indent-guide'
+  'space t i': 'window:toggle-invisibles'
+  'space t l': 'atom-limelight:toggle'
+  'space t w': 'editor:toggle-soft-wrap'
+  'space t m': 'minimap:toggle'
+  'ctrl-<': 'pane:move-item-left'
+  'ctrl->': 'pane:move-item-right'
+  'enter': 'vim-mode-plus:redraw-cursor-line-at-upper-middle'
+  'S': 'vim-mode-plus:surround-smart-word'
+  'Q': 'demo-mode:toggle'
+
+  # Git Inline Diff toggle
+  'g d': 'inline-git-diff:toggle'
+
+  # [open-this]
+  'g f': 'open-this:here'
+  # Reload with dependancies
+  'f7': 'vim-mode-plus:reload'
+
+# Unset keys so they can be used later in other scopes! -_-
+'atom-workspace atom-text-editor':
+  'space q': 'unset!'
+  'space w': 'unset!'
+  'alt-K': 'vim-mode-plus:move-pane-to-very-top'
+  'alt-J': 'vim-mode-plus:move-pane-to-very-bottom'
+  'alt-H': 'vim-mode-plus:move-pane-to-very-left'
+  'alt-L': 'vim-mode-plus:move-pane-to-very-right'
+  'alt-ctrl-shift-h': 'window:move-active-item-to-pane-on-left'
+  'alt-ctrl-shift-j': 'window:move-active-item-to-pane-below'
+  'alt-ctrl-shift-k': 'window:move-active-item-to-pane-above'
+  'alt-ctrl-shift-l': 'window:move-active-item-to-pane-on-right'
+
+
+'.select-list atom-text-editor': # for fuzzy-finder
+  'tab': 'core:move-down'
+  'shift-tab': 'core:move-up'
+  ';': 'core:confirm'
+  'ctrl-l': 'pane:split-right'
+  'ctrl-j': 'pane:split-down'
+  'space': 'pane:split-down'
+
+'atom-text-editor[data-grammar="text html basic"]':
+  'ctrl-"': 'emmet:update-tag' # test me out
+'atom-text-editor':
+  'alt-h': 'unset!'
+  'alt-f': 'unset!'
+  'alt-j': 'editor:move-line-down'
+  'alt-k': 'editor:move-line-up'
+  'alt-t': 'term3:open-split-right'
+  'ctrl-tab': 'vim-mode-plus:next-tab' # test me out
+  'ctrl-tab^tab': '!unset' # test me out
+  'ctrl-shift-tab': 'vim-mode-plus:previous-tab' # test me out
+  'ctrl-shift-tab ctrl-shift-tab': '!unset' # test me out
+  'alt-;': 'go-to-line:toggle' # test me out
+  'ctrl-shift-/': 'text-manipulation:format-slugify' # test me out
+  'ctrl-shift-up': 'text-manipulation:format-humanize' # test me out
+  'ctrl-shift-down': 'text-manipulation:format-underscore' # test me out
+  'ctrl-shift-x': 'path-copy:current-relativepath'
+  'ctrl-shift-|': 'tree-view:reveal-active-file'
+  'ctrl-shift-h': 'file-header:add'
+  # 'shift-enter': 'lazy-motion:forward'
+  'ctrl-shift-e': 'run-command:run'
+  'ctrl-shift-.': 'run-command:toggle-panel'
+  'ctrl-shift-r': 'run-command:re-run-last-command'
+  'alt-shift-o': 'tabs:close-other-tabs'
+  'alt-:': 'pane:split-right-and-move-active-item' # Split right and move item (not exactly "L" for right)
+  'ctrl-shift-o': 'tree-view:show-current-file-in-file-manager'
+  # 'ctrl-j ctrl-v': 'toggle-packages:toggle-vim-mode-plus'
+  'ctrl-alt-shift->': 'emmet:remove-tag'
+  # 'ctrl-shift-s': 'lines:sort'
+  #'ctrl-shift-[': 'editor:select-to-beginning-of-line'
+  #'ctrl-shift-]': 'editor:select-to-end-of-line'
+  'ctrl-shift-[': 'editor:auto-indent'
+  'ctrl-shift-]': 'editor:auto-indent'
+  'alt-up': 'keyboard-scroll:scrollUpWithCursor'
+  'alt-down': 'keyboard-scroll:scrollDownWithCursor'
+  # 'ctrl-alt-right': 'pane:split-right-and-move-active-item'
+  # 'ctrl-alt-left': 'pane:split-left-and-move-active-item'
+  # 'f5': 'run-command:re-run-last-command'
+
+
+# 'atom-text-editor:not([mini])':
+#     '`': 'emmet:expand-abbreviation-with-tab'
+# 		'ctrl+shift+c': 'path-copy:current-relativepath'
+# '.pane .editor:not(.mini)':
+#     '`': 'snippets:expand'
+
+'.fuzzy-finder atom-text-editor[mini]':
+  'ctrl-shift-up': 'pane:split-up'
+  'ctrl-shift-left': 'pane:split-left'
+  'ctrl-shift-right': 'pane:split-right'
+  'ctrl-shift-down': 'pane:split-down'
+
+'atom-text-editor.vim-mode-plus.insert-mode':
+  # 'k j': 'vim-mode-plus:activate-normal-mode' # jk to escape
+  'j k': 'vim-mode-plus:activate-normal-mode' # jk to escape
+  'ctrl-c': 'core:copy' # jk to escape
+  # 'ctrl-k ctrl-i': 'change-case:title' # Test me out
+  'ctrl-k l': 'pane:split-right-and-move-active-item' # Test me out
+  'ctrl-k h': 'pane:split-left-and-move-active-item' # Test me out
+  'ctrl-k ctrl-p': 'editor:split-selections-into-lines'
+  'ctrl-k ctrl-o': 'one-liner:run'
+  'ctrl-k ctrl-d': 'find-and-replace:select-skip'
+  # 'ctrl-.': 'vim-mode-plus:insert-last-inserted' # test
+  # 'ctrl-{': 'vim-mode-plus:move-to-previous-fold-start'
+  # 'ctrl-}': 'vim-mode-plus:move-to-next-fold-start'
+
+
+'atom-text-editor.vim-mode-plus:not(.insert-mode)':
+  # 'ctrl-d': 'vim-mode-plus:inner-word' # jk to escape
+  'ctrl-d': 'find-and-replace:select-next' # jk to escape
+  'g i': 'vim-mode-plus:insert-at-start-of-occurrence'
+  'g a': 'vim-mode-plus:insert-at-end-of-occurrence'
+  'g w': 'vim-mode-plus:move-to-next-subword'
+  'g b': 'vim-mode-plus:move-to-previous-subword'
+  's': 'vim-mode-plus:select'
+  # 's': 'lazy-motion:forward'
+  'g =': 'vim-mode-plus:align-occurrence'
+  'g >': 'vim-mode-plus:rotate-arguments-of-inner-pair'
+  'g <': 'vim-mode-plus:rotate-arguments-backwards-of-inner-pair'
+  'g _': 'text-manipulation:format-underscore' # Test me out
+  'g ^': 'vim-mode-plus:title-case' # test me out
+  'g j': 'vim-mode-plus:snake-case' # test me out
+  'g k': 'vim-mode-plus:title-case' # test me out
+  # 'space r': 'vim-mode-plus:replace'
+  'g ctrl-D': 'vim-mode-plus:duplicate-with-comment-out-original'
+  'space q': 'tabs:close-tab'
+  '\\ w': 'core:save' # Test
+  'space w': 'core:save' # Test
+  'space o': 'vim-mode-plus:maximize-pane-without-center'
+  'ctrl-[': 'vim-mode-plus:reset-normal-mode'
+  # 'ctrl-k': 'window:focus-pane-above'
+  'g _': 'text-manipulation:format-underscore' # test_me_out
+  'g m': 'vim-mode-plus:mark'
+  'j': 'vim-mode-plus:move-down-screen'
+  'k': 'vim-mode-plus:move-up-screen'
+  'g p': 'vim-mode-plus:put-after-with-auto-indent'
+  'g P': 'vim-mode-plus:put-before-with-auto-indent'
+  # 'ctrl-z':      'narrow:reopen'
+  # 'ctrl-p':      'narrow:git-ls'
+  'space r':     'narrow:symbols'
+  'space F':     'narrow:fold'
+  'space l':     'narrow:scan'
+  'space s':     'narrow:search'
+  'space a':     'narrow:atom-scan'
+  'space A':     'narrow:atom-scan-by-current-word'
+  'space G':     'narrow:git-diff-all'
+  # Custom behaviour for atom attribute sorter with vim mode plus tag selection
+  # 'space s': 'keystroke v a t space i t h' # Sort Attributes in surrounding tag (space i t)
+  # 'space e': 'keystroke v a t o v g , a l d d < < } d d' # Generic breaking of a HTML element
+  # 'space d': 'keystroke v a t o v g , a l d d < < } d d k A j k i enter j k < <' # Breaks the HTML element into the standards set at work
+
+  # Splitting simple database query strings
+  # 'space d': 'keystroke i enter j k' # Breaks the HTML element into the standards set at work
+  # Visually select based on a character of choice (find), then apply changes as required
+  # 'space d': "keystroke o ," # Breaks the HTML element into the standards set at work
+  # 'space d': 'keystroke i enter j k' # Breaks the HTML element into the standards set at work
+
+  # '\\': 'choose-pane:start'
+  '(': 'vim-mode-plus:move-to-previous-fold-start-with-same-indent'
+  ')': 'vim-mode-plus:move-to-next-fold-start-with-same-indent'
+  # Linter
+  # 'space j': 'linter-ui-default:next'
+  # 'space k': 'linter-ui-default:previous'
+  'space k': 'linter-ui-default:previous'
+  # [cursor history]
+  'ctrl-i': 'cursor-history:next'
+  'ctrl-o': 'cursor-history:prev'
+  'ctrl-alt-i': 'cursor-history:next-within-editor'
+  'ctrl-alt-o': 'cursor-history:prev-within-editor'
+'atom-text-editor.lazy-motion':
+  ';': 'core:confirm'
+  ']': 'lazy-motion:forward'
+  '[': 'lazy-motion:backward'
+
+'atom-text-editor.vim-mode-plus-search':
+  'ctrl-alt-c': 'vim-mode-plus:change-occurrence-from-search'
+  'shift-enter': "vim-mode-plus:change-occurrence-from-search"
+  'ctrl-enter': "vim-mode-plus:project-find-from-search"
+
+'atom-text-editor.vim-mode-plus-search:not(.literal-mode)':
+  '[': 'vim-mode-plus:search-visit-prev'
+  ']': 'vim-mode-plus:search-visit-next'
+  ';': 'core:confirm'
+
+'atom-text-editor.vim-mode-plus.normal-mode, atom-text-editor.vim-mode-plus.visual-mode':
+  'm': 'vim-mode-plus:toggle-preset-occurrence'
+  'M': 'vim-mode-plus:toggle-preset-subword-occurrence'
+  'ctrl-k ctrl-d': 'find-and-replace:select-skip'
+
+# 'atom-text-editor.vim-mode-plus.visual-mode':
+# 	'ctrl-j': 'editor:move-line-down'
+# 	'ctrl-k': 'editor:move-line-up'
+
+'atom-text-editor.vim-mode-plus.operator-pending-mode':
+  'u': 'vim-mode-plus:a-indentation'
+  "m": "vim-mode-plus:a-any-pair",
+
+'atom-text-editor.vim-mode-plus.normal-mode:not(.mgit-status), atom-text-editor.vim-mode-plus.visual-mode:not(.mgit-status)':
+  '-': 'vim-mode-plus:replace-with-register'
+  '+': 'vim-mode-plus:replace-occurrence-with-register'
+
+'atom-text-editor.vim-mode-plus.operator-pending-mode.replace-with-register-pending':
+  '-': 'vim-mode-plus:inner-smart-word',
+
+# -------------------------
+# Narrow
+# -------------------------
+'atom-workspace:not(.has-narrow) atom-text-editor.vim-mode-plus:not(.insert-mode)':
+  'ctrl-e': 'narrow:search-by-current-word'
+
+# has-narrow
+'atom-workspace.has-narrow atom-text-editor.vim-mode-plus.normal-mode':
+  'ctrl-f': 'narrow:focus'
+  'ctrl-i': 'narrow:focus-prompt'
+  'ctrl-[': 'narrow:previous-query-history'
+  'ctrl-]': 'narrow:next-query-history'
+  'ctrl-e': 'narrow:query-current-word'
+  'ctrl-g': 'narrow:close'
+
+'atom-workspace.has-narrow atom-text-editor.vim-mode-plus.normal-mode:not(.narrow-editor)':
+  ';': 'narrow:focus'
+
+# narrow-editor.normal-mode
+'atom-text-editor.narrow.narrow-editor.vim-mode-plus.normal-mode':
+  # 'g g': 'narrow-ui:move-to-prompt'
+  's': 'narrow-ui:select-files'
+  ';': 'narrow-ui:confirm-keep-open'
+  'ctrl-f': 'narrow-ui:confirm-keep-open'
+  'n': 'narrow-ui:move-to-next-file-item'
+  'p': 'narrow-ui:move-to-previous-file-item'
+  # 'ctrl-t': 'narrow-ui:switch-ui-location'
+
+'atom-text-editor.narrow.narrow-editor.vim-mode-plus.insert-mode.prompt':
+  'up': 'narrow:previous-query-history'
+  'down': 'narrow:next-query-history'
+  'ctrl-alt-/': 'narrow-ui:toggle-search-use-regex'
+  # 'ctrl-p': 'narrow:previous-query-history'
+  # 'ctrl-n': 'narrow:next-query-history'
+
+'atom-text-editor.narrow.narrow-editor.vim-mode-plus.normal-mode.prompt':
+  'i': 'narrow-ui:move-to-prompt'
+
+# narrow-editor insert and normal
+'atom-text-editor.narrow.narrow-editor':
+  'ctrl-s': 'narrow-ui:update-real-file'
+  'space w': 'narrow-ui:update-real-file'
+  'ctrl-t': 'narrow-ui:relocate'
+
+# Test forwarding rules - Which allows you to use the closing bracket to match on the next matching pair, or the opening to match against the previous (default)
+'atom-text-editor.vim-mode-plus.operator-pending-mode, atom-text-editor.vim-mode-plus.visual-mode':
+  "'": 'vim-mode-plus:inner-any-quote'
+
+  # Use closing pair as forwarding version of pair-text-object
+  'i }': 'vim-mode-plus:inner-curly-bracket-allow-forwarding'
+  'a }': 'vim-mode-plus:a-curly-bracket-allow-forwarding'
+
+  'i >': 'vim-mode-plus:inner-angle-bracket-allow-forwarding'
+  'a >': 'vim-mode-plus:a-angle-bracket-allow-forwarding'
+
+  'i ]': 'vim-mode-plus:inner-square-bracket-allow-forwarding'
+  'a ]': 'vim-mode-plus:a-square-bracket-allow-forwarding'
+
+  'i )': 'vim-mode-plus:inner-parenthesis-allow-forwarding'
+  'a )': 'vim-mode-plus:a-parenthesis-allow-forwarding'
+
+'atom-text-editor.autocomplete-active':
+  'tab': 'core:move-down'
+  'shift-tab': 'core:move-up'
+  ';': 'autocomplete-plus:confirm'
+
+# Git Diff
+'atom-workspace:not(.has-narrow) atom-text-editor.vim-mode-plus.normal-mode.has-inline-git-diff':
+  'tab': 'git-diff:move-to-next-diff'
+  'shift-tab': 'git-diff:move-to-previous-diff'
+
+'atom-text-editor.vim-mode-plus.normal-mode.has-inline-git-diff':
+  'g r': 'inline-git-diff:revert'
+  'g c': 'inline-git-diff:copy-removed-text'
+  'g s': 'inline-git-diff:stage-hunk'
+
+# Github Package Pane View (movement via J/K and TAB)
+# s to stage hunk/line
+# u to unstage hunk/line
+# enter/; to un/stage file
+# H and L to go between the changes and the files
+# Tab to go to next hunk
+# ShiftTab to go to previous hunk
+# Every level LEFT will go deeper (Files > Hunk > Line)
+# C will focus on the commit message section (configurable to be small box or big one)
+# gf will be go to file (at hunk position)
+'.github-StagingView':
+  'j': 'core:move-down'
+  'k': 'core:move-up'
+  'l': 'core:move-left'
+  'h': 'core:move-left'
+  'esc': 'window:focus-pane-on-left'
+  's': 'core:confirm'
+  'g s': 'github:stage-all-changes'
+  'u': 'github:unstage-all-changes'
+  'c': 'github:commit' # Add comment for testing
+  'C': 'github:toggle-expanded-commit-message-editor'
+
+'.github-FilePatchView.github-FilePatchView--unstaged.github-FilePatchView--hunkMode':
+  'j': 'github:select-next-hunk'
+  'k': 'github:select-previous-hunk'
+  'tab': 'github:select-next-hunk'
+  'shift-tab': 'github:select-previous-hunk'
+  'h': 'github:toggle-patch-selection-mode'
+  'l': 'github:toggle-git-tab-focus'
+
+'.github-FilePatchView.github-FilePatchView':
+  'h': 'github:toggle-patch-selection-mode'
+  'l': 'github:toggle-patch-selection-mode'
+  's': 'core:confirm'
+  'j': 'core:move-down'
+  'k': 'core:move-up'
+
+'atom-text-editor.vim-mode-plus.insert-mode:not(.narrow-editor)[data-grammar~="jsx"]':
+  'tab': 'emmet:expand-abbreviation-with-tab'
