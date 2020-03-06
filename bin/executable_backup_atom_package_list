@@ -1,0 +1,4 @@
+#!/bin/bash
+
+apm list --installed --bare > ~/.atom/package-list.txt
+chezmoi add ~/.atom/package-list.txt
