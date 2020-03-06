@@ -1,0 +1,151 @@
+#!/bin/bash
+
+source=~/.vim
+
+# Copies this folder into another directory, then strips out the non-essentials
+destination=/tmp/.vim-copy
+sudo rm -r $destination/*
+mkdir -p $destination
+cp -Lr $source $destination 2> /dev/null;
+cp -Lr "$source/../.vimrc" $destination
+cp -Lr ~/test.vim $destination
+#sudo cp -Lr $source $destination
+
+# Apply rules for vimrc as well
+sed -i -r 's/^\s*\".*$//g;/^$/d;s/^\s+//g' $destination/.vimrc
+sed -i -e '1{/^\"!/ {p}}; /^[\t\ ]*\"/d;/\.*\".*/ {/[\x22\x27].*\".*[\x22\x27]/ !{:regular_loop s/\(.*\)*[^\]\".*/\1/;t regular_loop}; /[\x22\x27].*\".*[\x22\x27]/ {:special_loop s/\([\x22\x27].*\".*[^\x22\x27]\)\".*/\1/;t special_loop}; /\\\"/ {:second_special_loop s/\(.*\\\".*[^\]\)\".*/\1/;t second_special_loop}}' $destination/.vimrc
+
+
+# Test new aggressive rule on test file
+# sed -i -r 's/^\s*\".*$//g;/^$/d;s/^\s+//g' $destination/.vimrc
+# Must be preceeded by a whitespace character
+#
+
+# sed -e '
+# /\.*\".*/ {/[\x22\x27].*\".*[\x22\x27]/ !{:regular_loop s/\(.*\)*[^\]\".*/\1/;
+# t regular_loop};
+# /[\x22\x27].*\".*[\x22\x27]/ {:special_loop s/\([\x22\x27].*\".*[^\x22\x27]\)\".*/\1/;
+# t special_loop};
+# /\\\"/ {:second_special_loop s/\(.*\\\".*[^\]\)\".*/\1/;
+# t second_special_loop}}
+# ' $destination/test.vim
+
+
+# sed -e 's/[^\=]*\s+\".*//g' $destination/test.vim
+# Comments at the end of a statement
+# sed -e 's/^(?!.=\".*\")\s\".*//g' $destination/test.vim
+
+# Skip statments with spaces in them
+#sed -e '/.*\s=.*/! s/\s\".*//g' $destination/test.vim
+
+# Test odd comment case
+#sed -e 's/\s\"\s.*//g' $destination/test.vim
+
+# sed -e '/.*\s=.*/ s/\s\".*//g' $destination/test.vim
+
+
+sudo rm -r $destination/.vim/plugged/vim-polyglot 2> /dev/null;
+sudo rm -r $destination/.vim/plugged/coc.nvim 2> /dev/null;
+sudo rm -r $destination/.vim/plugged/coc-snippets 2> /dev/null;
+sudo rm -r $destination/.vim/plugged/fzf 2> /dev/null;
+sudo rm -r $destination/.vim/plugged/denite.nvim 2> /dev/null;
+sudo rm -r $destination/.vim/plugged/vim-fugitive 2> /dev/null;
+sudo rm -r $destination/.vim/plugged/goyo.vim 2> /dev/null;
+sudo rm -r $destination/.vim/plugged/vim-highlightedyank 2> /dev/null;
+
+# Quite large
+sudo rm -r $destination/.vim/plugged/vim-multiple-cursors 2> /dev/null;
+
+
+
+# Put the default extension back (since this will be loaded)
+	sudo rm -r $destination/.vim/plugged/vim-airline/autoload/airline/extensions/* 2> /dev/null;
+	cp "$source/plugged/vim-airline/autoload/airline/extensions/default.vim" $destination/.vim/plugged/vim-airline/autoload/airline/extensions/default.vim
+
+#rm -r $destination/.vim/plugged/vim-airline/ 2> /dev/null;
+sudo rm -r $destination/.vim/plugged/nerdtree 2> /dev/null;
+echo "Removed non-essential plugins"
+
+for f in $(
+	find $destination \
+		-name '*.yml' \
+		-or -name '*.vimspec' \
+		-or -name '*.txt' \
+		-or -name '*.md' \
+		-or -name '*.markdown' \
+		-or -name '*.sh' \
+		-or -name '*.vital' \
+		-or -name '.coveragerc' \
+		-or -name '.git*' \
+		-or -name 'bin' \
+		-or -name 'bundler' \
+		-or -name 'thor' \
+		-or -name 'vim-flavor' \
+		-or -name '.bundle' \
+		-or -name 'doc' \
+		-or -name 't' \
+		-or -name 'test' \
+		-or -name 'obsolete' \
+		-or -name 'README' \
+		-or -name 'COPYING' \
+		-or -name 'Rakefile' \
+		-or -name 'VimFlavor' \
+		-or -name 'Gemfile' \
+		-or -name 'LICENSE'); do
+	# echo $f;
+	sudo rm -r $f 2> /dev/null;
+done
+echo "Removed useless files"
+
+# Remove comments, whitespaces, empty lines from all .vim files (further reducing size)
+for f in $(find $destination -type f -name '*.vim'); do
+	# sed -i -r 's/^\s*\".*$//g;/^$/d;s/^\s+//g' "$f"
+
+	# More aggresive (might have issues?), any string for " onwards in VIM
+	sed -i -r 's/^\s*\".*$//g;/^$/d;s/^\s+//g' "$f"
+
+	# Skip with spaces in them =
+	#sed -i -e '/.*\s=.*/! s/\s\".*//g' "$f"
+
+	# Odd comment case
+	#sed -i -e 's/\s\"\s.*//g' "$f"
+
+	# sed -i -e '1{/^\"!/ {p}}; /^[\t\ ]*\"/d;/\.*\".*/ {/[\x22\x27].*\".*[\x22\x27]/ !{:regular_loop s/\(.*\)*[^\]\".*/\1/;t regular_loop}; /[\x22\x27].*\".*[\x22\x27]/ {:special_loop s/\([\x22\x27].*\".*[^\x22\x27]\)\".*/\1/;t special_loop}; /\\\"/ {:second_special_loop s/\(.*\\\".*[^\]\)\".*/\1/;t second_special_loop}}' "$f"
+	#sed -i -r 's/^\s*\".*$//g;/^$/d;s/^\s+//g' "$f"
+	#sed -i -r s/\s+\"*[^\"\']*$//g "$f"
+
+	# Original working okay
+	#sed -i -r 's/^\s*\".*$//g;/^$/d;s/^\s+//g' "$f"
+
+	# Broken up (removes comments, removes empty lines, removes whitespace at the start of the string)
+	# sed -i 's/^\s*\".*$//g' "$f"
+	# sed -i '/^$/d' "$f"
+	# sed -r -i 's/^\s+//g' "$f"
+
+	#echo $f
+done
+echo "Replacements done"
+
+#for f in $(find $destination -type f -not -name "*.vim"); do
+# for f in $(find $destination -type f -not -name "*.vim"); do
+# 	echo $f
+# done
+
+
+
+# SIZE=$(tar cfz - -h \
+# 	--exclude=.vim/plugged/vim-polyglot \
+# 	--exclude=.vim/plugged/coc.nvim \
+# 	--exclude=.vim/plugged/coc-snippets \
+# 	--exclude=.vim/plugged/fzf \
+# 	--exclude=.vim/plugged/denite.nvim \
+# 	--exclude=.vim/plugged/vim-fugitive \
+# 	--exclude=.vim/plugged/vim-airline/autoload/airline/extensions \
+# 	--exclude=.vim/plugged/nerdtree \
+# 	-C $destination .vim | wc -c
+# )
+SIZE=$(tar cfz - -h -C $destination .vim .vimrc | wc -c)
+# SIZE=$(tar cfz - -h -C $destination .vim | wc -c)
+let "FINAL=$SIZE / 1024"
+echo "Final size (tar): ${FINAL}kb or specifically $SIZE bytes"
+
