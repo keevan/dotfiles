@@ -1,7 +1,567 @@
 "*":
+  Hydrogen:
+    autocomplete: false
+    languageMappings: "{\"javascript\": \"babel es6 javascript\"}"
+    startDir: "dirOfFile"
+  "atom-clock":
+    dateFormat: "Y-MM-DD | h:mm a"
+  "atom-ide-ui":
+    "atom-ide-code-format":
+      formatOnSave: true
+    use: {}
+  "atom-limelight": {}
+  "atom-minify":
+    minifyOnSave: true
+    showSavingInfo: false
+  "atom-scale-factor":
+    setLatest: true
+  "atomic-management":
+    enforceConfiguredPackages: false
+  "autocomplete-emojis":
+    enableUnicodeEmojis: false
+  "autocomplete-plus":
+    autoActivationDelay: 50
+    fileBlacklist: [
+      "*.md"
+    ]
+    suppressActivationForEditorClasses: [
+      "vim-mode-plus.normal-mode"
+      "vim-mode-plus.visual-mode"
+      "vim-mode-plus.operator-pending-mode"
+      "vim-mode-plus.insert-mode.replace"
+      "narrow"
+      "suppress-autocomplete-plus"
+    ]
+  "choose-pane":
+    labelChars: "HJKL;"
+  "clip-history": {}
+  "command-palette":
+    allowCoreCopyWithEmptySelectionCopySelectedItemText: "display-name"
+    surroundByBacktickWhenCopyCommandName: true
+    surroundByBacktickWhenCopyDisplayName: true
   core:
+    _disabledPackages: [
+      "nuclide"
+      "submode"
+      "mprettier"
+      "language-rust"
+      "package-that-throws-an-exception"
+      "package-with-broken-package-json"
+      "package-with-broken-keymap"
+      "about"
+      "background-tips"
+      "welcome"
+      "metrics"
+      "encoding-selector"
+      "archive-view"
+      "autosave"
+      "language-elm"
+      "color-picker"
+      "bookmarks"
+      "recent-finder"
+      "github"
+      "atom-hot-package-loader"
+      "flow-ide"
+      "language-julia"
+      "Hydrogen"
+      "vim-mode"
+      "markdown-table-formatter"
+      "ide-flowtype"
+      "focus-pane-or-panel"
+      "ide-typescript"
+      "atom-ide-ui"
+      "language-babel"
+      "package-generator"
+      "busy-signal"
+      "intentions"
+      "linter-coffeelint"
+      "atomic-chrome"
+      "choose-pane"
+      "clip-history"
+      "demo-mode"
+      "dev"
+      "keystroke"
+      "markdown-toc-auto"
+      "narrow-git-ls"
+      "quick-highlight"
+      "remember-file-positions"
+      "theme-switch"
+      "toggle"
+      "run-in-atom"
+      "toggle-quotes"
+      "vim-mode-plus-auto-ime"
+      "vim-mode-plus-ex-mode"
+      "vim-mode-plus-move-selected-text"
+      "vim-mode-plus-move-to-symbols"
+      "vim-mode-plus-replace-with-execution"
+      "open-this"
+      "vim-mode-plus-keymaps-for-surround"
+      "narrow"
+      "paner"
+      "prettier-atom"
+      "transformer"
+      "try"
+      "vim-mode-plus-jasmine-increase-focus"
+      "cursor-history"
+      "project-folder"
+    ]
+    audioBeep: false
+    autoHideMenuBar: true
+    customFileTypes:
+      "source.ini": [
+        ".buckconfig"
+        ".flowconfig"
+        ".hgrc"
+      ]
+      "source.json": [
+        "BUCK.autodeps"
+      ]
+      "source.python": [
+        "BUCK"
+      ]
+    disabledPackages: [
+      "atom-minify"
+      "package-with-broken-package-json"
+      "background-tips"
+      "welcome"
+      "metrics"
+      "encoding-selector"
+      "archive-view"
+      "autosave"
+      "color-picker"
+      "atom-hot-package-loader"
+      "language-julia"
+      "markdown-table-formatter"
+      "focus-pane-or-panel"
+      "ide-typescript"
+      "atom-ide-ui"
+      "package-generator"
+      "submode"
+      "vim-mode-plus-replace-with-execution"
+      "nuclide"
+      "vim-mode-plus-auto-ime"
+      "intentions"
+      "vim-mode-plus-move-to-symbols"
+      "git-time-machine"
+      "git-control"
+      "git-history"
+      "git-diff-details"
+      "js-hyperclick"
+      "autocomplete-emojis"
+      "language-gfm"
+      "spell-check"
+      "styleguide"
+      "open-on-github"
+      "atom-hg"
+      "busy-signal"
+      "title-bar-replacer"
+      "git-plus"
+      "disable-arrow-keys"
+      "github"
+      "deprecation-cop"
+      "atom-keyboard-macros-vim"
+      "ex-mode"
+      "project-manager"
+      "zebra-stripes"
+      "linter"
+      "react"
+      "minimap"
+      "atom-minify"
+      "deprecation-cop"
+      "TabNine"
+      "go-debug"
+      "highlight-selected"
+    ]
+    followSymlinks: false
+    ignoredNames: [
+      ".git"
+      ".hg"
+      ".svn"
+      ".DS_Store"
+      "._*"
+      "Thumbs.db"
+      "*.min.js"
+      "*.min.css"
+      ".gitignore"
+      ".gitattributes"
+      "artisan"
+      "composer.lock"
+      "node_modules"
+      "/vendor"
+      "*.log"
+      "storage/*"
+      "*.orig"
+      "*.min.map"
+      "shared-laravel/vendor/*"
+      "*.pdf"
+      ".sass-cache/*"
+      ".hgignore"
+      "uploads/*"
+      "shared-vendor/*"
+      "shared-laravel/storage/*"
+      "mobile/.hg/*"
+      "*.old"
+      ".gradle*"
+      ".idea"
+    ]
+    openEmptyEditorOnStart: false
+    packagesWithKeymapsDisabled: [
+      "intentions"
+      "inline-git-diff"
+      "atom-limelight"
+      "emmet"
+    ]
     telemetryConsent: "no"
+    themes: [
+      "one-dark-ui"
+      "better-jellybeans-syntax"
+    ]
+    titleBar: "hidden"
+    uriHandlerRegistration: "always"
+    useTreeSitterParsers: false
+  "cursor-history":
+    columnDeltaToRemember: 5
+    flashOnLand: true
+    searchAllPanes: false
+  "demo-mode":
+    autoHideTimeout: 1000
+    maxKeystrokeToShow: 3
+  dev:
+    _group___abc2: {}
+    trackActivePaneItem: false
+    trackDidAddPane: false
+    trackDidOpen: false
+  "duotone-dark-syntax":
+    color: {}
+  editor:
+    atomicSoftTabs: false
+    fontFamily: "Fira Code"
+    fontSize: 12
+    invisibles: {}
+    scrollPastEnd: true
+    softTabs: false
+    zoomFontWhenCtrlScrolling: false
+  "ex-mode":
+    gdefault: true
+    splitright: true
   "exception-reporting":
-    userId: "b3740925-c1bd-4f47-ad49-b9b19c689464"
-  welcome:
-    showOnStartup: false
+    userId: "e4cd677f-7184-fb31-7448-ec0b8eb79d92"
+  "fast-eslint": {}
+  "find-and-replace":
+    projectSearchResultsPaneSplitDirection: "right"
+    scrollToResultOnLiveSearch: true
+  "fuzzy-finder":
+    scoringSystem: "fast"
+    useRipGrep: true
+  "git-diff":
+    wrapAroundOnMoveToDiff: false
+  "git-diff-details":
+    enableSyntaxHighlighting: true
+  "git-plus":
+    commits: {}
+    general:
+      splitPane: "Right"
+  github:
+    automaticCommitMessageWrapping: false
+    showDiffIconGutter: true
+  "go-plus":
+    config: {}
+    format: {}
+    test:
+      runTestsOnSave: false
+  "google-translate": {}
+  "goto-definition":
+    contextMenuDisplayAtFirst: false
+    performanceMode: true
+  "highlight-selected": {}
+  "ide-typescript": {}
+  "inline-git-diff":
+    statusBarStyle: "icon"
+  "js-hyperclick":
+    jumpToImport: true
+  keystroke:
+    commands: [
+      {
+        keystroke: "escape l"
+        name: "escape-and-move-right"
+        scope: "atom-text-editor"
+      }
+    ]
+  "line-ending-selector":
+    defaultLineEnding: "LF"
+  linter: {}
+  "linter-eslint":
+    autofix:
+      ignoreFixableRulesWhileTyping: true
+    disabling:
+      disableWhenNoEslintConfig: false
+    global: {}
+  "linter-ui-default":
+    panelHeight: 300
+    showPanel: true
+    showStatusBar: false
+    useBusySignal: false
+  "markdown-preview": {}
+  "markdown-table-formatter":
+    autoSelectEntireDocument: false
+    formatOnSave: false
+  mgit: {}
+  mprettier:
+    formatOnSave:
+      disabledParsers: [
+        "markdown"
+        "postcss"
+        "json"
+      ]
+      enable: true
+      skipWhenPrettierIsNotProjectDependencies: true
+    prettierOptions:
+      bracketSpacing: false
+      jsxBracketSameLine: true
+      printWidth: 120
+      semi: false
+      singleQuote: true
+      trailingComma: "es5"
+    prettierToUseInOrder:
+      globallyInstalled: true
+      inCurrentProject: false
+    scopesForParser: {}
+    skipPrettierWhenFormatByStandardForJavascriptIfStandardIsProjectDependencies: false
+  narrow:
+    AtomScan: {}
+    Fold: {}
+    Scan: {}
+    Search:
+      agExtraArgs: "--path-to-ignore /home/user/rg/.gitignore"
+      rgExtraArgs: "--ignore-file=D:\\projects\\ripgrep\\.gitignore --ignore-file=/home/user/rg/.gitignore"
+      searcher: "rg"
+    SelectFiles:
+      rememberQuery: true
+    Symbols:
+      locationToOpen: "bottom"
+    confirmOnUpdateRealFile: false
+    locationToOpen: "center"
+  "nord-atom-ui": {}
+  nuclide:
+    "nuclide-home":
+      showHome: false
+  paner:
+    debug: true
+  "prettier-atom":
+    formatOnSaveOptions:
+      excludedGlobs: [
+        "tryit.js"
+      ]
+      showInStatusBar: true
+    prettierOptions:
+      bracketSpacing: false
+      jsxBracketSameLine: true
+      printWidth: 120
+      semi: false
+      trailingComma: "es5"
+    useEditorConfig: false
+  "project-folder":
+    closeItemsForRemovedProject: true
+    gitProjectDirectories: [
+      "~/go/src"
+    ]
+  "project-manager":
+    alwaysOpenInSameWindow: true
+    sortBy: "last modified"
+  "quick-highlight":
+    highlightSelection: false
+    highlightSelectionMinimumLength: 4
+  "recent-finder": {}
+  "run-in-atom":
+    clearConsole: false
+    openDeveloperToolsOnRun: false
+  "sass-autocompile":
+    compressedFilenamePattern: "$1.css"
+  "spell-check":
+    locales: [
+      "en-US"
+    ]
+  "split-diff":
+    colors: {}
+  "split-string-on-enter":
+    scopesToIgnore: [
+      "source.json"
+      "source.php"
+      "text.html.basic"
+    ]
+  "status-bar": {}
+  submode:
+    submode:
+      "gt-mode":
+        commands: [
+          "pane:show-next-item"
+          "pane:show-previous-item"
+        ]
+        target: "atom-pane"
+  "symbols-view":
+    quickJumpToFileSymbol: false
+    useEditorGrammarAsCtagsLanguage: false
+  tabs: {}
+  teletype:
+    askBeforeJoiningPortalViaExternalApp: false
+  "theme-switch":
+    logToConsole: true
+    profiles: [
+      "one-light-ui one-light-syntax"
+      "one-dark-ui one-dark-syntax"
+      "one-dark-ui one-dark-vivid-syntax"
+      "one-dark-ui oceanic-next"
+      "one-dark-ui duotone-dark-syntax"
+      "one-dark-ui duotone-blue-dark-syntax"
+    ]
+  "title-bar-replacer":
+    colours:
+      autoSelectColour: false
+    configuration: {}
+    general:
+      closeOnDispatch: false
+      displayMenuBar: false
+      displayTitleBar: false
+      hideFullscreenTitle: false
+      openAdjacent: false
+  toggle: {}
+  "toggle-packages":
+    togglePackages: [
+      "minimap"
+      "linter"
+      "atom-minify"
+    ]
+  "toggle-quotes": {}
+  "tone-syntax":
+    color:
+      syncUI: false
+  transformer: {}
+  "tree-view":
+    alwaysOpenExisting: true
+    hideIgnoredNames: true
+  try:
+    basename: "tryit"
+    root: "~/tryit"
+  "vim-mode-plus":
+    autoDisableInputMethodWhenLeavingInsertMode: true
+    automaticallyEscapeInsertModeOnActivePaneItemChange: true
+    charactersToAddSpaceOnSurround: [
+      ")"
+      "}"
+      "]"
+      ">"
+      "+"
+    ]
+    clearHighlightSearchOnResetNormalMode: true
+    clearMultipleCursorsOnEscapeInsertMode: true
+    clearPersistentSelectionOnResetNormalMode: true
+    customSurroundPairs: '''
+      
+      {
+         "p":[
+            "<p>",
+            "</p>"
+         ],
+         "d":[
+            "'\\".\\\\database\\\\escape(",
+            ").\\"'"
+         ],
+         "i":[
+            "(\\".\\\\database\\\\in(",
+            ").\\")"
+         ],
+         "c":[
+            " + ",
+            " + "
+         ],
+         "j":[
+            "$(",
+            ")"
+         ],
+         "l":[
+            "'%\\".",
+            ".\\"%'"
+         ],
+         "L":[
+            "\\"%\\".",
+            ".\\"%\\""
+         ]
+      }
+      
+    '''
+    debugOutput: "console"
+    debugOutputFilePath: "~/github/atom-vim-mode-plus/debug.log"
+    defaultScrollRowsOnMiniScroll: 4
+    devReloadPackages: [
+      "vim-mode-plus-move-selected-text"
+      "vim-mode-plus-jasmine-increase-focus"
+      "vim-mode-plus-replace-with-execution"
+      "vim-mode-plus-ex-mode"
+      "google-translate"
+      "narrow"
+      "narrow-git-ls"
+      "quick-highlight"
+      "demo-mode"
+    ]
+    findAcrossLines: true
+    findCharsMax: 100
+    findConfirmByTimeout: 250
+    flashOnMoveToOccurrence: true
+    hideStatusBarOnMaximizePane: false
+    hideTabBarOnMaximizePane: false
+    highlightSearchExcludeScopes: [
+      "narrow"
+    ]
+    incrementalSearch: true
+    keymapBackslashToInnerCommentOrParagraphWhenToggleLineCommentsIsPending: true
+    keymapCCToChangeInnerSmartWord: true
+    keymapSToSelect: true
+    keymapSemicolonAndCommaToFindPreConfirmedOnFindInput: true
+    keymapSemicolonToInnerAnyPairInOperatorPendingMode: true
+    keymapYToYankToLastCharacterOfLine: true
+    replaceByDiffOnSurround: true
+    reuseFindForRepeatFind: true
+    setCursorToStartOfChangeOnUndoRedo: false
+    showHoverSearchCounter: true
+    smoothScrollOnFullScrollMotion: true
+    smoothScrollOnHalfScrollMotion: true
+    smoothScrollOnMiniScroll: true
+    smoothScrollOnRedrawCursorLine: true
+    useSmartcaseForFind: true
+    useSmartcaseForSearch: true
+    useSmartcaseForSearchCurrentWord: true
+  "vim-mode-plus-ex-mode":
+    notifiedUseExMode: true
+  "vim-mode-plus-jasmine-increase-focus":
+    autoSave: true
+    focusTexts: [
+      "f"
+      "ff"
+      "fff"
+      "x"
+    ]
+  "vim-mode-plus-move-selected-text": {}
+  "vim-mode-plus-replace-with-execution":
+    registerToSelectList: true
+  whitespace: {}
+  "wrap-guide": {}
+  "zebra-stripes":
+    active_on_open: true
+    enabled: true
+  zentabs:
+    maximumOpenedTabs: 8
+".blade.html.php.text":
+  editor:
+    commentEnd: " --}}"
+    commentStart: "{{-- "
+".coffee.source":
+  editor:
+    autoIndent: true
+    autoIndentOnPaste: true
+".go.source":
+  editor:
+    tabLength: 4
+    tabType: "hard"
+".js.source":
+  editor:
+    autoIndent: true

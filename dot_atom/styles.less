@@ -1,32 +1,273 @@
-/*
- * Your Stylesheet
- *
- * This stylesheet is loaded when Atom starts up and is reloaded automatically
- * when it is changed and saved.
- *
- * Add your own CSS or Less to fully customize Atom.
- * If you are unfamiliar with Less, you can read more about it here:
- * http://lesscss.org
- */
-
-
-/*
- * Examples
- * (To see them, uncomment and save)
- */
-
-// style the background color of the tree view
-.tree-view {
-  // background-color: whitesmoke;
-}
-
-// style the background and foreground colors on the atom-text-editor-element itself
+atom-workspace,
 atom-text-editor {
-  // color: white;
-  // background-color: hsl(180, 24%, 12%);
+  // font-family: "Fira Code";
+}
+atom-text-editor .cursor
+  { opacity: 0.4 !important }
+
+atom-text-editor .wrap-guide {
+  width: 1px;
+  background-color: rgba(0,0,0,0.1);
 }
 
-// style UI elements inside atom-text-editor
-atom-text-editor .cursor {
-  // border-color: red;
+// Fonts (operator mono for comments)
+atom-text-editor::shadow {
+	 .keyword.operator.js {
+    font-family: "Fira Code";
+	 }
+
+  // .comment
+	// , .syntax--storage.syntax--type
+	// {
+  //   // font-family: "Operator Mono", "Fira Code";
+  //   font-family: "Operator Mono Light", "Fira Code";
+  //   font-style: italic;
+  //   font-weight: bold;
+  //   font-size: 1.075em;
+	// 	// color:#555;
+  //   line-height: normal;
+  // }
+}
+
+// Title Bar Replacer -- Remove the title bar always (it would show on reload)
+	.title-bar-replacer {
+	  display:none;
+	}
+
+.indent-guide-improved {
+	background-color: rgba(0,0,0,0.3);
+
+	&.indent-guide-stack {
+		background-color: rgba(0,0,0,0.0);
+
+		&.indent-guide-active {
+			background-color: rgba(0,255,0,0.6);
+		}
+
+	}
+}
+
+atom-pane-container atom-pane .item-views {
+	background:black;
+}
+atom-text-editor:not(.is-focused) {
+	opacity:0.8;
+}
+
+atom-text-editor {
+  .cursor-line {
+    background-color: transparent;
+	}
+}
+atom-text-editor .gutter .line-number.cursor-line {
+	background-color: lightgreen;
+	// color: black;
+	// font-weight: bold;
+}
+
+atom-text-editor .gutter .line-number:not(.cursor-line) {
+	color: #777;
+}
+
+
+// Line number colour
+atom-text-editor .gutter .line-number.cursor-line, atom-text-editor.editor .relative.current-line {
+	color: black;
+}
+
+// The very next indentation
+	.indent-guide-improved.indent-guide-stack.indent-guide-active + .indent-guide-improved {
+		background-color: #000;
+	}
+
+
+.line-number {
+	padding-left: 0;
+}
+
+.syntax--constant.syntax--other.syntax--php {
+	color: #70ff69;
+}
+.syntax--constant {
+	color: #70ff69;
+}
+
+// Windows (fix the font size for HOME)
+body.platform-win32 {
+
+  	// Monitor
+  		atom-text-editor {
+  			font-size: 16px;
+  		}
+
+
+	// Laptop Screen
+    // @media (resolution: 96dpi) {
+  	// 	atom-text-editor {
+  	// 		font-size: 19px;
+  	// 	}
+    // }
+
+
+  // @media (device-height: 1440px) {
+  // @media (min-width: 1920px) {
+
+  	// Monitor
+  		// atom-text-editor {
+  		// 	font-size: 16px;
+  		// }
+
+  // }
+
+}
+
+// Ubuntu
+body:not(.platform-win32) {
+
+	// Styles only applicable for non-windows
+		atom-text-editor {
+			font-size: 12px;
+		}
+
+	.tab-bar {
+
+		margin-top: -2px; // To ensure there is no dead area above the tabs
+
+		.tab {
+			line-height: 2em;
+		}
+	}
+
+}
+
+.tab-bar {
+	height: 2em;
+
+	.tab {
+		font-size: .9em;
+		.file {
+			color: #b9b9b9;
+		}
+	}
+}
+
+.syntax--meta .syntax--punctuation.syntax--separator.syntax--key-value + .syntax--string.syntax--quoted * {
+	color: #98a8e8
+}
+
+
+atom-text-editor .invisible-character {
+	color: #312e2e;
+	color: #444;
+}
+
+body:not(.platform-win32) .tab-bar .tab > .title.icon:before,
+body:not(.platform-win32) .tab-bar .tab > .title.icon:before {
+	top:0.4em;
+}
+
+body:not(.platform-win32) .tab-bar .close-icon {
+	top: 0.25em!important;
+}
+
+atom-text-editor .line-number .icon-right {
+	opacity: 1;
+	color: yellow;
+}
+
+atom-text-editor, atom-text-editor .gutter {
+	// background:#222;
+	// background:#303030 // Dracula VIM
+}
+
+
+.cursor-line-background(@mode, @color) {
+  atom-text-editor.vim-mode-plus.@{mode}.is-focused {
+    & .lines .line.cursor-line {
+      background-color: @color
+    }
+  }
+}
+
+.cursor-line-background(normal-mode, fadeout(gray, 80%));
+.cursor-line-background(insert-mode, fadeout(green, 80%));
+.cursor-line-background(operator-pending-mode, fadeout(yellow, 80%));
+
+#status-bar-vim-mode-plus {
+  display: none;
+}
+
+atom-text-editor::shadow  .bracket-matcher .region {
+  // border: 1px solid rgba(222, 149, 54, 0.6);
+  // border-radius: 3px;
+	// background-color: red;
+  // z-index: 100;
+	// opacity: 0.3;
+}
+
+// Ensure other tabs not important are not shown as prominently
+.tab:not(.active) {
+	opacity:0.7;
+}
+
+// Update the active tab bar's colour
+.pane:focus-within .tab.active:before {
+	background: #999;
+}
+
+.atom-clock {
+	color: yellow;
+}
+
+atom-text-editor {
+  &.inline-git-diff-new-highlighted {
+    // background-color: rgba(162, 232, 120, 0.4) !important;
+  }
+
+  &.inline-git-diff-old-highlighted {
+    // background-color: rgba(232, 120, 120, 0.4) !important;
+  }
+
+  &.inline-git-diff-new-flat {
+    // background-color: rgba(162, 232, 120, 0.7) !important;
+    background-color: black!important;
+  }
+
+  &.inline-git-diff-removed {
+		// background-color: rgba(100, 0, 0, 0.8) !important;
+		opacity:0.3;
+		> div {
+			height: 1.5em!important;
+		}
+  }
+}
+
+atom-panel .atom-keyboard-macros {
+	.message {
+		text-transform: capitalize;
+    padding: 0 10px;
+    color: rgba(255,255,255,0.3);
+    background: #1b1b1b;
+	}
+}
+
+.fuzzy-finder .experiment-prompt {
+  display: none!important;
+}
+
+atom-text-editor {
+  .line:nth-child(odd) {
+    // background-color:rgba(255, 0, 0, 0.1);
+  }
+}
+
+// Ex mode style override
+.command-mode-input atom-text-editor[mini].is-focused {
+  padding: 5px 10px;
+  box-shadow: none;
+}
+
+div[is=ex-command-mode-input] atom-text-editor[mini]::before {
+  opacity: 1;
+  color: white;
 }
