@@ -1,5 +1,9 @@
 README.md
 LICENSE
 {{- if ne .email "keevan.pham@gmail.com" }}
+_DONT_INCLUDE_ME_UNLESS_MY_EMAIL_MATCHES_THE_ABOVE
+{{- end }}
+{{- if contains "termux" .chezmoi.homedir }}
+_ONLY_INCLUDE_ME_IF_IM_NOT_ON_TERMUX
 SECRETMESSAGE
 {{- end }}
