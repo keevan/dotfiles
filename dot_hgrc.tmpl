@@ -1,2 +1,21 @@
 [ui]
 username = {{ .name }} <{{ .email }}>
+merge = meld
+
+[auth]
+repo.prefix = ssh://hg@dev/apps/
+repo.username = hg
+repo.password = {{ pass "hg.repo.password" }}
+
+[tortoisehg]
+vdiff = meld
+tabwidth = 2
+editor = atom
+fontoutputlog = Fira Code,10,-1,5,50,0,0,0,0,0
+fontlog = Fira Code,10,-1,5,50,0,0,0,0,0
+confirmpush = False
+refreshwdstatus = alwayslocal
+
+[extensions]
+strip =
+color =
