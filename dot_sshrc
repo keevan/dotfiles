@@ -1,0 +1,11 @@
+# Message to indicate it worked
+	echo "Loaded local configs via SSHRC"
+
+# Enable vim mode in bash
+	# set -o vi
+
+# Tell vim how to start up with my .vimrc from sshrc
+	export VIMINIT="let \$MYVIMRC='$SSHHOME/.sshrc.d/.vim/.vimrc' | source \$MYVIMRC"
+
+# If nvim exists on target system, use that instead
+	command -v nvim && alias vim='nvim'
