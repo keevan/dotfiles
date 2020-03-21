@@ -33,7 +33,7 @@ scriptencoding utf-8
 set encoding=utf-8
 
 " Fix for nvm node path
-let g:coc_node_path=$HOME . '/.nvm/versions/node/v13.8.0/bin/node'
+" let g:coc_node_path=$HOME . '/.nvm/versions/node/v13.8.0/bin/node'
 
 " Set Leader Key to space
 	let mapleader=' '

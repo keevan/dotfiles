@@ -14,3 +14,7 @@ alias reload='source ~/.aliases'
 function unrm() {
 	git checkout $(git rev-list -n 1 HEAD -- "$1")^ -- "$1"
 }
+
+# Change directory for projects/apps
+alias cda='cd ~/apps'
+alias cdp='cd ~/projects'
