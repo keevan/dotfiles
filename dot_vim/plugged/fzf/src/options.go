@@ -11,7 +11,6 @@ import (
 
 	"github.com/junegunn/fzf/src/algo"
 	"github.com/junegunn/fzf/src/tui"
-	"github.com/junegunn/fzf/src/util"
 
 	"github.com/mattn/go-runewidth"
 	"github.com/mattn/go-shellwords"
@@ -45,6 +44,7 @@ const usage = `usage: fzf [options]
     --no-mouse            Disable mouse
     --bind=KEYBINDS       Custom key bindings. Refer to the man page.
     --cycle               Enable cyclic scroll
+    --keep-right          Keep the right end of the line visible on overflow
     --no-hscroll          Disable horizontal scroll
     --hscroll-off=COL     Number of screen columns to keep to the right of the
                           highlighted substring (default: 10)
@@ -57,7 +57,8 @@ const usage = `usage: fzf [options]
     --min-height=HEIGHT   Minimum height when --height is given in percent
                           (default: 10)
     --layout=LAYOUT       Choose layout: [default|reverse|reverse-list]
-    --border              Draw border above and below the finder
+    --border[=STYLE]      Draw border around the finder
+                          [rounded|sharp|horizontal] (default: rounded)
     --margin=MARGIN       Screen margin (TRBL / TB,RL / T,RL,B / T,R,B,L)
     --info=STYLE          Finder info style [default|inline|hidden]
     --prompt=STR          Input prompt (default: '> ')
@@ -187,6 +188,7 @@ type Options struct {
 	MinHeight   int
 	Layout      layoutType
 	Cycle       bool
+	KeepRight   bool
 	Hscroll     bool
 	HscrollOff  int
 	FileWord    bool
@@ -212,7 +214,7 @@ type Options struct {
 	Header      []string
 	HeaderLines int
 	Margin      [4]sizeSpec
-	Bordered    bool
+	BorderShape tui.BorderShape
 	Unicode     bool
 	Tabstop     int
 	ClearOnExit bool
@@ -242,6 +244,7 @@ func defaultOptions() *Options {
 		MinHeight:   10,
 		Layout:      layoutDefault,
 		Cycle:       false,
+		KeepRight:   false,
 		Hscroll:     true,
 		HscrollOff:  10,
 		FileWord:    false,
@@ -301,12 +304,12 @@ func nextString(args []string, i *int, message string) string {
 	return args[*i]
 }
 
-func optionalNextString(args []string, i *int) string {
-	if len(args) > *i+1 && !strings.HasPrefix(args[*i+1], "-") {
+func optionalNextString(args []string, i *int) (bool, string) {
+	if len(args) > *i+1 && !strings.HasPrefix(args[*i+1], "-") && !strings.HasPrefix(args[*i+1], "+") {
 		*i++
-		return args[*i]
+		return true, args[*i]
 	}
-	return ""
+	return false, ""
 }
 
 func atoi(str string) int {
@@ -398,6 +401,23 @@ func parseAlgo(str string) algo.Algo {
 		errorExit("invalid algorithm (expected: v1 or v2)")
 	}
 	return algo.FuzzyMatchV2
+}
+
+func parseBorder(str string, optional bool) tui.BorderShape {
+	switch str {
+	case "rounded":
+		return tui.BorderRounded
+	case "sharp":
+		return tui.BorderSharp
+	case "horizontal":
+		return tui.BorderHorizontal
+	default:
+		if optional && str == "" {
+			return tui.BorderRounded
+		}
+		errorExit("invalid border style (expected: rounded|sharp|horizontal)")
+	}
+	return tui.BorderNone
 }
 
 func parseKeyChords(str string, message string) map[int]string {
@@ -1098,7 +1118,7 @@ func parseOptions(opts *Options, allArgs []string) {
 		case "--bind":
 			parseKeymap(opts.Keymap, nextString(allArgs, &i, "bind expression required"))
 		case "--color":
-			spec := optionalNextString(allArgs, &i)
+			_, spec := optionalNextString(allArgs, &i)
 			if len(spec) == 0 {
 				opts.Theme = tui.EmptyTheme()
 			} else {
@@ -1157,6 +1177,10 @@ func parseOptions(opts *Options, allArgs []string) {
 			opts.Cycle = true
 		case "--no-cycle":
 			opts.Cycle = false
+		case "--keep-right":
+			opts.KeepRight = true
+		case "--no-keep-right":
+			opts.KeepRight = false
 		case "--hscroll":
 			opts.Hscroll = true
 		case "--no-hscroll":
@@ -1246,9 +1270,10 @@ func parseOptions(opts *Options, allArgs []string) {
 		case "--no-margin":
 			opts.Margin = defaultMargin()
 		case "--no-border":
-			opts.Bordered = false
+			opts.BorderShape = tui.BorderNone
 		case "--border":
-			opts.Bordered = true
+			hasArg, arg := optionalNextString(allArgs, &i)
+			opts.BorderShape = parseBorder(arg, !hasArg)
 		case "--no-unicode":
 			opts.Unicode = false
 		case "--unicode":
@@ -1273,6 +1298,8 @@ func parseOptions(opts *Options, allArgs []string) {
 				opts.Filter = &value
 			} else if match, value := optString(arg, "-d", "--delimiter="); match {
 				opts.Delimiter = delimiterRegexp(value)
+			} else if match, value := optString(arg, "--border="); match {
+				opts.BorderShape = parseBorder(value, false)
 			} else if match, value := optString(arg, "--prompt="); match {
 				opts.Prompt = value
 			} else if match, value := optString(arg, "--pointer="); match {
@@ -1391,8 +1418,8 @@ func validateSign(sign string, signOptName string) error {
 }
 
 func postProcessOptions(opts *Options) {
-	if util.IsWindows() && opts.Height.size > 0 {
-		errorExit("--height option is currently not supported on Windows")
+	if !tui.IsLightRendererSupported() && opts.Height.size > 0 {
+		errorExit("--height option is currently not supported on this platform")
 	}
 	// Default actions for CTRL-N / CTRL-P when --history is set
 	if opts.History != nil {

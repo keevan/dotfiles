@@ -867,17 +867,6 @@ g:coc_user_config				*g:coc_user_config*
 			User configuration object, define this variable when
 			you can't use |coc#config()|
 
-g:coc_extension_root				*g:coc_extension_root*
-
-			Deprecated: use `g:coc_data_home` instead.
-
-			Location that coc extensions would be installed to,
-			empty to use default location:
-			Windows:
-				`~/AppData/Local/coc/extensions`
-			Other:
-				`~/.config/coc/extensions`
-
 g:coc_global_extensions				*g:coc_global_extensions*
 
 			Global extension names to install when they aren't
@@ -901,7 +890,10 @@ g:coc_cygqwin_path_prefixes			*g:coc_cygqwin_path_prefixes*
 
 g:coc_enable_locationlist			*g:coc_enable_locationlist*
 
-			Open location list when location list changes.
+			Use location list of coc.nvim when jump locations.
+			Set it to 0 when you need customize behavior of
+			location jump by use |CocLocationsChange| and
+			|g:coc_jump_locations|
 
 			Default: 1
 
@@ -959,7 +951,7 @@ g:coc_node_path					*g:coc_node_path*
 <
 			Use this when coc has problems with your system node,
 
-			Note: you have to use `$HOME` as home directory.
+			Note: you can use `~` as home directory.
 
 g:coc_force_debug				*g:coc_force_debug*
 
@@ -1338,6 +1330,12 @@ CocHasProvider({feature})
 	`signature` `documentSymbol` `documentHighlight` `definition`
 	`declaration` `typeDefinition` `reference` `implementation` `codeLens`
 	`selectionRange`
+
+						*CocTagFunc()*
+CocTagFunc({pattern}, {flags}, {info})
+
+	Used for vim's 'tagfunc' option, to make tag search by |CTRL-]| use
+	coc.nvim as provider.
 
 ------------------------------------------------------------------------------
 
@@ -2102,6 +2100,7 @@ Default mappings in insert mode:
 
 <Esc>       - cancel list session.
 <C-c>       - stop loading task.
+<C-v>       - paste text from system clipboard.
 <C-l>       - reload list.
 <C-o>       - change to normal mode.
 <Down>      - select next line.

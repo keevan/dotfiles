@@ -25,6 +25,8 @@ import (
 var placeholder *regexp.Regexp
 var activeTempFiles []string
 
+const ellipsis string = ".."
+
 func init() {
 	placeholder = regexp.MustCompile(`\\?(?:{[+sf]*[0-9,-.]*}|{q}|{\+?f?nf?})`)
 	activeTempFiles = []string{}
@@ -73,6 +75,7 @@ type Terminal struct {
 	queryLen     [2]int
 	layout       layoutType
 	fullscreen   bool
+	keepRight    bool
 	hscroll      bool
 	hscrollOff   int
 	wordRubout   string
@@ -100,7 +103,7 @@ type Terminal struct {
 	margin       [4]sizeSpec
 	strong       tui.Attr
 	unicode      bool
-	bordered     bool
+	borderShape  tui.BorderShape
 	cleanExit    bool
 	border       tui.Window
 	window       tui.Window
@@ -370,9 +373,9 @@ func NewTerminal(opts *Options, eventBox *util.EventBox) *Terminal {
 				effectiveMinHeight *= 2
 			}
 			if opts.InfoStyle != infoDefault {
-				effectiveMinHeight -= 1
+				effectiveMinHeight--
 			}
-			if opts.Bordered {
+			if opts.BorderShape != tui.BorderNone {
 				effectiveMinHeight += 2
 			}
 			return util.Min(termHeight, util.Max(maxHeight, effectiveMinHeight))
@@ -391,62 +394,63 @@ func NewTerminal(opts *Options, eventBox *util.EventBox) *Terminal {
 		spinner = []string{`-`, `\`, `|`, `/`, `-`, `\`, `|`, `/`}
 	}
 	t := Terminal{
-		initDelay:  delay,
-		infoStyle:  opts.InfoStyle,
-		spinner:    spinner,
-		queryLen:   [2]int{0, 0},
-		layout:     opts.Layout,
-		fullscreen: fullscreen,
-		hscroll:    opts.Hscroll,
-		hscrollOff: opts.HscrollOff,
-		wordRubout: wordRubout,
-		wordNext:   wordNext,
-		cx:         len(input),
-		cy:         0,
-		offset:     0,
-		xoffset:    0,
-		yanked:     []rune{},
-		input:      input,
-		multi:      opts.Multi,
-		sort:       opts.Sort > 0,
-		toggleSort: opts.ToggleSort,
-		delimiter:  opts.Delimiter,
-		expect:     opts.Expect,
-		keymap:     opts.Keymap,
-		pressed:    "",
-		printQuery: opts.PrintQuery,
-		history:    opts.History,
-		margin:     opts.Margin,
-		unicode:    opts.Unicode,
-		bordered:   opts.Bordered,
-		cleanExit:  opts.ClearOnExit,
-		strong:     strongAttr,
-		cycle:      opts.Cycle,
-		header:     header,
-		header0:    header,
-		ansi:       opts.Ansi,
-		tabstop:    opts.Tabstop,
-		reading:    true,
-		failed:     nil,
-		jumping:    jumpDisabled,
-		jumpLabels: opts.JumpLabels,
-		printer:    opts.Printer,
-		printsep:   opts.PrintSep,
-		merger:     EmptyMerger,
-		selected:   make(map[int32]selectedItem),
-		reqBox:     util.NewEventBox(),
-		preview:    opts.Preview,
-		previewer:  previewer{"", 0, 0, previewBox != nil && !opts.Preview.hidden, false},
-		previewBox: previewBox,
-		eventBox:   eventBox,
-		mutex:      sync.Mutex{},
-		suppress:   true,
-		slab:       util.MakeSlab(slab16Size, slab32Size),
-		theme:      opts.Theme,
-		startChan:  make(chan bool, 1),
-		killChan:   make(chan int),
-		tui:        renderer,
-		initFunc:   func() { renderer.Init() }}
+		initDelay:   delay,
+		infoStyle:   opts.InfoStyle,
+		spinner:     spinner,
+		queryLen:    [2]int{0, 0},
+		layout:      opts.Layout,
+		fullscreen:  fullscreen,
+		keepRight:   opts.KeepRight,
+		hscroll:     opts.Hscroll,
+		hscrollOff:  opts.HscrollOff,
+		wordRubout:  wordRubout,
+		wordNext:    wordNext,
+		cx:          len(input),
+		cy:          0,
+		offset:      0,
+		xoffset:     0,
+		yanked:      []rune{},
+		input:       input,
+		multi:       opts.Multi,
+		sort:        opts.Sort > 0,
+		toggleSort:  opts.ToggleSort,
+		delimiter:   opts.Delimiter,
+		expect:      opts.Expect,
+		keymap:      opts.Keymap,
+		pressed:     "",
+		printQuery:  opts.PrintQuery,
+		history:     opts.History,
+		margin:      opts.Margin,
+		unicode:     opts.Unicode,
+		borderShape: opts.BorderShape,
+		cleanExit:   opts.ClearOnExit,
+		strong:      strongAttr,
+		cycle:       opts.Cycle,
+		header:      header,
+		header0:     header,
+		ansi:        opts.Ansi,
+		tabstop:     opts.Tabstop,
+		reading:     true,
+		failed:      nil,
+		jumping:     jumpDisabled,
+		jumpLabels:  opts.JumpLabels,
+		printer:     opts.Printer,
+		printsep:    opts.PrintSep,
+		merger:      EmptyMerger,
+		selected:    make(map[int32]selectedItem),
+		reqBox:      util.NewEventBox(),
+		preview:     opts.Preview,
+		previewer:   previewer{"", 0, 0, previewBox != nil && !opts.Preview.hidden, false},
+		previewBox:  previewBox,
+		eventBox:    eventBox,
+		mutex:       sync.Mutex{},
+		suppress:    true,
+		slab:        util.MakeSlab(slab16Size, slab32Size),
+		theme:       opts.Theme,
+		startChan:   make(chan bool, 1),
+		killChan:    make(chan int),
+		tui:         renderer,
+		initFunc:    func() { renderer.Init() }}
 	t.prompt, t.promptLen = t.processTabs([]rune(opts.Prompt), 0)
 	t.pointer, t.pointerLen = t.processTabs([]rune(opts.Pointer), 0)
 	t.marker, t.markerLen = t.processTabs([]rune(opts.Marker), 0)
@@ -595,8 +599,11 @@ func (t *Terminal) resizeWindows() {
 		} else {
 			marginInt[idx] = int(sizeSpec.size)
 		}
-		if t.bordered && idx%2 == 0 {
-			marginInt[idx] += 1
+		switch t.borderShape {
+		case tui.BorderHorizontal:
+			marginInt[idx] += 1 - idx%2
+		case tui.BorderRounded, tui.BorderSharp:
+			marginInt[idx] += 1 + idx%2
 		}
 	}
 	adjust := func(idx1 int, idx2 int, max int, min int) {
@@ -636,18 +643,26 @@ func (t *Terminal) resizeWindows() {
 
 	width := screenWidth - marginInt[1] - marginInt[3]
 	height := screenHeight - marginInt[0] - marginInt[2]
-	if t.bordered {
+	switch t.borderShape {
+	case tui.BorderHorizontal:
 		t.border = t.tui.NewWindow(
 			marginInt[0]-1,
 			marginInt[3],
 			width,
 			height+2,
 			false, tui.MakeBorderStyle(tui.BorderHorizontal, t.unicode))
+	case tui.BorderRounded, tui.BorderSharp:
+		t.border = t.tui.NewWindow(
+			marginInt[0]-1,
+			marginInt[3]-2,
+			width+4,
+			height+2,
+			false, tui.MakeBorderStyle(t.borderShape, t.unicode))
 	}
 	noBorder := tui.MakeBorderStyle(tui.BorderNone, t.unicode)
 	if previewVisible {
 		createPreviewWindow := func(y int, x int, w int, h int) {
-			previewBorder := tui.MakeBorderStyle(tui.BorderAround, t.unicode)
+			previewBorder := tui.MakeBorderStyle(tui.BorderRounded, t.unicode)
 			if !t.preview.border {
 				previewBorder = tui.MakeTransparentBorder()
 			}
@@ -989,14 +1004,17 @@ func (t *Terminal) printHighlighted(result Result, attr tui.Attr, col1 tui.Color
 	displayWidth := t.displayWidthWithLimit(text, 0, maxWidth)
 	if displayWidth > maxWidth {
 		if t.hscroll {
-			// Stri..
-			if !t.overflow(text[:maxe], maxWidth-2) {
+			if t.keepRight && pos == nil {
+				text, _ = t.trimLeft(text, maxWidth-2)
+				text = append([]rune(ellipsis), text...)
+			} else if !t.overflow(text[:maxe], maxWidth-2) {
+				// Stri..
 				text, _ = t.trimRight(text, maxWidth-2)
-				text = append(text, []rune("..")...)
+				text = append(text, []rune(ellipsis)...)
 			} else {
 				// Stri..
 				if t.overflow(text[maxe:], 2) {
-					text = append(text[:maxe], []rune("..")...)
+					text = append(text[:maxe], []rune(ellipsis)...)
 				}
 				// ..ri..
 				var diff int32
@@ -1011,11 +1029,11 @@ func (t *Terminal) printHighlighted(result Result, attr tui.Attr, col1 tui.Color
 					offsets[idx].offset[0] = b
 					offsets[idx].offset[1] = util.Max32(b, e)
 				}
-				text = append([]rune(".."), text...)
+				text = append([]rune(ellipsis), text...)
 			}
 		} else {
 			text, _ = t.trimRight(text, maxWidth-2)
-			text = append(text, []rune("..")...)
+			text = append(text, []rune(ellipsis)...)
 
 			for idx, offset := range offsets {
 				offsets[idx].offset[0] = util.Min32(offset.offset[0], int32(maxWidth-2))
@@ -1146,7 +1164,7 @@ func (t *Terminal) refresh() {
 	t.placeCursor()
 	if !t.suppress {
 		windows := make([]tui.Window, 0, 4)
-		if t.bordered {
+		if t.borderShape != tui.BorderNone {
 			windows = append(windows, t.border)
 		}
 		if t.hasPreviewWindow() {

@@ -171,7 +171,6 @@ g:WorkspaceFolders	coc.cnx	/*g:WorkspaceFolders*
 g:coc_config_home	coc.cnx	/*g:coc_config_home*
 g:coc_data_home	coc.cnx	/*g:coc_data_home*
 g:coc_enable_locationlist	coc.cnx	/*g:coc_enable_locationlist*
-g:coc_extension_root	coc.cnx	/*g:coc_extension_root*
 g:coc_filetype_map	coc.cnx	/*g:coc_filetype_map*
 g:coc_force_debug	coc.cnx	/*g:coc_force_debug*
 g:coc_global_extensions	coc.cnx	/*g:coc_global_extensions*

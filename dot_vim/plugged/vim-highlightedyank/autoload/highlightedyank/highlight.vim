@@ -201,10 +201,10 @@ function! s:highlight.add(...) dict abort "{{{
   let self.bufnr = bufnr('%')
   let self.winid = win_getid()
   call self.switchtask.call(self.switch, [], self)
-                     \.repeat(-1)
+                     \.repeat(1)
                      \.waitfor(['BufEnter'])
-  let triggers = [['TextChanged', '<buffer>'], ['InsertEnter', '<buffer>'],
-               \  ['BufUnload', '<buffer>'], ['CmdwinLeave', '<buffer>'],
+  let triggers = [['BufUnload', '<buffer>'], ['CmdwinLeave', '<buffer>'],
+               \  ['TextChanged', '*'], ['InsertEnter', '*'],
                \  ['TabLeave', '*']]
   if duration > 0
     call add(triggers, duration)
@@ -284,17 +284,15 @@ function! s:is_in_cmdline_window() abort "{{{
 endfunction "}}}
 
 
-" Toggle on/off when the displayed buffer is changed in the highlighting window
+" Quench if buffer is switched in the same window
 function! s:highlight.switch() abort "{{{
   if win_getid() != self.winid
     return
   endif
-
   if bufnr('%') == self.bufnr
-    call self.add()
-  else
-    call self.delete()
+    return
   endif
+  call self.delete()
 endfunction "}}}
 
 

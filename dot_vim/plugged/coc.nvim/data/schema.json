@@ -91,7 +91,7 @@
         "progressOnInitialization": {
           "type": "boolean",
           "default": true,
-          "description": "Enable progress request to languageserver"
+          "description": "Enable progress report on languageserver initialize."
         },
         "initializationOptions": {
           "type": "object",
@@ -278,7 +278,7 @@
     "suggest.enablePreselect": {
       "type": "boolean",
       "description": "Enable preselect feature, only works on neovim",
-      "default": true
+      "default": false
     },
     "suggest.maxPreviewWidth": {
       "type": "number",
@@ -556,7 +556,7 @@
     "diagnostic.enableHighlightLineNumber": {
       "type": "boolean",
       "default": true,
-      "description": "Enable highlighting line numbers for diagnostics."
+      "description": "Enable highlighting line numbers for diagnostics, only works with neovim and diagnostic.enableSign is true."
     },
     "diagnostic.enableMessage": {
       "type": "string",

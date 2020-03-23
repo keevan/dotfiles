@@ -13,6 +13,14 @@ if get(g:, 'coc_start_at_startup', 1) && !s:is_gvim
   call coc#rpc#start_server()
 endif
 
+function! CocTagFunc(pattern, flags, info) abort
+  if a:flags !=# 'c'
+    " use standard tag search
+    return v:null
+  endif
+  return coc#rpc#request('getTagList', [])
+endfunction
+
 function! CocAction(...) abort
   return coc#rpc#request('CocAction', a:000)
 endfunction
@@ -117,8 +125,8 @@ function! s:AddAnsiGroups() abort
       let backgroundColor = color_map[key]
       exe 'hi default CocList'.foreground.background.' guifg='.foregroundColor.' guibg='.backgroundColor
     endfor
-    exe 'hi default CocListFg'.foreground. ' guifg='.foregroundColor
-    exe 'hi default CocListBg'.foreground. ' guibg='.foregroundColor
+    exe 'hi default CocListFg'.foreground. ' guifg='.foregroundColor. ' ctermfg='.foreground
+    exe 'hi default CocListBg'.foreground. ' guibg='.foregroundColor. ' ctermbg='.foreground
   endfor
 endfunction
 
@@ -141,12 +149,16 @@ function! s:Disable() abort
 endfunction
 
 function! s:Autocmd(...) abort
-  if !get(g:,'coc_workspace_initialized', 0) | return | endif
+  if !get(g:,'coc_workspace_initialized', 0)
+    return
+  endif
   call coc#rpc#notify('CocAutocmd', a:000)
 endfunction
 
 function! s:SyncAutocmd(...)
-  if !get(g:,'coc_workspace_initialized', 0) | return | endif
+  if !get(g:,'coc_workspace_initialized', 0)
+    return
+  endif
   if get(g:, 'coc_service_initialized', 0)
     call coc#rpc#request('CocAutocmd', a:000)
   else
@@ -216,7 +228,7 @@ function! s:Enable()
     autocmd FocusGained         * if mode() !~# '^c' | call s:Autocmd('FocusGained') | endif
     autocmd VimResized          * call s:Autocmd('VimResized', &columns, &lines)
     autocmd VimLeavePre         * let g:coc_vim_leaving = 1
-    autocmd VimLeave            * call coc#rpc#stop()
+    autocmd VimLeave            * call s:SyncAutocmd('VimLeave')
     autocmd BufReadCmd,FileReadCmd,SourceCmd list://* call coc#list#setup(expand('<amatch>'))
     autocmd BufWriteCmd __coc_refactor__* :call coc#rpc#notify('saveRefactor', [+expand('<abuf>')])
   augroup end

@@ -189,7 +189,7 @@ function! coc#util#remote_fns(name)
 endfunction
 
 function! coc#util#job_command()
-  let node = get(g:, 'coc_node_path', 'node')
+  let node = expand(get(g:, 'coc_node_path', 'node'))
   if !executable(node)
     echohl Error | echom '[coc.nvim] '.node.' is not executable, checkout https://nodejs.org/en/download/' | echohl None
     return
@@ -268,11 +268,11 @@ function! coc#util#echo_messages(hl, msgs)
   if a:hl !~# 'Error' && (mode() !~# '\v^(i|n)$')
     return
   endif
-  execute 'echohl '.a:hl
   let msgs = filter(copy(a:msgs), '!empty(v:val)')
-  for msg in msgs
-    echom msg
-  endfor
+  execute 'echohl '.a:hl
+  echom a:msgs[0]
+  redraw
+  echo join(msgs, "\n")
   echohl None
 endfunction
 
@@ -354,7 +354,7 @@ endfunction
 
 function! coc#util#get_config_home()
   if !empty(get(g:, 'coc_config_home', ''))
-      return g:coc_config_home
+      return expand(g:coc_config_home)
   endif
   if exists('$VIMCONFIG')
     return resolve($VIMCONFIG)
@@ -377,7 +377,7 @@ endfunction
 
 function! coc#util#get_data_home()
   if !empty(get(g:, 'coc_data_home', ''))
-    return g:coc_data_home
+    return resolve(expand(g:coc_data_home))
   endif
   if exists('$XDG_CONFIG_HOME')
     return resolve($XDG_CONFIG_HOME."/coc")
@@ -513,7 +513,7 @@ endfunction
 " cmd, cwd
 function! coc#util#open_terminal(opts) abort
   if s:is_vim && !exists('*term_start')
-    echohl WarningMsg | echon "Your vim doesn't have termnial support!" | echohl None
+    echohl WarningMsg | echon "Your vim doesn't have terminal support!" | echohl None
     return
   endif
   if get(a:opts, 'position', 'bottom') ==# 'bottom'
@@ -716,6 +716,7 @@ function! coc#util#install(...) abort
     echohl WarningMsg | echon '[coc.nvim] coc#util#install not needed for release branch.' | echohl None
     return
   endif
+  echohl WarningMsg | echon '[coc.nvim] coc#util#install support will be removed, please use release branch of coc.nvim' | echohl None
   let cmd = (s:is_win ? 'install.cmd' : './install.sh') . ' nightly'
   let cwd = getcwd()
   exe 'lcd '.s:root
@@ -735,18 +736,11 @@ function! coc#util#extension_root() abort
   if !empty($COC_TEST)
     return s:root.'/src/__tests__/extensions'
   endif
-  let dir = get(g:, 'coc_data_home', '')
-  if !empty(dir)
-    return dir.'/extensions'
+  if !empty(get(g:, 'coc_extension_root', ''))
+    echohl WarningMsg | echon "g:coc_extension_root variable is deprecated, use g:coc_data_home as parent folder of extensions." | echohl None
+    return resolve(expand(g:coc_extension_root))
   endif
-
-  let dir = get(g:, 'coc_extension_root', '')
-  if empty(dir)
-    let dir = coc#util#get_data_home().'/extensions'
-  else
-    echohl WarningMsg | echon "g:coc_extension_root has been deprecated, use g:coc_data_home instead" | echohl None
-  endif
-  return dir
+  return coc#util#get_data_home().'/extensions'
 endfunction
 
 function! coc#util#update_extensions(...) abort

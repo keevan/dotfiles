@@ -54,6 +54,7 @@ CocRegistNotification()	coc.txt	/*CocRegistNotification()*
 CocRequest()	coc.txt	/*CocRequest()*
 CocRequestAsync()	coc.txt	/*CocRequestAsync()*
 CocStatusChange	coc.txt	/*CocStatusChange*
+CocTagFunc()	coc.txt	/*CocTagFunc()*
 CocTerminalOpen	coc.txt	/*CocTerminalOpen*
 CocWarningFloat	coc.txt	/*CocWarningFloat*
 CocWarningHighlight	coc.txt	/*CocWarningHighlight*
@@ -178,7 +179,6 @@ g:coc_cursors_activated	coc.txt	/*g:coc_cursors_activated*
 g:coc_cygqwin_path_prefixes	coc.txt	/*g:coc_cygqwin_path_prefixes*
 g:coc_data_home	coc.txt	/*g:coc_data_home*
 g:coc_enable_locationlist	coc.txt	/*g:coc_enable_locationlist*
-g:coc_extension_root	coc.txt	/*g:coc_extension_root*
 g:coc_filetype_map	coc.txt	/*g:coc_filetype_map*
 g:coc_force_debug	coc.txt	/*g:coc_force_debug*
 g:coc_global_extensions	coc.txt	/*g:coc_global_extensions*

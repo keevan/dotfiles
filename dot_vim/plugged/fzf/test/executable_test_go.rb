@@ -1728,6 +1728,11 @@ class TestGoFZF < TestBase
       tmux.send_keys :Enter
     end
   end
+
+  def test_keep_right
+    tmux.send_keys("seq 10000 | #{FZF} --read0 --keep-right", :Enter)
+    tmux.until { |lines| lines.any_include?('9999 10000') }
+  end
 end
 
 module TestShell
@@ -1853,9 +1858,11 @@ module TestShell
   def test_ctrl_r_multiline
     tmux.send_keys 'echo "foo', :Enter, 'bar"', :Enter
     tmux.until { |lines| lines[-2..-1] == ['foo', 'bar'] }
-    tmux.prepare
-    tmux.send_keys 'C-r'
-    tmux.until { |lines| lines[-1] == '>' }
+    retries do
+      tmux.prepare
+      tmux.send_keys 'C-r'
+      tmux.until { |lines| lines[-1] == '>' }
+    end
     tmux.send_keys 'foo bar'
     tmux.until { |lines| lines[-3].end_with? 'bar"' }
     tmux.send_keys :Enter
@@ -1867,11 +1874,13 @@ module TestShell
   def test_ctrl_r_abort
     skip "doesn't restore the original line when search is aborted pre Bash 4" if shell == :bash && /(?<= version )\d+/.match(`#{Shell.bash} --version`).to_s.to_i < 4
     %w[foo ' "].each do |query|
-      tmux.prepare
-      tmux.send_keys(query)
-      tmux.until { |lines| lines[-1].start_with? query }
-      tmux.send_keys 'C-r'
-      tmux.until { |lines| lines[-1] == "> #{query}" }
+      retries do
+        tmux.prepare
+        tmux.send_keys(:Space, 'C-e', 'C-u', query)
+        tmux.until { |lines| lines[-1].start_with? query }
+        tmux.send_keys 'C-r'
+        tmux.until { |lines| lines[-1] == "> #{query}" }
+      end
       tmux.send_keys 'C-g'
       tmux.until { |lines| lines[-1].start_with? query }
     end
@@ -2060,6 +2069,25 @@ module CompletionTest
     tmux.send_keys :Enter
     tmux.until { |lines| lines[-1].include? 'test3test4' }
   end
+
+  def test_custom_completion_api
+    tmux.send_keys 'eval "_fzf$(declare -f _comprun)"', :Enter
+    %w[f g].each do |command|
+      tmux.prepare
+      tmux.send_keys "#{command} b**", :Tab
+      tmux.until do |lines|
+        lines.item_count == 2 && lines.match_count == 1 &&
+          lines.any_include?("prompt-#{command}") &&
+          lines.any_include?("preview-#{command}-bar")
+      end
+      tmux.send_keys :Enter
+      tmux.until { |lines| lines[-1].include?("#{command} #{command}barbar") }
+      tmux.send_keys 'C-u'
+    end
+  ensure
+    tmux.prepare
+    tmux.send_keys 'unset -f _fzf_comprun', :Enter
+  end
 end
 
 class TestBash < TestBase
@@ -2145,3 +2173,41 @@ source "<%= BASE %>/shell/key-bindings.<%= __method__ %>"
 
 PS1= PROMPT_COMMAND= HISTFILE= HISTSIZE=100
 unset <%= UNSETS.join(' ') %>
+
+# Old API
+_fzf_complete_f() {
+  _fzf_complete "--multi --prompt \"prompt-f> \"" "$@" < <(
+    echo foo
+    echo bar
+  )
+}
+
+# New API
+_fzf_complete_g() {
+  _fzf_complete --multi --prompt "prompt-g> " -- "$@" < <(
+    echo foo
+    echo bar
+  )
+}
+
+_fzf_complete_f_post() {
+  awk '{print "f" $0 $0}'
+}
+
+_fzf_complete_g_post() {
+  awk '{print "g" $0 $0}'
+}
+
+[ -n "$BASH" ] && complete -F _fzf_complete_f -o default -o bashdefault f
+[ -n "$BASH" ] && complete -F _fzf_complete_g -o default -o bashdefault g
+
+_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    f) fzf "$@" --preview 'echo preview-f-{}' ;;
+    g) fzf "$@" --preview 'echo preview-g-{}' ;;
+    *) fzf "$@" ;;
+  esac
+}
