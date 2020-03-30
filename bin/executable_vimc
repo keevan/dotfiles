@@ -4,7 +4,7 @@ source=~/.vim
 
 # Copies this folder into another directory, then strips out the non-essentials
 destination=/tmp/.vim-copy
-sudo rm -r $destination/*
+true | rm -r $destination/*
 mkdir -p $destination
 cp -Lr $source $destination 2> /dev/null;
 cp -Lr "$source/../.vimrc" $destination
@@ -44,26 +44,26 @@ sed -i -e '1{/^\"!/ {p}}; /^[\t\ ]*\"/d;/\.*\".*/ {/[\x22\x27].*\".*[\x22\x27]/ 
 # sed -e '/.*\s=.*/ s/\s\".*//g' $destination/test.vim
 
 
-sudo rm -r $destination/.vim/plugged/vim-polyglot 2> /dev/null;
-sudo rm -r $destination/.vim/plugged/coc.nvim 2> /dev/null;
-sudo rm -r $destination/.vim/plugged/coc-snippets 2> /dev/null;
-sudo rm -r $destination/.vim/plugged/fzf 2> /dev/null;
-sudo rm -r $destination/.vim/plugged/denite.nvim 2> /dev/null;
-sudo rm -r $destination/.vim/plugged/vim-fugitive 2> /dev/null;
-sudo rm -r $destination/.vim/plugged/goyo.vim 2> /dev/null;
-sudo rm -r $destination/.vim/plugged/vim-highlightedyank 2> /dev/null;
+true | rm -r $destination/.vim/plugged/vim-polyglot 2> /dev/null;
+true | rm -r $destination/.vim/plugged/coc.nvim 2> /dev/null;
+true | rm -r $destination/.vim/plugged/coc-snippets 2> /dev/null;
+true | rm -r $destination/.vim/plugged/fzf 2> /dev/null;
+true | rm -r $destination/.vim/plugged/denite.nvim 2> /dev/null;
+true | rm -r $destination/.vim/plugged/vim-fugitive 2> /dev/null;
+true | rm -r $destination/.vim/plugged/goyo.vim 2> /dev/null;
+true | rm -r $destination/.vim/plugged/vim-highlightedyank 2> /dev/null;
 
 # Quite large
-sudo rm -r $destination/.vim/plugged/vim-multiple-cursors 2> /dev/null;
+true | rm -r $destination/.vim/plugged/vim-multiple-cursors 2> /dev/null;
 
 
 
 # Put the default extension back (since this will be loaded)
-	sudo rm -r $destination/.vim/plugged/vim-airline/autoload/airline/extensions/* 2> /dev/null;
+	true | rm -r $destination/.vim/plugged/vim-airline/autoload/airline/extensions/* 2> /dev/null;
 	cp "$source/plugged/vim-airline/autoload/airline/extensions/default.vim" $destination/.vim/plugged/vim-airline/autoload/airline/extensions/default.vim
 
 #rm -r $destination/.vim/plugged/vim-airline/ 2> /dev/null;
-sudo rm -r $destination/.vim/plugged/nerdtree 2> /dev/null;
+true | rm -r $destination/.vim/plugged/nerdtree 2> /dev/null;
 echo "Removed non-essential plugins"
 
 for f in $(
@@ -93,7 +93,7 @@ for f in $(
 		-or -name 'Gemfile' \
 		-or -name 'LICENSE'); do
 	# echo $f;
-	sudo rm -r $f 2> /dev/null;
+	true | rm -r $f 2> /dev/null;
 done
 echo "Removed useless files"
 

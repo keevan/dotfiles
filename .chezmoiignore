@@ -1,5 +1,6 @@
 README.md
 LICENSE
+.vim/.netrwhist
 {{- if ne .email "keevan.pham@gmail.com" }}
 _DONT_INCLUDE_ME_UNLESS_MY_EMAIL_MATCHES_THE_ABOVE
 {{- end }}
