@@ -8,7 +8,6 @@ true | rm -r $destination/*
 mkdir -p $destination
 cp -Lr $source $destination 2> /dev/null;
 cp -Lr "$source/../.vimrc" $destination
-cp -Lr ~/test.vim $destination
 #sudo cp -Lr $source $destination
 
 # Apply rules for vimrc as well
