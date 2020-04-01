@@ -47,6 +47,7 @@ CocLocations()	coc.txt	/*CocLocations()*
 CocLocationsAsync()	coc.txt	/*CocLocationsAsync()*
 CocLocationsChange	coc.txt	/*CocLocationsChange*
 CocNext	coc.txt	/*CocNext*
+CocNotify()	coc.txt	/*CocNotify()*
 CocNvimInit	coc.txt	/*CocNvimInit*
 CocOpenFloat	coc.txt	/*CocOpenFloat*
 CocPrev	coc.txt	/*CocPrev*
@@ -82,12 +83,14 @@ coc#status()	coc.txt	/*coc#status()*
 coc#util#extension_root()	coc.txt	/*coc#util#extension_root()*
 coc#util#float_scroll()	coc.txt	/*coc#util#float_scroll()*
 coc#util#float_scrollable()	coc.txt	/*coc#util#float_scrollable()*
+coc#util#get_config()	coc.txt	/*coc#util#get_config()*
 coc#util#get_config_home()	coc.txt	/*coc#util#get_config_home()*
 coc#util#get_data_home()	coc.txt	/*coc#util#get_data_home()*
 coc#util#has_float()	coc.txt	/*coc#util#has_float()*
 coc#util#install()	coc.txt	/*coc#util#install()*
 coc#util#job_command()	coc.txt	/*coc#util#job_command()*
 coc#util#rebuild()	coc.txt	/*coc#util#rebuild()*
+coc#util#root_patterns()	coc.txt	/*coc#util#root_patterns()*
 coc-action-addRanges	coc.txt	/*coc-action-addRanges*
 coc-action-codeAction	coc.txt	/*coc-action-codeAction*
 coc-action-codeActions	coc.txt	/*coc-action-codeActions*

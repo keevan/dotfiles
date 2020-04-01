@@ -103,9 +103,9 @@ CONFIGURATION						*coc-configuration*
 
 Most of coc.nvim configuration is stored within `coc-settings` file that can
 be opened using `:CocConfig`. This will open either the global configuration
-file (located at `$HOME/.vim/coc-config` or
+file (located at `$HOME/.vim/coc-settings.json` or
 `$HOME/.config/nvim/coc-settings.json` by default) or the local configuration
-file which is located under the project root: `$ROOT/.vim/coc-config.json`
+file which is located under the project root: `$ROOT/.vim/coc-settings.json`
 (see `b:coc_root_patterns` for more information about project root). The
 location of global configuration can be modified using `g:coc_config_home`.
 
@@ -1256,11 +1256,27 @@ coc#util#float_scroll({forward})
 	nnoremap <expr><C-f> coc#util#has_float() ? coc#util#float_scroll(1) : "\<C-f>"
 	nnoremap <expr><C-b> coc#util#has_float() ? coc#util#float_scroll(0) : "\<C-b>"
 <
+						*coc#util#root_patterns()*
+coc#util#root_patterns()
+
+	Get root patterns used for current document.
+
+	Result could be something like: >
+
+	{'global': ['.git', '.hg', '.projections.json'], 'buffer': [], 'server': v:null}
+<
+						*coc#util#get_config()*
+coc#util#get_config({key})
+
+	Get configuration (mostly defined in coc-settings.json)	by {key}, ex: >
+
+	:echo coc#util#get_config('coc.preferences')
+<
 						*CocRequest()*
 CocRequest({id}, {method}, [{params}])
 
 	Send a request to language client of {id} with {method} and optional
-	{params}. eg: >
+	{params}. ex: >
 
 	call CocRequest('tslint', 'textDocument/tslint/allFixes',
 		\  {'textDocument': {'uri': 'file:///tmp'}})
@@ -1268,11 +1284,20 @@ CocRequest({id}, {method}, [{params}])
 	Vim error will be raised if the response contains an error.
 
 						*CocRequestAsync()*
+
 CocRequestAsync({id}, {method}, [{params}, [{callback}]])
 
-	Async request for remote language client. {callback} is called with
-	error and response.
+	Send async request to remote language server.
+	{callback} function is called with error and response.
 
+						*CocNotify()*
+
+CocNotify({id}, {method}, [{params}])
+
+	Send notification to remote language server, ex:
+>
+	call CocNotify('ccls', '$ccls/reload')
+<
 						*CocRegistNotification()*
 
 CocRegistNotification({id}, {method}, {callback})

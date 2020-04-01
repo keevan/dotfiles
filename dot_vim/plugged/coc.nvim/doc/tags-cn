@@ -46,6 +46,7 @@ CocLocations()	coc.cnx	/*CocLocations()*
 CocLocationsAsync()	coc.cnx	/*CocLocationsAsync()*
 CocLocationsChange	coc.cnx	/*CocLocationsChange*
 CocNext	coc.cnx	/*CocNext*
+CocNotify()	coc.cnx	/*CocNotify()*
 CocNvimInit	coc.cnx	/*CocNvimInit*
 CocOpenFloat	coc.cnx	/*CocOpenFloat*
 CocPrev	coc.cnx	/*CocPrev*
