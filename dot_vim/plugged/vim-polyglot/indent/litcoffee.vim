@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'coffee-script') == -1
+if has_key(g:polyglot_is_disabled, 'coffee-script')
+  finish
+endif
 
 if exists('b:did_indent')
   finish
@@ -22,5 +24,3 @@ function GetLitCoffeeIndent()
   endif
 endfunc
 
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'emblem') == -1
+if has_key(g:polyglot_is_disabled, 'emblem')
+  finish
+endif
 
 " Language:    emblem
 " Maintainer:  Yulij Andreevich Lesov <yalesov@gmail.com>
@@ -17,5 +19,3 @@ setlocal smartindent
 setlocal formatoptions=q
 setlocal comments=:/
 setlocal commentstring=/\ %s
-
-endif

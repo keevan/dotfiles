@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'xls') == -1
+if has_key(g:polyglot_is_disabled, 'xsl')
+  finish
+endif
 
 " Vim syntax file
 " Language:	XSLT 1.0
@@ -537,5 +539,3 @@ let b:current_syntax = "xsl"
 "unlet s:xml_cpo_save
 
 " vim: ts=4:sw=4
-
-endif

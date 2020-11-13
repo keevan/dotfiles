@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'fish') == -1
+if has_key(g:polyglot_is_disabled, 'fish')
+  finish
+endif
 
 if exists('b:current_syntax')
     finish
@@ -37,5 +39,3 @@ highlight default link fishStatement Statement
 highlight default link fishCommandSub fishStatement
 
 let b:current_syntax = 'fish'
-
-endif

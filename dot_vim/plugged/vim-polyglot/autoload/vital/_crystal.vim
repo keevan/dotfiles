@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'crystal') == -1
+if has_key(g:polyglot_is_disabled, 'crystal')
+  finish
+endif
 
 let s:_plugin_name = expand('<sfile>:t:r')
 
@@ -9,5 +11,3 @@ endfunction
 function! vital#{s:_plugin_name}#function(funcname) abort
   silent! return function(a:funcname)
 endfunction
-
-endif

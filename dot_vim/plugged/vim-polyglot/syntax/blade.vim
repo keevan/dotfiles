@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'blade') == -1
+if has_key(g:polyglot_is_disabled, 'blade')
+  finish
+endif
 
 " Vim syntax file
 " Language:     Blade (Laravel)
@@ -72,6 +74,4 @@ let b:current_syntax = 'blade'
 
 if exists('main_syntax') && main_syntax == 'blade'
     unlet main_syntax
-endif
-
 endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
+if has_key(g:polyglot_is_disabled, 'ocaml')
+  finish
+endif
 
 " Vim syntax file
 " Language:     OCaml
@@ -387,5 +389,3 @@ hi def link ocamlPpxEncl       ocamlEncl
 let b:current_syntax = "ocaml"
 
 " vim: ts=8
-
-endif

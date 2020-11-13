@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptGlobal containedin=typescriptIdentifierName RegExp nextgroup=typescriptGlobalRegExpDot,typescriptFuncCallArg
 syntax match   typescriptGlobalRegExpDot /\./ contained nextgroup=typescriptRegExpStaticProp,typescriptProp
@@ -12,6 +14,4 @@ endif
 syntax keyword typescriptRegExpMethod contained exec test nextgroup=typescriptFuncCallArg
 syntax cluster props add=typescriptRegExpMethod
 if exists("did_typescript_hilink") | HiLink typescriptRegExpMethod Keyword
-endif
-
 endif

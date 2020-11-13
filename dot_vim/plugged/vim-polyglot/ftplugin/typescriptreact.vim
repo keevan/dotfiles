@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 " modified from mxw/vim-jsx from html.vim
 if exists("loaded_matchit") && !exists('b:tsx_match_words')
@@ -10,6 +12,8 @@ if exists("loaded_matchit") && !exists('b:tsx_match_words')
     \ : b:tsx_match_words
 endif
 
-set suffixesadd+=.tsx
+" Comment formatting
+setlocal comments=s1:/*,mb:*,ex:*/,://
+setlocal formatoptions-=t formatoptions+=croql
 
-endif
+set suffixesadd+=.tsx

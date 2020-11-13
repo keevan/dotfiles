@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rust') == -1
+if has_key(g:polyglot_is_disabled, 'rust')
+  finish
+endif
 
 " Vim compiler file
 " Compiler:         Rust Compiler
@@ -26,7 +28,7 @@ else
     if has('patch-7.4.191')
       CompilerSet makeprg=rustc\ \%:S
     else
-      CompilerSet makeprg=rustc\ \%
+      CompilerSet makeprg=rustc\ \"%\"
     endif
 endif
 
@@ -57,5 +59,3 @@ unlet s:save_cpo
 " vint: +ProhibitAbbreviationOption
 
 " vim: set et sw=4 sts=4 ts=8:
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'scala') == -1
+if has_key(g:polyglot_is_disabled, 'scala')
+  finish
+endif
 
 " Extends standard help syntax with highlighting of Scala code.
 "
@@ -13,6 +15,4 @@ if has('conceal')
   syntax region rgnScala matchgroup=Ignore concealends start='!sc!' end='!/sc!' contains=@ScalaCode
 else
   syntax region rgnScala matchgroup=Ignore start='!sc!' end='!/sc!' contains=@ScalaCode
-endif
-
 endif

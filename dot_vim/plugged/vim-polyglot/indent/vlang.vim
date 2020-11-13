@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'v') == -1
+if has_key(g:polyglot_is_disabled, 'v')
+  finish
+endif
 
 " Based on the Go identation file.
 "
@@ -15,6 +17,7 @@ setlocal nolisp
 setlocal autoindent
 setlocal indentexpr=VlangIndent(v:lnum)
 setlocal indentkeys+=<:>,0=},0=)
+setlocal noexpandtab
 
 if exists("*VlangIndent")
   finish
@@ -65,5 +68,3 @@ let &cpo = s:cpo_save
 unlet s:cpo_save
 
 " vim: sw=2 ts=2 et
-
-endif

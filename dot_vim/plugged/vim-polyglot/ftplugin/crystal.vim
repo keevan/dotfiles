@@ -1,32 +1,11 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'crystal') == -1
+if has_key(g:polyglot_is_disabled, 'crystal')
+  finish
+endif
 
 if exists('b:did_ftplugin')
   finish
 endif
 let b:did_ftplugin = 1
-
-let s:save_cpo = &cpo
-set cpo&vim
-
-if exists('loaded_matchit') && !exists('b:match_words')
-  let b:match_ignorecase = 0
-
-  let b:match_words =
-        \ '\<\%(if\|unless\|case\|while\|until\|for\|do\|class\|module\|struct\|lib\|macro\|ifdef\|def\|fun\|begin\|enum\)\>=\@!' .
-        \ ':' .
-        \ '\<\%(else\|elsif\|ensure\|when\|rescue\|break\|redo\|next\|retry\)\>' .
-        \ ':' .
-        \ '\<end\>' .
-        \ ',{:},\[:\],(:)'
-
-  let b:match_skip =
-        \ "synIDattr(synID(line('.'),col('.'),0),'name') =~ '" .
-        \ "\\<crystal\\%(String\\|StringDelimiter\\|ASCIICode\\|Escape\\|" .
-        \ "Interpolation\\|NoInterpolation\\|Comment\\|Documentation\\|" .
-        \ "ConditionalModifier\\|RepeatModifier\\|OptionalDo\\|" .
-        \ "Function\\|BlockArgument\\|KeywordAsMethod\\|ClassVariable\\|" .
-        \ "InstanceVariable\\|GlobalVariable\\|Symbol\\)\\>'"
-endif
 
 setlocal comments=:#
 setlocal commentstring=#\ %s
@@ -34,11 +13,11 @@ setlocal suffixesadd=.cr
 
 " Set format for quickfix window
 setlocal errorformat=
-  \%ESyntax\ error\ in\ line\ %l:\ %m,
-  \%ESyntax\ error\ in\ %f:%l:\ %m,
-  \%EError\ in\ %f:%l:\ %m,
-  \%C%p^,
-  \%-C%.%#
+      \%ESyntax\ error\ in\ line\ %l:\ %m,
+      \%ESyntax\ error\ in\ %f:%l:\ %m,
+      \%EError\ in\ %f:%l:\ %m,
+      \%C%p^,
+      \%-C%.%#
 
 let g:crystal_compiler_command = get(g:, 'crystal_compiler_command', 'crystal')
 let g:crystal_auto_format = get(g:, 'crystal_auto_format', 0)
@@ -60,8 +39,10 @@ nnoremap <buffer><Plug>(crystal-spec-run-all)       :<C-u>CrystalSpecRunAll<CR>
 nnoremap <buffer><Plug>(crystal-spec-run-current)   :<C-u>CrystalSpecRunCurrent<CR>
 nnoremap <buffer><Plug>(crystal-format)             :<C-u>CrystalFormat<CR>
 
+" autocmd is setup per buffer. Please do not use :autocmd!. It refreshes
+" augroup hence removes autocmds for other buffers (#105)
 augroup plugin-ft-crystal
-  autocmd BufWritePre <buffer> if g:crystal_auto_format | call crystal_lang#format('', 1) | endif
+  autocmd BufWritePre <buffer> if g:crystal_auto_format && &filetype ==# 'crystal' | call crystal_lang#format('', 1) | endif
 augroup END
 
 if get(g:, 'crystal_define_mappings', 1)
@@ -76,9 +57,31 @@ if &l:ofu ==# ''
   setlocal omnifunc=crystal_lang#complete
 endif
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
+" Options for vim-matchit
+if exists('g:loaded_matchit') && !exists('b:match_words')
+  let b:match_ignorecase = 0
 
-" vim: nowrap sw=2 sts=2 ts=8:
+  let b:match_words =
+        \ '\<\%(if\|unless\|case\|while\|until\|for\|do\|class\|module\|struct\|lib\|macro\|ifdef\|def\|begin\|enum\|annotation\)\>=\@!' .
+        \ ':' .
+        \ '\<\%(else\|elsif\|ensure\|when\|in\|rescue\|break\|next\)\>' .
+        \ ':' .
+        \ '\<end\>' .
+        \ ',{:},\[:\],(:)'
 
+  let b:match_skip =
+        \ 'synIDattr(synID(line("."), col("."), 0), "name") =~# ''' .
+        \ '\<crystal\%(String\|StringDelimiter\|ASCIICode\|Escape\|' .
+        \ 'Interpolation\|NoInterpolation\|Comment\|Documentation\|' .
+        \ 'ConditionalModifier\|' .
+        \ 'Function\|BlockArgument\|KeywordAsMethod\|ClassVariable\|' .
+        \ 'InstanceVariable\|GlobalVariable\|Symbol\)\>'''
 endif
+
+" Options for jiangmiao/auto-pairs
+if exists('g:AutoPairsLoaded')
+  let b:AutoPairs = { '{%': '%}' }
+  call extend(b:AutoPairs, g:AutoPairs, 'force')
+endif
+
+" vim: sw=2 sts=2 et:

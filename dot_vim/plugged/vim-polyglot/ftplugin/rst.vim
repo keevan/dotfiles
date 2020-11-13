@@ -1,11 +1,13 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rst') == -1
+if has_key(g:polyglot_is_disabled, 'rst')
+  finish
+endif
 
 " reStructuredText filetype plugin file
 " Language: reStructuredText documentation format
 " Maintainer: Marshall Ward <marshall.ward@gmail.com>
 " Original Maintainer: Nikolai Weibull <now@bitwi.se>
 " Website: https://github.com/marshallward/vim-restructuredtext
-" Latest Revision: 2018-12-29
+" Latest Revision: 2020-03-31
 
 if exists("b:did_ftplugin")
     finish
@@ -47,5 +49,3 @@ endif
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
-
-endif

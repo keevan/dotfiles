@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'moonscript') == -1
+if has_key(g:polyglot_is_disabled, 'moonscript')
+  finish
+endif
 
 " Language:    MoonScript
 " Maintainer:  leafo <leafot@gmail.com>
@@ -316,6 +318,4 @@ syn cluster moonAll contains=moonStatement,moonRepeat,moonConditional,
 
 if !exists('b:current_syntax')
   let b:current_syntax = 'moon'
-endif
-
 endif

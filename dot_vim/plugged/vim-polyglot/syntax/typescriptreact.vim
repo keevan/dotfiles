@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 if !exists("main_syntax")
   if exists("b:current_syntax")
@@ -141,5 +143,4 @@ highlight def link tsxCloseString Identifier
 let b:current_syntax = "typescriptreact"
 if main_syntax == 'typescriptreact'
   unlet main_syntax
-endif
 endif

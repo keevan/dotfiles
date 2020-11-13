@@ -12,6 +12,7 @@ airline-accents	airline.txt	/*airline-accents*
 airline-advanced-customization	airline.txt	/*airline-advanced-customization*
 airline-ale	airline.txt	/*airline-ale*
 airline-autocommands	airline.txt	/*airline-autocommands*
+airline-battery	airline.txt	/*airline-battery*
 airline-bookmark	airline.txt	/*airline-bookmark*
 airline-branch	airline.txt	/*airline-branch*
 airline-bufferline	airline.txt	/*airline-bufferline*
@@ -29,11 +30,14 @@ airline-cursormode	airline.txt	/*airline-cursormode*
 airline-customization	airline.txt	/*airline-customization*
 airline-default	airline.txt	/*airline-default*
 airline-denite	airline.txt	/*airline-denite*
+airline-dirvish	airline.txt	/*airline-dirvish*
 airline-eclim	airline.txt	/*airline-eclim*
 airline-extensions	airline.txt	/*airline-extensions*
 airline-features	airline.txt	/*airline-features*
+airline-fern	airline.txt	/*airline-fern*
 airline-fugitiveline	airline.txt	/*airline-fugitiveline*
 airline-funcrefs	airline.txt	/*airline-funcrefs*
+airline-fzf	airline.txt	/*airline-fzf*
 airline-gina	airline.txt	/*airline-gina*
 airline-grepper	airline.txt	/*airline-grepper*
 airline-gutentags	airline.txt	/*airline-gutentags*
@@ -48,7 +52,9 @@ airline-name	airline.txt	/*airline-name*
 airline-neomake	airline.txt	/*airline-neomake*
 airline-nerdtree	airline.txt	/*airline-nerdtree*
 airline-nrrwrgn	airline.txt	/*airline-nrrwrgn*
+airline-nvimlsp	airline.txt	/*airline-nvimlsp*
 airline-obsession	airline.txt	/*airline-obsession*
+airline-omnisharp	airline.txt	/*airline-omnisharp*
 airline-parts	airline.txt	/*airline-parts*
 airline-pipeline	airline.txt	/*airline-pipeline*
 airline-pipeline-return-codes	airline.txt	/*airline-pipeline-return-codes*
@@ -57,6 +63,7 @@ airline-poetv	airline.txt	/*airline-poetv*
 airline-predefined-parts	airline.txt	/*airline-predefined-parts*
 airline-promptline	airline.txt	/*airline-promptline*
 airline-quickfix	airline.txt	/*airline-quickfix*
+airline-searchcount	airline.txt	/*airline-searchcount*
 airline-sections	airline.txt	/*airline-sections*
 airline-syntastic	airline.txt	/*airline-syntastic*
 airline-tabline	airline.txt	/*airline-tabline*
@@ -71,6 +78,7 @@ airline-undotree	airline.txt	/*airline-undotree*
 airline-unicode	airline.txt	/*airline-unicode*
 airline-unite	airline.txt	/*airline-unite*
 airline-vimagit	airline.txt	/*airline-vimagit*
+airline-vimcmake	airline.txt	/*airline-vimcmake*
 airline-vimtex	airline.txt	/*airline-vimtex*
 airline-virtualenv	airline.txt	/*airline-virtualenv*
 airline-vista	airline.txt	/*airline-vista*
@@ -81,6 +89,8 @@ airline-writing-extensions	airline.txt	/*airline-writing-extensions*
 airline-xkblayout	airline.txt	/*airline-xkblayout*
 airline-xtabline	airline.txt	/*airline-xtabline*
 airline-ycm	airline.txt	/*airline-ycm*
+airline-zoomwintab	airline.txt	/*airline-zoomwintab*
 airline.txt	airline.txt	/*airline.txt*
+gen_tags.vim	airline.txt	/*gen_tags.vim*
 remove_statusline_func	airline.txt	/*remove_statusline_func*
 vim-airline	airline.txt	/*vim-airline*

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'zig') == -1
+if has_key(g:polyglot_is_disabled, 'zig')
+  finish
+endif
 
 function! zig#config#ListTypeCommands() abort
   return get(g:, 'zig_list_type_commands', {})
@@ -39,5 +41,3 @@ endfunction
 function! zig#config#Debug() abort
   return get(g:, 'zig_debug', [])
 endfunction
-
-endif

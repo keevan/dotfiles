@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'svelte') == -1
+if has_key(g:polyglot_is_disabled, 'svelte')
+  finish
+endif
 
 " Vim indent file
 " Language:   Svelte 3 (HTML/JavaScript)
@@ -144,5 +146,3 @@ function! GetSvelteIndent()
 
   return indent
 endfunction
-
-endif

@@ -1,6 +1,8 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'graphql') == -1
+if has_key(g:polyglot_is_disabled, 'graphql')
+  finish
+endif
 
-" Copyright (c) 2016-2019 Jon Parise <jon@indelible.org>
+" Copyright (c) 2016-2020 Jon Parise <jon@indelible.org>
 "
 " Permission is hereby granted, free of charge, to any person obtaining a copy
 " of this software and associated documentation files (the "Software"), to
@@ -37,5 +39,3 @@ setlocal shiftwidth=2
 setlocal expandtab
 
 let b:undo_ftplugin = 'setlocal com< cms< fo< isk< sts< sw< et<'
-
-endif

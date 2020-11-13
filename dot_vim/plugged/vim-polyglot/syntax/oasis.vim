@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
+if has_key(g:polyglot_is_disabled, 'ocaml')
+  finish
+endif
 
 if exists("b:current_syntax")
     finish
@@ -95,5 +97,3 @@ highlight link oasisString String
 highlight link oasisVersion Number
 
 let b:current_syntax = "oasis"
-
-endif

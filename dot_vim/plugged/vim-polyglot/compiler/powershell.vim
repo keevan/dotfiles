@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'powershell') == -1
+if has_key(g:polyglot_is_disabled, 'powershell')
+  finish
+endif
 
 " Compiler:	powershell
 " Run ps1 scripts in powershell and process their output. Quickly jump through
@@ -17,13 +19,20 @@ let s:cpo_save = &cpo
 set cpo-=C
 
 if !exists("g:ps1_makeprg_cmd")
-  if !has('win32') || executable('pwsh')
+  if executable('pwsh')
     " pwsh is the future
     let g:ps1_makeprg_cmd = 'pwsh'
+  elseif executable('pwsh.exe')
+    let g:ps1_makeprg_cmd = 'pwsh.exe'
+  elseif executable('powershell.exe')
+    let g:ps1_makeprg_cmd = 'powershell.exe'
   else
-    " powershell is Windows-only
-    let g:ps1_makeprg_cmd = 'powershell'
+    let g:ps1_makeprg_cmd = ''
   endif
+endif
+
+if !executable(g:ps1_makeprg_cmd)
+  echoerr "To use the powershell compiler, please set g:ps1_makeprg_cmd to the powershell executable!"
 endif
 
 " Show CategoryInfo, FullyQualifiedErrorId, etc?
@@ -31,7 +40,7 @@ let g:ps1_efm_show_error_categories = get(g:, 'ps1_efm_show_error_categories', 0
 
 " Use absolute path because powershell requires explicit relative paths
 " (./file.ps1 is okay, but # expands to file.ps1)
-let &l:makeprg = g:ps1_makeprg_cmd .' %:p'
+let &l:makeprg = g:ps1_makeprg_cmd .' %:p:S'
 
 " Parse file, line, char from callstacks:
 "     Write-Ouput : The term 'Write-Ouput' is not recognized as the name of a
@@ -76,5 +85,3 @@ let &cpo = s:cpo_save
 unlet s:cpo_save
 
 " vim:set sw=2 sts=2:
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'idris') == -1
+if has_key(g:polyglot_is_disabled, 'idris')
+  finish
+endif
 
 if bufname('%') == "idris-response"
   finish
@@ -342,5 +344,3 @@ menu Idris.Proof\ Search\ with\ hints <LocalLeader>p
 
 au BufHidden idris-response call IdrisHideResponseWin()
 au BufEnter idris-response call IdrisShowResponseWin()
-
-endif

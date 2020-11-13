@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptNodeGlobal containedin=typescriptIdentifierName global process
 syntax keyword typescriptNodeGlobal containedin=typescriptIdentifierName console Buffer
@@ -8,6 +10,4 @@ syntax keyword typescriptNodeGlobal containedin=typescriptIdentifierName clearTi
 syntax keyword typescriptNodeGlobal containedin=typescriptIdentifierName setInterval
 syntax keyword typescriptNodeGlobal containedin=typescriptIdentifierName clearInterval
 if exists("did_typescript_hilink") | HiLink typescriptNodeGlobal Structure
-endif
-
 endif

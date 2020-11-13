@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'powershell') == -1
+if has_key(g:polyglot_is_disabled, 'powershell')
+  finish
+endif
 
 " Vim filetype plugin file
 " Language:           Windows PowerShell
@@ -31,5 +33,3 @@ endif
 let b:undo_ftplugin = "setlocal tw< cms< fo<" .
       \ " | unlet! b:browsefilter"
 
-
-endif

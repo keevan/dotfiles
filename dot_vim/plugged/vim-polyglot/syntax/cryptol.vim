@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'cryptol') == -1
+if has_key(g:polyglot_is_disabled, 'cryptol')
+  finish
+endif
 
 " Vim syntax file
 " Language:	Cryptol
@@ -113,5 +115,3 @@ endif
 let b:current_syntax = "cryptol"
 
 " Options for vi: ts=8 sw=2 sts=2 nowrap noexpandtab ft=vim
-
-endif

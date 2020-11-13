@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'idris') == -1
+if has_key(g:polyglot_is_disabled, 'idris')
+  finish
+endif
 
 " Vim syntax file
 " Language:    Literate Idris
@@ -22,5 +24,3 @@ syntax match  lidrisBirdTrack "^>" contained
 hi def link   lidrisBirdTrack Comment
 
 let b:current_syntax = "lidris"
-
-endif

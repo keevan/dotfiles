@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'python-compiler') == -1
+if has_key(g:polyglot_is_disabled, 'python-compiler')
+  finish
+endif
 
 " Vim compiler file
 " Compiler:	Unit testing tool for Python
@@ -67,5 +69,3 @@ else
 endif
 
 " vim:foldmethod=marker:foldlevel=0
-
-endif

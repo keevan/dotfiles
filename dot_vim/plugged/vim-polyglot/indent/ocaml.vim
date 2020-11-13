@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
+if has_key(g:polyglot_is_disabled, 'ocaml')
+  finish
+endif
 
 " Vim indent file
 " Language:     OCaml
@@ -32,7 +34,8 @@ setlocal nosmartindent
 " Comment formatting
 if !exists("no_ocaml_comments")
  if (has("comments"))
-   setlocal comments=sr:(*,mb:*,ex:*)
+   setlocal comments=sr:(*\ ,mb:\ ,ex:*)
+   setlocal comments^=sr:(**,mb:\ \ ,ex:*)
    setlocal fo=cqort
  endif
 endif
@@ -273,5 +276,3 @@ function! GetOCamlIndent()
 endfunction
 
 " vim:sw=2
-
-endif

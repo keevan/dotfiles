@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'vm') == -1
+if has_key(g:polyglot_is_disabled, 'velocity')
+  finish
+endif
 
 " Vim syntax file
 " Language:	Velocity HTML template
@@ -67,5 +69,3 @@ if version >= 508 || !exists("did_velocity_syn_inits")
 endif
 
 let b:current_syntax = "velocity"
-
-endif

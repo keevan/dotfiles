@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'dlang') == -1
+if has_key(g:polyglot_is_disabled, 'dlang')
+  finish
+endif
 
 " Vim indent file for the D programming language (version 1.076 and 2.063).
 "
@@ -77,5 +79,3 @@ function GetDIndent()
 
   return cind
 endfunction
-
-endif

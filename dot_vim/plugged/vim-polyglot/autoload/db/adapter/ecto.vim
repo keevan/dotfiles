@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elixir') == -1
+if has_key(g:polyglot_is_disabled, 'elixir')
+  finish
+endif
 
 let s:path = expand('<sfile>:h')
 let s:cmd = join(['mix', 'run', '--no-start', '--no-compile', shellescape(s:path.'/get_repos.exs')])
@@ -20,5 +22,3 @@ endfunction
 function! db#adapter#ecto#complete_opaque(url) abort
     return map(s:repo_list(), 'v:val[0]')
 endfunction
-
-endif

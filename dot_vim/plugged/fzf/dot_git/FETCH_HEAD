@@ -1,2 +1,12 @@
-0f5c6e8f040833ca632bb5ff345542879769225c		branch 'master' of https://github.com/junegunn/fzf
-0556f97c8a20913d691b0d8520cd4f4a9e2638e1	not-for-merge	branch 'devel' of https://github.com/junegunn/fzf
+75b8cca3b3d0663ea4102f08c763cf2b0b999f88		branch 'master' of https://github.com/junegunn/fzf
+eaa413c566ba6e5c0e39fa93403198202054776a	not-for-merge	branch 'devel' of https://github.com/junegunn/fzf
+4b518e50a3fce78eebff136dec2f1c8bee7c611c	not-for-merge	tag '0.21.1' of https://github.com/junegunn/fzf
+6a2370172185103c7a32ce5011bd941b88ee9c8d	not-for-merge	tag '0.22.0' of https://github.com/junegunn/fzf
+171b1bc893bc2829267f1b455d49b9b0b0a124a5	not-for-merge	tag '0.23.0' of https://github.com/junegunn/fzf
+4c2fb3f3c88b49e9edbf04dc2463c1aacbe5a625	not-for-merge	tag '0.23.1' of https://github.com/junegunn/fzf
+431786afc6d6baf0f297af26c7f6aa2999b067f9	not-for-merge	tag '0.24.0' of https://github.com/junegunn/fzf
+8829a755ffba92f79817b083e76a9d98e0c97cd2	not-for-merge	tag '0.24.0-1' of https://github.com/junegunn/fzf
+fed3407fc087a19a62f15c1bc3f606ded88aed85	not-for-merge	tag '0.24.0-rc1' of https://github.com/junegunn/fzf
+923be45f3c52d8808339ac71784e61f71b8515b8	not-for-merge	tag '0.24.1' of https://github.com/junegunn/fzf
+0e6bc5357e7eba1a62583f56bdc4c537ad3068d4	not-for-merge	tag '0.24.2' of https://github.com/junegunn/fzf
+c9deb702c1b0ee2ff5cce439b35f9b3a3839dabe	not-for-merge	tag '0.24.3' of https://github.com/junegunn/fzf

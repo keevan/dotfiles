@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'python-indent') == -1
+if has_key(g:polyglot_is_disabled, 'python-indent')
+  finish
+endif
 
 " PEP8 compatible Python indent file
 " Language:         Python
@@ -160,8 +162,8 @@ function! s:find_start_of_block(lnum, types, skip, multiple) abort
     else
       let re_skip = ''
     endif
-    let lnum = a:lnum
-    let last_indent = indent(lnum) + 1
+    let last_indent = indent(a:lnum) + 1
+    let lnum = a:lnum - 1
     while lnum > 0 && last_indent > 0
         let indent = indent(lnum)
         if indent < last_indent
@@ -262,7 +264,7 @@ function! s:indent_like_block(lnum)
             endif
 
             let [blocks, skip] = blocks_ignore
-            let indents = s:find_start_of_block(a:lnum - 1, blocks, skip, multiple)
+            let indents = s:find_start_of_block(a:lnum, blocks, skip, multiple)
             if empty(indents)
                 return -1
             endif
@@ -454,5 +456,3 @@ function! GetPythonPEPIndent(lnum)
 
     return s:indent_like_previous_line(a:lnum)
 endfunction
-
-endif

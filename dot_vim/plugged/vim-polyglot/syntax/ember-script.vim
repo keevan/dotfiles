@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'emberscript') == -1
+if has_key(g:polyglot_is_disabled, 'emberscript')
+  finish
+endif
 
 " Language:    ember-script
 " Maintainer:  Yulij Andreevich Lesov <yalesov@gmail.com>>
@@ -31,5 +33,3 @@ syn match emEach /\v\@each/ display
 hi def link emEach Special
 
 let b:current_syntax = 'ember-script'
-
-endif

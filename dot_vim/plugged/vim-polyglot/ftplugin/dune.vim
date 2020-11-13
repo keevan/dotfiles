@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
+if has_key(g:polyglot_is_disabled, 'ocaml')
+  finish
+endif
 
 if exists("b:did_ftplugin")
   finish
@@ -10,5 +12,3 @@ set lisp
 " Comment string
 setl commentstring=;\ %s
 setl comments=:;
-
-endif

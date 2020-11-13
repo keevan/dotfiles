@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'smt2') == -1
+if has_key(g:polyglot_is_disabled, 'smt2')
+  finish
+endif
 
 setlocal iskeyword+=-,:,#,',$
 
@@ -25,5 +27,3 @@ nnoremap <silent> <buffer> <localleader>v :call smt2#PrintSolverVersion()<cr>
 
 " Comment String
 setlocal commentstring=;%s
-
-endif

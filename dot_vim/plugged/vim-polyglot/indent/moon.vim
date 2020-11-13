@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'moonscript') == -1
+if has_key(g:polyglot_is_disabled, 'moonscript')
+  finish
+endif
 
 " Language:    MoonScript
 " Maintainer:  leafo <leafot@gmail.com>
@@ -323,5 +325,3 @@ function! GetMoonIndent(curlinenum)
 
   return indent
 endfunction
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'fish') == -1
+if has_key(g:polyglot_is_disabled, 'fish')
+  finish
+endif
 
 setlocal comments=:#
 setlocal commentstring=#%s
@@ -7,7 +9,6 @@ setlocal foldexpr=fish#Fold()
 setlocal formatoptions+=ron1
 setlocal formatoptions-=t
 setlocal include=\\v^\\s*\\.>
-setlocal iskeyword=@,48-57,-,_,.,/
 setlocal suffixesadd^=.fish
 
 " Use the 'j' format option when available.
@@ -39,5 +40,3 @@ let b:match_words =
 let b:endwise_addition = 'end'
 let b:endwise_words = 'begin,function,if,switch,while,for'
 let b:endwise_syngroups = 'fishKeyword,fishConditional,fishRepeat'
-
-endif

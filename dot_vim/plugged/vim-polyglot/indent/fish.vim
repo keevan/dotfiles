@@ -1,6 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'fish') == -1
+if has_key(g:polyglot_is_disabled, 'fish')
+  finish
+endif
 
 setlocal indentexpr=fish#Indent()
 setlocal indentkeys+==end,=else,=case
-
-endif

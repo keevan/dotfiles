@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'purescript') == -1
+if has_key(g:polyglot_is_disabled, 'purescript')
+  finish
+endif
 
 " indentation for purescript
 "
@@ -276,5 +278,3 @@ function! GetPurescriptIndent()
 
   return match(prevline, '\S')
 endfunction
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'zephir') == -1
+if has_key(g:polyglot_is_disabled, 'zephir')
+  finish
+endif
 
 " Copyright 2009 The Go Authors. All rights reserved.
 if exists("b:current_syntax")
@@ -133,5 +135,3 @@ syn sync minlines=500
 
 let b:current_syntax = "zephir"
 syn match       zepTypeHits          "<\w+>" contained display
-
-endif

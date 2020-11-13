@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'razor') == -1
+if has_key(g:polyglot_is_disabled, 'razor')
+  finish
+endif
 
 if exists("b:current_syntax")
   finish
@@ -51,6 +53,3 @@ hi def link rUsing Preproc
 hi def link rNamespace Type
 
 let b:current_syntax = "razor"
-
-
-endif

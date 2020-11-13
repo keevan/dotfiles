@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'handlebars') == -1
+if has_key(g:polyglot_is_disabled, 'handlebars')
+  finish
+endif
 
 " Mustache & Handlebars syntax
 " Language:	Mustache, Handlebars
@@ -125,5 +127,3 @@ function! GetHandlebarsIndent(...)
 
   return ind
 endfunction
-
-endif

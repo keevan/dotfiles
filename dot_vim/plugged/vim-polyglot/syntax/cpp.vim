@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'c/c++') == -1
+if has_key(g:polyglot_is_disabled, 'c/c++')
+  finish
+endif
 
 " Vim syntax file
 " Language:	C++
@@ -95,5 +97,3 @@ hi def link cppModule		Include
 let b:current_syntax = "cpp"
 
 " vim: ts=8
-
-endif

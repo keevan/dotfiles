@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptGlobal containedin=typescriptIdentifierName Headers Request
 syntax keyword typescriptGlobal containedin=typescriptIdentifierName Response
@@ -27,6 +29,4 @@ endif
 syntax keyword typescriptResponseMethod contained clone nextgroup=typescriptFuncCallArg
 syntax cluster props add=typescriptResponseMethod
 if exists("did_typescript_hilink") | HiLink typescriptResponseMethod Keyword
-endif
-
 endif

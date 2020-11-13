@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'dart') == -1
+if has_key(g:polyglot_is_disabled, 'dart')
+  finish
+endif
 
 if exists('b:did_ftplugin')
   finish
@@ -30,5 +32,3 @@ setlocal isfname+=:
 setlocal iskeyword+=$
 
 let b:undo_ftplugin = 'setl et< fo< sw< sts< com< cms< inex< isf<'
-
-endif

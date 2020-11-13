@@ -127,10 +127,13 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 
 " Default fzf layout
-" - down / up / left / right
-let g:fzf_layout = { 'down': '~40%' }
+" - Popup window
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 
-" You can set up fzf window using a Vim command (Neovim or latest Vim 8 required)
+" - down / up / left / right
+let g:fzf_layout = { 'down': '40%' }
+
+" - Window using a Vim command
 let g:fzf_layout = { 'window': 'enew' }
 let g:fzf_layout = { 'window': '-tabnew' }
 let g:fzf_layout = { 'window': '10new' }
@@ -274,6 +277,7 @@ The following table summarizes the available options.
 | `options`                  | string/list   | Options to fzf                                                        |
 | `dir`                      | string        | Working directory                                                     |
 | `up`/`down`/`left`/`right` | number/string | (Layout) Window position and size (e.g. `20`, `50%`)                  |
+| `tmux`                     | string        | (Layout) fzf-tmux options (e.g. `-p90%,60%`)                          |
 | `window` (Vim 8 / Neovim)  | string        | (Layout) Command to open fzf window (e.g. `vertical aboveleft 30new`) |
 | `window` (Vim 8 / Neovim)  | dict          | (Layout) Popup window settings (e.g. `{'width': 0.9, 'height': 0.6}`) |
 
@@ -289,14 +293,13 @@ When `window` entry is a dictionary, fzf will start in a popup window. The
 following options are allowed:
 
 - Required:
-    - `width` [float range [0 ~ 1]]
-    - `height` [float range [0 ~ 1]]
+    - `width` [float range [0 ~ 1]] or [integer range [8 ~ ]]
+    - `height` [float range [0 ~ 1]] or [integer range [4 ~ ]]
 - Optional:
     - `yoffset` [float default 0.5 range [0 ~ 1]]
     - `xoffset` [float default 0.5 range [0 ~ 1]]
-    - `highlight` [string default `'Comment'`]: Highlight group for border
     - `border` [string default `rounded`]: Border style
-        - `rounded` / `sharp` / `horizontal` / `vertical` / `top` / `bottom` / `left` / `right`
+        - `rounded` / `sharp` / `horizontal` / `vertical` / `top` / `bottom` / `left` / `right` / `no[ne]`
 
 `fzf#wrap`
 ----------
@@ -330,8 +333,9 @@ After we *"wrap"* our spec, we pass it to `fzf#run`.
 call fzf#run(fzf#wrap({'source': 'ls'}))
 ```
 
-Now it supports `CTRL-T`, `CTRL-V`, and `CTRL-X` key bindings and it opens fzf
-window according to `g:fzf_layout` setting.
+Now it supports `CTRL-T`, `CTRL-V`, and `CTRL-X` key bindings (configurable
+via `g:fzf_action`) and it opens fzf window according to `g:fzf_layout`
+setting.
 
 To make it easier to use, let's define `LS` command.
 
@@ -368,6 +372,17 @@ command! -bang -complete=dir -nargs=* LS
     \ call fzf#run(fzf#wrap('ls', {'source': 'ls', 'dir': <q-args>}, <bang>0))
 ```
 
+### Global options supported by `fzf#wrap`
+
+- `g:fzf_layout`
+- `g:fzf_action`
+    - **Works only when no custom `sink` (or `sink*`) is provided**
+        - Having custom sink usually means that each entry is not an ordinary
+          file path (e.g. name of color scheme), so we can't blindly apply the
+          same strategy (i.e. `tabedit some-color-scheme` doesn't make sense)
+- `g:fzf_colors`
+- `g:fzf_history_dir`
+
 Tips
 ----
 
@@ -385,8 +400,8 @@ The latest versions of Vim and Neovim include builtin terminal emulator
 
 ```vim
 " Required:
-" - width [float range [0 ~ 1]]
-" - height [float range [0 ~ 1]]
+" - width [float range [0 ~ 1]] or [integer range [8 ~ ]]
+" - height [float range [0 ~ 1]] or [integer range [4 ~ ]]
 "
 " Optional:
 " - xoffset [float default 0.5 range [0 ~ 1]]
@@ -397,14 +412,26 @@ The latest versions of Vim and Neovim include builtin terminal emulator
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 ```
 
+Alternatively, you can make fzf open in a tmux popup window (requires tmux 3.2
+or above) by putting fzf-tmux options in `tmux` key.
+
+```vim
+" See `man fzf-tmux` for available options
+if exists('$TMUX')
+  let g:fzf_layout = { 'tmux': '-p90%,60%' }
+else
+  let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+endif
+```
+
 #### Hide statusline
 
 When fzf starts in a terminal buffer, the file type of the buffer is set to
 `fzf`. So you can set up `FileType fzf` autocmd to customize the settings of
 the window.
 
-For example, if you use the default layout (`{'down': '~40%'}`) on Neovim, you
-might want to temporarily disable the statusline for a cleaner look.
+For example, if you use a non-popup layout (e.g. `{'down': '40%'}`) on Neovim,
+you might want to temporarily disable the statusline for a cleaner look.
 
 ```vim
 if has('nvim') && !exists('g:fzf_layout')

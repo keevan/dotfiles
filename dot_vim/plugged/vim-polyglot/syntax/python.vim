@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'python') == -1
+if has_key(g:polyglot_is_disabled, 'python')
+  finish
+endif
 
 " For version 5.x: Clear all syntax items
 " For versions greater than 6.x: Quit when a syntax file was already loaded
@@ -43,11 +45,6 @@ call s:EnableByDefault('g:python_highlight_builtin_funcs_kwarg')
 
 if s:Enabled('g:python_highlight_all')
     call s:EnableByDefault('g:python_highlight_builtins')
-    if s:Enabled('g:python_highlight_builtins')
-        call s:EnableByDefault('g:python_highlight_builtin_objs')
-        call s:EnableByDefault('g:python_highlight_builtin_funcs')
-        call s:EnableByDefault('g:python_highlight_builtin_types')
-    endif
     call s:EnableByDefault('g:python_highlight_exceptions')
     call s:EnableByDefault('g:python_highlight_string_formatting')
     call s:EnableByDefault('g:python_highlight_string_format')
@@ -59,6 +56,12 @@ if s:Enabled('g:python_highlight_all')
     call s:EnableByDefault('g:python_highlight_func_calls')
     call s:EnableByDefault('g:python_highlight_class_vars')
     call s:EnableByDefault('g:python_highlight_operators')
+endif
+
+if s:Enabled('g:python_highlight_builtins')
+    call s:EnableByDefault('g:python_highlight_builtin_objs')
+    call s:EnableByDefault('g:python_highlight_builtin_types')
+    call s:EnableByDefault('g:python_highlight_builtin_funcs')
 endif
 
 "
@@ -507,5 +510,3 @@ if v:version >= 508 || !exists('did_python_syn_inits')
 endif
 
 let b:current_syntax = 'python'
-
-endif

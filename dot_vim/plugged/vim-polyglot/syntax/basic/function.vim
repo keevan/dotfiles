@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptAsyncFuncKeyword      async
   \ nextgroup=typescriptFuncKeyword,typescriptArrowFuncDef
@@ -21,7 +23,7 @@ syntax match   typescriptFuncName              contained /\K\k*/
   \ skipwhite
 
 " destructuring ({ a: ee }) =>
-syntax match   typescriptArrowFuncDef          contained /({\_[^}]*}\(:\_[^)]\)\?)\s*=>/
+syntax match   typescriptArrowFuncDef          contained /(\(\s*\({\_[^}]*}\|\k\+\)\(:\_[^)]\)\?,\?\)\+)\s*=>/
   \ contains=typescriptArrowFuncArg,typescriptArrowFunc
   \ nextgroup=@typescriptExpression,typescriptBlock
   \ skipwhite skipempty
@@ -52,7 +54,7 @@ syntax region  typescriptArrowFuncArg          contained start=/<\|(/ end=/\ze=>
 syntax region typescriptReturnAnnotation contained start=/:/ end=/{/me=e-1 contains=@typescriptType nextgroup=typescriptBlock
 
 
-syntax region typescriptFuncImpl contained start=/function/ end=/{/me=e-1
+syntax region typescriptFuncImpl contained start=/function\>/ end=/{/me=e-1
   \ contains=typescriptFuncKeyword
   \ nextgroup=typescriptBlock
 
@@ -67,5 +69,3 @@ syntax region typescriptParamImpl matchgroup=typescriptParens
   \ contains=typescriptDecorator,@typescriptParameterList,@typescriptComments
   \ nextgroup=typescriptReturnAnnotation,typescriptBlock
   \ contained skipwhite skipnl
-
-endif

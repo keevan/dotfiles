@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'plantuml') == -1
+if has_key(g:polyglot_is_disabled, 'plantuml')
+  finish
+endif
 
 scriptencoding utf-8
 " Vim syntax file
@@ -39,16 +41,16 @@ syntax keyword plantumlTypeKeyword concise robust
 " Since "syntax keyword" can handle only words, "top to bottom direction" is excluded.
 syntax keyword plantumlKeyword accross activate again allow_mixing allowmixing also alt as autonumber bottom
 syntax keyword plantumlKeyword box break caption center create critical deactivate destroy down else elseif end
-syntax keyword plantumlKeyword endif endwhile footbox footer fork group header hide hnote if is kill left in at are to the and
+syntax keyword plantumlKeyword endif endwhile footbox footer fork group header hide hnote if is kill left
 syntax keyword plantumlKeyword legend link loop mainframe namespace newpage note of on opt order over package
 syntax keyword plantumlKeyword page par partition ref repeat return right rnote rotate show skin skinparam
-syntax keyword plantumlKeyword start stop title top up while
+syntax keyword plantumlKeyword split start stereotype stop title top up while
 "}}}
 " Not in 'java - jar plantuml.jar - language' results
-syntax keyword plantumlKeyword endlegend split sprite then
+syntax keyword plantumlKeyword endlegend sprite then
 " gantt
 syntax keyword plantumlTypeKeyword project monday tuesday wednesday thursday friday saturday sunday
-syntax keyword plantumlKeyword starts ends start end closed day after colored lasts happens
+syntax keyword plantumlKeyword starts ends start end closed day after colored lasts happens in at are to the and
 
 
 syntax keyword plantumlCommentTODO XXX TODO FIXME NOTE contained
@@ -91,7 +93,7 @@ syntax region plantumlText oneline start=/\[/ms=s+1 end=/\]/me=s-1 contained
 syntax match plantumlArrowDirectedLine /\([-.]\)\%(l\%[eft]\|r\%[ight]\|up\?\|d\%[own]\)\1/ contained
 
 " Note and legend
-syntax region plantumlNoteMultiLine start=/\%(^\s*[rh]\?\%(note\|legend\)\)\@<=\s\%([^:"]\+$\)\@=/ end=/^\%(\s*end\s*[rh]\?\%(note\|legend\)$\)\|endlegend\@=/ contains=plantumlSpecialString,plantumlNoteMultiLineStart,plantumlTag
+syntax region plantumlNoteMultiLine start=/\%(^\s*[rh]\?\%(note\|legend\)\)\@<=\s\%([^:"]\+$\)\@=/ end=/^\%(\s*\zeend\s*[rh]\?\%(note\|legend\)$\)\|endlegend\@=/ contains=plantumlSpecialString,plantumlNoteMultiLineStart,plantumlTag
 syntax match plantumlNoteMultiLineStart /\%(^\s*[rh]\?\%(note\|legend\)\)\@<=\s\%([^:]\+$\)/ contained contains=plantumlKeyword,plantumlColor,plantumlString,plantumlTag
 
 " Class
@@ -140,11 +142,11 @@ syntax match plantumlActivityLabel /\%(^\%(#\S\+\)\?\)\@<=:\_[^;|<>/\]}]\+[;|<>/
 syntax match plantumlSequenceDivider /^\s*==[^=]\+==\s*$/
 syntax match plantumlSequenceSpace /^\s*|||\+\s*$/
 syntax match plantumlSequenceSpace /^\s*||\d\+||\+\s*$/
-syntax match plantumlSequenceDelay /^\.\{3}$/
-syntax region plantumlText oneline matchgroup=plantumlSequenceDelay start=/^\.\{3}/ end=/\.\{3}$/
+syntax match plantumlSequenceDelay /^\s*\.\{3}$/
+syntax region plantumlText oneline matchgroup=plantumlSequenceDelay start=/^\s*\.\{3}/ end=/\.\{3}$/
 
 " Usecase diagram
-syntax match plantumlUsecaseActor /:.\{-1,}:/ contains=plantumlSpecialString
+syntax match plantumlUsecaseActor /^\s*:.\{-1,}:/ contains=plantumlSpecialString
 
 
 " Mindmap diagram
@@ -278,7 +280,7 @@ syntax keyword plantumlSkinparamKeyword ParticipantStereotypeFontName Participan
 syntax keyword plantumlSkinparamKeyword ParticipantStereotypeFontStyle PartitionBackgroundColor PartitionBorderColor
 syntax keyword plantumlSkinparamKeyword PartitionBorderThickness PartitionFontColor PartitionFontName PartitionFontSize
 syntax keyword plantumlSkinparamKeyword PartitionFontStyle PathHoverColor QueueBackgroundColor QueueBorderColor
-syntax keyword plantumlSkinparamKeyword QueueFontColor QueueFontName QueueFontSize QueueFontStyle
+syntax keyword plantumlSkinparamKeyword QueueBorderThickness QueueFontColor QueueFontName QueueFontSize QueueFontStyle
 syntax keyword plantumlSkinparamKeyword QueueStereotypeFontColor QueueStereotypeFontName QueueStereotypeFontSize
 syntax keyword plantumlSkinparamKeyword QueueStereotypeFontStyle Ranksep RectangleBackgroundColor RectangleBorderColor
 syntax keyword plantumlSkinparamKeyword RectangleBorderThickness RectangleFontColor RectangleFontName RectangleFontSize
@@ -310,9 +312,8 @@ syntax keyword plantumlSkinparamKeyword SequenceReferenceBorderThickness Sequenc
 syntax keyword plantumlSkinparamKeyword SequenceReferenceFontName SequenceReferenceFontSize SequenceReferenceFontStyle
 syntax keyword plantumlSkinparamKeyword SequenceReferenceHeaderBackgroundColor SequenceStereotypeFontColor
 syntax keyword plantumlSkinparamKeyword SequenceStereotypeFontName SequenceStereotypeFontSize
-syntax keyword plantumlSkinparamKeyword SequenceStereotypeFontStyle SequenceTitleFontColor SequenceTitleFontName
-syntax keyword plantumlSkinparamKeyword SequenceTitleFontSize SequenceTitleFontStyle Shadowing StackBackgroundColor
-syntax keyword plantumlSkinparamKeyword StackBorderColor StackFontColor StackFontName StackFontSize StackFontStyle
+syntax keyword plantumlSkinparamKeyword SequenceStereotypeFontStyle Shadowing StackBackgroundColor StackBorderColor
+syntax keyword plantumlSkinparamKeyword StackFontColor StackFontName StackFontSize StackFontStyle
 syntax keyword plantumlSkinparamKeyword StackStereotypeFontColor StackStereotypeFontName StackStereotypeFontSize
 syntax keyword plantumlSkinparamKeyword StackStereotypeFontStyle StateAttributeFontColor StateAttributeFontName
 syntax keyword plantumlSkinparamKeyword StateAttributeFontSize StateAttributeFontStyle StateBackgroundColor
@@ -409,5 +410,3 @@ highlight default link plantumlStereotype Type
 
 let &cpoptions=s:cpo_orig
 unlet s:cpo_orig
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 exe 'runtime! indent/typescript.vim'
 " Save the current JavaScript indentexpr.
@@ -111,4 +113,3 @@ fu! GetTsxIndent()
 
   return ind
 endfu
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'lilypond') == -1
+if has_key(g:polyglot_is_disabled, 'lilypond')
+  finish
+endif
 
 " LilyPond syntax file
 " Language:	LilyPond
@@ -87,5 +89,3 @@ if version >= 508 || !exists("did_lily_syn_inits")
 endif
 
 let b:current_syntax = "lilypond"
-
-endif

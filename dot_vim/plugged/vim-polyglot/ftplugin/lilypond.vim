@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'lilypond') == -1
+if has_key(g:polyglot_is_disabled, 'lilypond')
+  finish
+endif
 
 " LilyPond filetype plugin
 " Language:     LilyPond (ft=ly)
@@ -57,5 +59,3 @@ setlocal dictionary-=$VIM/syntax/lilypond-words dictionary+=$VIM/syntax/lilypond
 setlocal complete-=k complete+=k
 "
 setlocal showmatch
-
-endif

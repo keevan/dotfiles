@@ -1,3 +1,16 @@
+#     ____      ____
+#    / __/___  / __/
+#   / /_/_  / / /_
+#  / __/ / /_/ __/
+# /_/   /___/_/ key-bindings.fish
+#
+# - $FZF_TMUX_OPTS
+# - $FZF_CTRL_T_COMMAND
+# - $FZF_CTRL_T_OPTS
+# - $FZF_CTRL_R_OPTS
+# - $FZF_ALT_C_COMMAND
+# - $FZF_ALT_C_OPTS
+
 # Key bindings
 # ------------
 function fzf_key_bindings
@@ -84,8 +97,10 @@ function fzf_key_bindings
   function __fzfcmd
     test -n "$FZF_TMUX"; or set FZF_TMUX 0
     test -n "$FZF_TMUX_HEIGHT"; or set FZF_TMUX_HEIGHT 40%
-    if [ $FZF_TMUX -eq 1 ]
-      echo "fzf-tmux -d$FZF_TMUX_HEIGHT"
+    if [ -n "$FZF_TMUX_OPTS" ]
+      echo "fzf-tmux $FZF_TMUX_OPTS -- "
+    else if [ $FZF_TMUX -eq 1 ]
+      echo "fzf-tmux -d$FZF_TMUX_HEIGHT -- "
     else
       echo "fzf"
     end
@@ -112,12 +127,12 @@ function fzf_key_bindings
     else
       set dir (__fzf_get_dir $commandline)
 
-      if [ "$dir" = "." -a (string sub -l 1 $commandline) != '.' ]
+      if [ "$dir" = "." -a (string sub -l 1 -- $commandline) != '.' ]
         # if $dir is "." but commandline is not a relative path, this means no file path found
         set fzf_query $commandline
       else
         # Also remove trailing slash after dir, to "split" input properly
-        set fzf_query (string replace -r "^$dir/?" '' "$commandline")
+        set fzf_query (string replace -r "^$dir/?" -- '' "$commandline")
       end
     end
 
@@ -129,15 +144,15 @@ function fzf_key_bindings
     set dir $argv
 
     # Strip all trailing slashes. Ignore if $dir is root dir (/)
-    if [ (string length $dir) -gt 1 ]
-      set dir (string replace -r '/*$' '' $dir)
+    if [ (string length -- $dir) -gt 1 ]
+      set dir (string replace -r '/*$' -- '' $dir)
     end
 
     # Iteratively check if dir exists and strip tail end of path
     while [ ! -d "$dir" ]
       # If path is absolute, this can keep going until ends up at /
       # If path is relative, this can keep going until entire input is consumed, dirname returns "."
-      set dir (dirname "$dir")
+      set dir (dirname -- "$dir")
     end
 
     echo $dir

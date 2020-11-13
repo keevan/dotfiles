@@ -2,10 +2,10 @@
 #    / __/___  / __/
 #   / /_/_  / / /_
 #  / __/ / /_/ __/
-# /_/   /___/_/-completion.bash
+# /_/   /___/_/ completion.bash
 #
 # - $FZF_TMUX               (default: 0)
-# - $FZF_TMUX_HEIGHT        (default: '40%')
+# - $FZF_TMUX_OPTS          (default: empty)
 # - $FZF_COMPLETION_TRIGGER (default: '**')
 # - $FZF_COMPLETION_OPTS    (default: empty)
 
@@ -37,18 +37,28 @@ bind '"\e[0n": redraw-current-line'
 __fzf_comprun() {
   if [ "$(type -t _fzf_comprun 2>&1)" = function ]; then
     _fzf_comprun "$@"
-  elif [ -n "$TMUX_PANE" ] && [ "${FZF_TMUX:-0}" != 0 ] && [ ${LINES:-40} -gt 15 ]; then
+  elif [ -n "$TMUX_PANE" ] && { [ "${FZF_TMUX:-0}" != 0 ] || [ -n "$FZF_TMUX_OPTS" ]; }; then
     shift
-    fzf-tmux -d "${FZF_TMUX_HEIGHT:-40%}" "$@"
+    fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- "$@"
   else
     shift
     fzf "$@"
   fi
 }
 
-__fzf_orig_completion_filter() {
-  sed 's/^\(.*-F\) *\([^ ]*\).* \([^ ]*\)$/export _fzf_orig_completion_\3="\1 %s \3 #\2"; [[ "\1" = *" -o nospace "* ]] \&\& [[ ! "$__fzf_nospace_commands" = *" \3 "* ]] \&\& __fzf_nospace_commands="$__fzf_nospace_commands \3 ";/' |
-  awk -F= '{OFS = FS} {gsub(/[^A-Za-z0-9_= ;]/, "_", $1);}1'
+__fzf_orig_completion() {
+  local l comp f cmd
+  while read -r l; do
+    if [[ "$l" =~ ^(.*\ -F)\ *([^ ]*).*\ ([^ ]*)$ ]]; then
+      comp="${BASH_REMATCH[1]}"
+      f="${BASH_REMATCH[2]}"
+      cmd="${BASH_REMATCH[3]}"
+      printf -v "_fzf_orig_completion_${cmd//[^A-Za-z0-9_]/_}" "%s" "${comp} %s ${cmd} #${f}"
+      if [[ "$l" = *" -o nospace "* ]] && [[ ! "$__fzf_nospace_commands" = *" $cmd "* ]]; then
+        __fzf_nospace_commands="$__fzf_nospace_commands $cmd "
+      fi
+    fi
+  done
 }
 
 _fzf_opts_completion() {
@@ -137,7 +147,7 @@ _fzf_handle_dynamic_completion() {
     ret=$?
     # _completion_loader may not have updated completion for the command
     if [ "$(complete -p "$orig_cmd" 2> /dev/null)" != "$orig_complete" ]; then
-      eval "$(complete | command grep " -F.* $orig_cmd$" | __fzf_orig_completion_filter)"
+      __fzf_orig_completion < <(complete -p "$orig_cmd" 2> /dev/null)
       if [[ "$__fzf_nospace_commands" = *" $orig_cmd "* ]]; then
         eval "${orig_complete/ -F / -o nospace -F }"
       else
@@ -249,22 +259,30 @@ _fzf_dir_completion() {
 }
 
 _fzf_complete_kill() {
-  [ -n "${COMP_WORDS[COMP_CWORD]}" ] && return 1
-
-  local selected
-  selected=$(command ps -ef | sed 1d | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-50%} --min-height 15 --reverse $FZF_DEFAULT_OPTS $FZF_COMPLETION_OPTS --preview 'echo {}' --preview-window down:3:wrap" __fzf_comprun "kill" -m | awk '{print $2}' | tr '\n' ' ')
-  selected=${selected% }
-  printf '\e[5n'
-
-  if [ -n "$selected" ]; then
-    COMPREPLY=( "$selected" )
-    return 0
+  local trigger=${FZF_COMPLETION_TRIGGER-'**'}
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  if [[ -z "$cur" ]]; then
+    COMP_WORDS[$COMP_CWORD]=$trigger
+  elif [[ "$cur" != *"$trigger" ]]; then
+    return 1
   fi
+
+  _fzf_proc_completion "$@"
+}
+
+_fzf_proc_completion() {
+  _fzf_complete -m --preview 'echo {}' --preview-window down:3:wrap --min-height 15 -- "$@" < <(
+    command ps -ef | sed 1d
+  )
+}
+
+_fzf_proc_completion_post() {
+  awk '{print $2}'
 }
 
 _fzf_host_completion() {
   _fzf_complete +m -- "$@" < <(
-    cat <(cat ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?]') \
+    command cat <(command tail -n +1 ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?]') \
         <(command grep -oE '^[[a-z0-9.,:-]+' ~/.ssh/known_hosts | tr ',' '\n' | tr -d '[' | awk '{ print $1 " " $1 }') \
         <(command grep -v '^\s*\(#\|$\)' /etc/hosts | command grep -Fv '0.0.0.0') |
         awk '{if (length($2) > 0) {print $2}}' | sort -u
@@ -296,12 +314,9 @@ a_cmds="
   find git grep gunzip gzip hg jar
   ln ls mv open rm rsync scp
   svn tar unzip zip"
-x_cmds="kill"
 
 # Preserve existing completion
-eval "$(complete |
-  sed -E '/-F/!d; / _fzf/d; '"/ ($(echo $d_cmds $a_cmds $x_cmds | sed 's/ /|/g; s/+/\\+/g'))$/"'!d' |
-  __fzf_orig_completion_filter)"
+__fzf_orig_completion < <(complete -p $d_cmds $a_cmds 2> /dev/null)
 
 if type _completion_loader > /dev/null 2>&1; then
   _fzf_completion_loader=1
@@ -332,21 +347,21 @@ for cmd in $d_cmds; do
   __fzf_defc "$cmd" _fzf_dir_completion "-o nospace -o dirnames"
 done
 
-# Kill completion
+# Kill completion (supports empty completion trigger)
 complete -F _fzf_complete_kill -o default -o bashdefault kill
 
-unset cmd d_cmds a_cmds x_cmds
+unset cmd d_cmds a_cmds
 
 _fzf_setup_completion() {
   local kind fn cmd
   kind=$1
   fn=_fzf_${1}_completion
   if [[ $# -lt 2 ]] || ! type -t "$fn" > /dev/null; then
-    echo "usage: ${FUNCNAME[0]} path|dir|var|alias|host COMMANDS..."
+    echo "usage: ${FUNCNAME[0]} path|dir|var|alias|host|proc COMMANDS..."
     return 1
   fi
   shift
-  eval "$(complete -p "$@" 2> /dev/null | grep -v "$fn" | __fzf_orig_completion_filter)"
+  __fzf_orig_completion < <(complete -p "$@" 2> /dev/null)
   for cmd in "$@"; do
     case "$kind" in
       dir)   __fzf_defc "$cmd" "$fn" "-o nospace -o dirnames" ;;

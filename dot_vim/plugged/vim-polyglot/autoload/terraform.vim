@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'terraform') == -1
+if has_key(g:polyglot_is_disabled, 'terraform')
+  finish
+endif
 
 let s:cpo_save = &cpoptions
 set cpoptions&vim
@@ -55,6 +57,8 @@ function! terraform#commands(ArgLead, CmdLine, CursorPos) abort
     \ 'graph',
     \ 'import',
     \ 'init',
+    \ 'login',
+    \ 'logout',
     \ 'output',
     \ 'plan',
     \ 'providers',
@@ -66,6 +70,7 @@ function! terraform#commands(ArgLead, CmdLine, CursorPos) abort
     \ 'version',
     \ 'workspace',
     \ '0.12upgrade',
+    \ '0.13upgrade',
     \ 'debug',
     \ 'force-unlock',
     \ 'push',
@@ -76,5 +81,3 @@ endfunction
 
 let &cpoptions = s:cpo_save
 unlet s:cpo_save
-
-endif

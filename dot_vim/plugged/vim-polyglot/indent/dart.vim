@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'dart') == -1
+if has_key(g:polyglot_is_disabled, 'dart')
+  finish
+endif
 
 if exists('b:did_indent')
   finish
@@ -12,7 +14,7 @@ setlocal indentexpr=DartIndent()
 
 let b:undo_indent = 'setl cin< cino<'
 
-if exists("*DartIndent")
+if exists('*DartIndent')
   finish
 endif
 
@@ -35,5 +37,3 @@ function! DartIndent()
 
   return indentTo
 endfunction
-
-endif

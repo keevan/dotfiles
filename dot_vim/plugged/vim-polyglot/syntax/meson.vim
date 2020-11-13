@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'meson') == -1
+if has_key(g:polyglot_is_disabled, 'meson')
+  finish
+endif
 
 " Vim syntax file
 " Language:	Meson
@@ -34,8 +36,9 @@ set cpo&vim
 
 " http://mesonbuild.com/Syntax.html
 syn keyword mesonConditional	elif else if endif
-syn keyword mesonRepeat	foreach endforeach
-syn keyword mesonOperator	and not or
+syn keyword mesonRepeat		foreach endforeach
+syn keyword mesonOperator	and not or in
+syn keyword mesonStatement	continue break
 
 syn match   mesonComment	"#.*$" contains=mesonTodo,@Spell
 syn keyword mesonTodo		FIXME NOTE NOTES TODO XXX contained
@@ -166,5 +169,3 @@ let &cpo = s:cpo_save
 unlet s:cpo_save
 
 " vim:set sw=2 sts=2 ts=8 noet:
-
-endif

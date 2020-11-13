@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 "Syntax coloring for Node.js shebang line
 syntax match   shellbang "^#!.*node\>"
@@ -7,8 +9,9 @@ syntax match   shellbang "^#!.*iojs\>"
 
 "JavaScript comments
 syntax keyword typescriptCommentTodo TODO FIXME XXX TBD
+syntax match typescriptMagicComment "@ts-\%(ignore\|expect-error\)\>"
 syntax match   typescriptLineComment "//.*"
-  \ contains=@Spell,typescriptCommentTodo,typescriptRef
+  \ contains=@Spell,typescriptCommentTodo,typescriptRef,typescriptMagicComment
 syntax region  typescriptComment
   \ start="/\*"  end="\*/"
   \ contains=@Spell,typescriptCommentTodo extend
@@ -83,5 +86,3 @@ if exists("main_syntax") && main_syntax == "typescript"
 endif
 
 syntax case match
-
-endif

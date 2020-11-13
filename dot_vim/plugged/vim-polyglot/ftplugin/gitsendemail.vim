@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'git') == -1
+if has_key(g:polyglot_is_disabled, 'git')
+  finish
+endif
 
 " Vim filetype plugin
 " Language:	git send-email message
@@ -6,5 +8,3 @@ if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'git') == -1
 " Last Change:	2009 Dec 24
 
 runtime! ftplugin/mail.vim
-
-endif

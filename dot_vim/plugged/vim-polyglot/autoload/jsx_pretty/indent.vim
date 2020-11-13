@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || !(index(g:polyglot_disabled, 'typescript') != -1 || index(g:polyglot_disabled, 'typescript') != -1 || index(g:polyglot_disabled, 'jsx') != -1)
+if has_key(g:polyglot_is_disabled, 'jsx')
+  finish
+endif
 
 if exists('*shiftwidth')
   function! s:sw()
@@ -302,5 +304,3 @@ function! jsx_pretty#indent#get(js_indent)
 
   return a:js_indent()
 endfunction
-
-endif

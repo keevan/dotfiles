@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
+if has_key(g:polyglot_is_disabled, 'ocaml')
+  finish
+endif
 
 if exists("b:current_syntax")
     finish
@@ -20,7 +22,7 @@ syn keyword lispKey ppx_runtime_libraries virtual_deps js_of_ocaml link_flags
 syn keyword lispKey javascript_files flags ocamlc_flags ocamlopt_flags pps staged_pps
 syn keyword lispKey library_flags c_flags c_library_flags kind package action
 syn keyword lispKey deps targets locks fallback
-syn keyword lispKey inline_tests tests names
+syn keyword lispKey inline_tests tests test names
 
 syn keyword lispAtom true false
 
@@ -36,5 +38,3 @@ syn match duneVar '\${\k\+\(:\k\+\)\?}' containedin=lispSymbol
 hi def link duneVar Identifier
 
 let b:current_syntax = "dune"
-
-endif

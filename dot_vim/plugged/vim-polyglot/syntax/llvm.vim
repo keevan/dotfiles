@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'llvm') == -1
+if has_key(g:polyglot_is_disabled, 'llvm')
+  finish
+endif
 
 " Vim syntax file
 " Language:   llvm
@@ -84,6 +86,7 @@ syn keyword llvmKeyword
       \ externally_initialized
       \ extern_weak
       \ fastcc
+      \ tailcc
       \ filter
       \ from
       \ gc
@@ -91,6 +94,7 @@ syn keyword llvmKeyword
       \ hhvmcc
       \ hhvm_ccc
       \ hidden
+      \ immarg
       \ initialexec
       \ inlinehint
       \ inreg
@@ -234,5 +238,3 @@ if version >= 508 || !exists("did_c_syn_inits")
 endif
 
 let b:current_syntax = "llvm"
-
-endif

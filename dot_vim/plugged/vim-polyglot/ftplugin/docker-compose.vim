@@ -1,9 +1,9 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'dockerfile') == -1
+if has_key(g:polyglot_is_disabled, 'docker-compose')
+  finish
+endif
 
 " Define comment string
 setlocal commentstring=#\ %s
 
 " Enable automatic comment insertion
 setlocal formatoptions+=cro
-
-endif

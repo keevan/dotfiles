@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'hive') == -1
+if has_key(g:polyglot_is_disabled, 'hive')
+  finish
+endif
 
 " Vim syntax file
 " Language: HIVE Query Language
@@ -135,5 +137,3 @@ hi link hiveVar Special
 let b:current_syntax = "hive"
 
 " vim: ts=4
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'hcl') == -1
+if has_key(g:polyglot_is_disabled, 'hcl')
+  finish
+endif
 
 
 if exists("b:current_syntax")
@@ -44,5 +46,3 @@ hi def link hclInterpolation            String
 hi def link hclSimpleString             PreProc
 
 let b:current_syntax = "hcl"
-
-endif

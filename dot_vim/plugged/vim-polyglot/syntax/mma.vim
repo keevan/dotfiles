@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'mathematica') == -1
+if has_key(g:polyglot_is_disabled, 'mathematica')
+  finish
+endif
 
 "Vim syntax file
 " Language: Mathematica
@@ -705,6 +707,13 @@ syntax keyword mmaSystemSymbol MixedRadix MixedRadixQuantity MixedUnit MixtureDi
 syntax keyword mmaSystemSymbol Modal Mode Modular ModularInverse ModularLambda Module
 syntax keyword mmaSystemSymbol Module Modulus MoebiusMu Moment Momentary MomentConvert
 syntax keyword mmaSystemSymbol MomentConvert MomentEvaluate MomentGeneratingFunction MomentOfInertia Monday Monitor
+syntax keyword mmaSystemSymbol MongoConnect MongoGetDatabase MongoGetCollection MongoGetDatabaseNames MongoDatabaseName MongoDatabaseDrop MongoGetCollectionNames
+syntax keyword mmaSystemSymbol MongoCollectionName MongoCollectionDrop MongoCollectionStats MongoCollectionValidate
+syntax keyword mmaSystemSymbol MongoCollectionCount MongoCollectionFind MongoCollectionFindOne MongoCollectionAggregate MongoCollectionDistinct
+syntax keyword mmaSystemSymbol MongoCollectionInsert MongoCollectionUpdateOne MongoCollectionUpdateMany MongoCollectionDeleteOne MongoCollectionDeleteMany MongoCollectionReplaceOne
+syntax keyword mmaSystemSymbol MongoCursorNext MongoWriteConcernCreate MongoCursorSetBatchSize MongoCursorGetBatchSize MongoCursorToArray
+syntax keyword mmaSystemSymbol MongoClient MongoDatabase MongoCollection MongoCursor
+syntax keyword mmaSystemSymbol MongoWriteConcern BSONObjectID MongoInsertResult MongoDriverVersion
 syntax keyword mmaSystemSymbol Monitor MonomialList MonomialOrder MonsterGroupM MoonPhase MoonPosition
 syntax keyword mmaSystemSymbol MoonPosition MorletWavelet MorphologicalBinarize MorphologicalBranchPoints MorphologicalComponents MorphologicalEulerNumber
 syntax keyword mmaSystemSymbol MorphologicalEulerNumber MorphologicalGraph MorphologicalPerimeter MorphologicalTransform MortalityData Most
@@ -1298,7 +1307,7 @@ syntax match mmaOperator "&"
 syntax match mmaOperator "?\{1,2}"
 
 "User Symbols
-syntax match mmaSymbol "[^0-9][A-Za-z0-9`$]\+\s*\%([@[]\|/:\|/\=/@\)\@=" contains=mmaOperator,mmaSystemSymbol,mmaBrackets,mmaError
+syntax match mmaSymbol "[^0-9"][A-Za-z0-9`$]\+\s*\%([@[]\|/:\|/\=/@\)\@=" contains=mmaOperator,mmaSystemSymbol,mmaBrackets,mmaError
 syntax match mmaSymbol "\<[^0-9][A-Za-z0-9`$]\+\>" contains=mmaOperator,mmaSystemSymbol,mmaBrackets,mmaError
 syntax match mmaSymbol "\~\s*[^~]\+\s*\~"ms=s+1,me=e-1 contains=mmaOperator,mmaSystemSymbol,mmaBrackets,mmaError
 syntax match mmaSymbol "//\s*[A-Za-z0-9`$]\+"ms=s+2 contains=mmaOperator,mmaSystemSymbol,mmaBrackets,mmaError
@@ -1352,5 +1361,3 @@ let b:current_syntax = "mma"
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
-
-endif

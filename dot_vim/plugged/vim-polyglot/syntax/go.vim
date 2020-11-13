@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'go') == -1
+if has_key(g:polyglot_is_disabled, 'go')
+  finish
+endif
 
 " Copyright 2009 The Go Authors. All rights reserved.
 " Use of this source code is governed by a BSD-style
@@ -401,7 +403,7 @@ function! s:hi()
   " filetype plugin on, the highlight groups won't be defined when
   " ftplugin/go.vim is executed when the first go file is opened.
   " See https://github.com/fatih/vim-go/issues/2658.
-  if exists('*prop_type_add')
+  if has('textprop')
     if empty(prop_type_get('goSameId'))
       call prop_type_add('goSameId', {'highlight': 'goSameId'})
     endif
@@ -424,8 +426,8 @@ function! s:hi()
 
   " :GoDebug commands
   if go#config#HighlightDebug()
-    hi GoDebugBreakpoint term=standout ctermbg=117 ctermfg=0 guibg=#BAD4F5  guifg=Black
-    hi GoDebugCurrent term=reverse  ctermbg=12  ctermfg=7 guibg=DarkBlue guifg=White
+    hi def GoDebugBreakpoint term=standout ctermbg=117 ctermfg=0 guibg=#BAD4F5  guifg=Black
+    hi def GoDebugCurrent term=reverse  ctermbg=12  ctermfg=7 guibg=DarkBlue guifg=White
   endif
 endfunction
 
@@ -445,5 +447,3 @@ syn sync minlines=500
 let b:current_syntax = "go"
 
 " vim: sw=2 ts=2 et
-
-endif

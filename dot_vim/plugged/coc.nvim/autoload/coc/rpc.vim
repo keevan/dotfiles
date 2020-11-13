@@ -4,7 +4,7 @@ let s:name = 'coc'
 let s:is_vim = !has('nvim')
 
 function! coc#rpc#start_server()
-  if $NODE_ENV ==# 'test'
+  if get(g:, 'coc_node_env', '') ==# 'test'
     " server already started
     let s:client = coc#client#create(s:name, [])
     let s:client['running'] = 1
@@ -76,11 +76,7 @@ function! coc#rpc#restart()
   if empty(s:client)
     call coc#rpc#start_server()
   else
-    for i in range(1, winnr('$'))
-      if getwinvar(i, 'float')
-        execute i.'wincmd c'
-      endif
-    endfor
+    call coc#float#close_all()
     call coc#rpc#request('detach', [])
     sleep 100m
     let s:client['command'] = coc#util#job_command()

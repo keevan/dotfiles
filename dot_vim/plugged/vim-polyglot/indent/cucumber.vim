@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'cucumber') == -1
+if has_key(g:polyglot_is_disabled, 'cucumber')
+  finish
+endif
 
 " Vim indent file
 " Language:	Cucumber
@@ -75,5 +77,3 @@ function! GetCucumberIndent()
 endfunction
 
 " vim:set sts=2 sw=2:
-
-endif

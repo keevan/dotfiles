@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
+if has_key(g:polyglot_is_disabled, 'ocaml')
+  finish
+endif
 
 " Language:    Sexplib
 " Maintainer:  Markus Mottl        <markus.mottl@gmail.com>
@@ -14,5 +16,3 @@ let b:did_ftplugin=1
 " Comment string
 setl commentstring=;\ %s
 setl comments=:;
-
-endif

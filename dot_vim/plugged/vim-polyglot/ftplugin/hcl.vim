@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'hcl') == -1
+if has_key(g:polyglot_is_disabled, 'hcl')
+  finish
+endif
 
 " File: ftplugin/hcl.vim
 " Author: BABAROT <b4b4r07@gmail.com>
@@ -37,5 +39,3 @@ let &cpo = s:save_cpo
 unlet s:save_cpo
 
 " vim: set et sw=4 ts=4:
-
-endif

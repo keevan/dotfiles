@@ -1,5 +1,5 @@
-if !exists('g:polyglot_disabled') || !(index(g:polyglot_disabled, 'typescript') != -1 || index(g:polyglot_disabled, 'typescript') != -1 || index(g:polyglot_disabled, 'jsx') != -1)
+if has_key(g:polyglot_is_disabled, 'jsx')
+  finish
+endif
 
 source <sfile>:h/tsx.vim
-
-endif

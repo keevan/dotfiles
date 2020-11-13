@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rst') == -1
+if has_key(g:polyglot_is_disabled, 'rst')
+  finish
+endif
 
 " Author: Antony Lee <anntzer.lee@gmail.com>
 " Description: Helper functions for reStructuredText syntax folding
@@ -62,5 +64,3 @@ function RstFold#GetRstFoldText()
   let text = thisline =~ '^\([=`:.''"~^_*+#-]\)\1\+$' ? getline(v:foldstart + 1) : thisline
   return indent . text
 endfunction
-
-endif

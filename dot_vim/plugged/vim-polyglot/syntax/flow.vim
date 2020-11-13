@@ -1,6 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'javascript') == -1
+if has_key(g:polyglot_is_disabled, 'javascript')
+  finish
+endif
 
 runtime syntax/javascript.vim
 runtime extras/flow.vim
-
-endif

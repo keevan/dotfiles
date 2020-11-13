@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'haml') == -1
+if has_key(g:polyglot_is_disabled, 'haml')
+  finish
+endif
 
 " Vim syntax file
 " Language:	Haml
@@ -109,5 +111,3 @@ if main_syntax == "haml"
 endif
 
 " vim:set sw=2:
-
-endif

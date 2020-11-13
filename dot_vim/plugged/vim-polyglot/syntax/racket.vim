@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'racket') == -1
+if has_key(g:polyglot_is_disabled, 'racket')
+  finish
+endif
 
 " Vim syntax file
 " Language:     Racket
@@ -38,7 +40,8 @@ syn keyword racketSyntax define define-values define-syntax define-syntaxes
 syn keyword racketSyntax define-for-syntax define-require-syntax define-provide-syntax
 syn keyword racketSyntax define-syntax-rule
 syn keyword racketSyntax define-record-type
-syn keyword racketSyntax begin begin0 begin-for-syntax
+syn keyword racketSyntax begin begin0
+syn keyword racketSyntax begin-for-syntax
 syn keyword racketSyntax when unless
 syn keyword racketSyntax set! set!-values
 syn keyword racketSyntax for for/list for/vector for/hash for/hasheq for/hasheqv
@@ -660,5 +663,3 @@ if version >= 508 || !exists("did_racket_syntax_inits")
 endif
 
 let b:current_syntax = "racket"
-
-endif

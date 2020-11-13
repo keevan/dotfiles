@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'coffee-script') == -1
+if has_key(g:polyglot_is_disabled, 'coffee-script')
+  finish
+endif
 
 " Language:    CoffeeScript
 " Maintainer:  Mick Koch <mick@kochm.co>
@@ -82,5 +84,3 @@ augroup CoffeeUpdateMakePrg
     autocmd BufWritePre,BufFilePost          call s:UpdateMakePrg()
   endif
 augroup END
-
-endif

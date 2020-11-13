@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptDOMElemAttrs contained accessKey clientHeight clientLeft
 syntax keyword typescriptDOMElemAttrs contained clientTop clientWidth id innerHTML
@@ -22,6 +24,4 @@ syntax keyword typescriptDOMElemFuncs contained setAttribute setAttributeNS setA
 syntax keyword typescriptDOMElemFuncs contained setAttributeNodeNS setCapture supports
 syntax keyword typescriptDOMElemFuncs contained getAttribute
 if exists("did_typescript_hilink") | HiLink typescriptDOMElemFuncs Keyword
-endif
-
 endif

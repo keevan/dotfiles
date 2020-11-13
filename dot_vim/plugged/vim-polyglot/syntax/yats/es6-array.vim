@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptGlobal containedin=typescriptIdentifierName Array nextgroup=typescriptGlobalArrayDot,typescriptFuncCallArg
 syntax match   typescriptGlobalArrayDot /\./ contained nextgroup=typescriptArrayStaticMethod,typescriptProp
@@ -13,6 +15,4 @@ syntax keyword typescriptArrayMethod contained shift slice some sort splice toLo
 syntax keyword typescriptArrayMethod contained toSource toString unshift nextgroup=typescriptFuncCallArg
 syntax cluster props add=typescriptArrayMethod
 if exists("did_typescript_hilink") | HiLink typescriptArrayMethod Keyword
-endif
-
 endif

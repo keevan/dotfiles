@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'clojure') == -1
+if has_key(g:polyglot_is_disabled, 'clojure')
+  finish
+endif
 
 " Vim syntax file
 " Language:     Clojure
@@ -223,5 +225,3 @@ let &cpo = s:cpo_sav
 unlet! s:cpo_sav
 
 " vim:sts=8:sw=8:ts=8:noet
-
-endif

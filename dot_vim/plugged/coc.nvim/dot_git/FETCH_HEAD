@@ -1,3 +1,4 @@
-cae9778539eaebb277b8f60196ac1731410f8165		branch 'release' of https://github.com/neoclide/coc.nvim
-4f10f4d099159bc535dea2eccecc18d0bef02280	not-for-merge	branch 'depfu/update/yarn/follow-redirects-1.11.0' of https://github.com/neoclide/coc.nvim
-26381f08d584e413ebbb7c23be0748af40723a9b	not-for-merge	branch 'master' of https://github.com/neoclide/coc.nvim
+e9e3b7d297ece609aa142f3e3bf92af5a0916dff		branch 'release' of https://github.com/neoclide/coc.nvim
+ee90f53787de1dd6aab96d9e6ea15df0750b1365	not-for-merge	branch 'master' of https://github.com/neoclide/coc.nvim
+048a909ffe0253039bca94e26dc1d140204919c0	not-for-merge	tag 'v0.0.78' of https://github.com/neoclide/coc.nvim
+f545756ad2cc5f4f58c96006ee49846a5ee07f1d	not-for-merge	tag 'v0.0.79' of https://github.com/neoclide/coc.nvim

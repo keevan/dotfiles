@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'powershell') == -1
+if has_key(g:polyglot_is_disabled, 'powershell')
+  finish
+endif
 
 " Vim syntax file
 " Language:           Windows PowerShell
@@ -84,7 +86,7 @@ syn match ps1Type /\[[a-z_][a-z0-9_.,\[\]]\+\]/
 " Variable references
 syn match ps1ScopeModifier /\(global:\|local:\|private:\|script:\)/ contained
 syn match ps1Variable /\$\w\+\(:\w\+\)\?/ contains=ps1ScopeModifier
-syn match ps1Variable /\${\w\+\(:\w\+\)\?}/ contains=ps1ScopeModifier
+syn match ps1Variable /\${\w\+\(:\?[[:alnum:]_()]\+\)\?}/ contains=ps1ScopeModifier
 
 " Operators
 syn keyword ps1Operator -eq -ne -ge -gt -lt -le -like -notlike -match -notmatch -replace -split -contains -notcontains
@@ -193,5 +195,3 @@ if version >= 508 || !exists("did_ps1_syn_inits")
 endif
 
 let b:current_syntax = "ps1"
-
-endif

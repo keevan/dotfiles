@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rust') == -1
+if has_key(g:polyglot_is_disabled, 'rust')
+  finish
+endif
 
 function! cargo#Load()
     " Utility call to get this script loaded, for debugging
@@ -102,6 +104,22 @@ function! cargo#bench(args)
     call cargo#cmd("bench " . a:args)
 endfunction
 
+function! cargo#update(args)
+    call cargo#cmd("update " . a:args)
+endfunction
+
+function! cargo#search(args)
+    call cargo#cmd("search " . a:args)
+endfunction
+
+function! cargo#publish(args)
+    call cargo#cmd("publish " . a:args)
+endfunction
+
+function! cargo#install(args)
+    call cargo#cmd("install " . a:args)
+endfunction
+
 function! cargo#runtarget(args)
     let l:filename = expand('%:p')
     let l:read_manifest = system('cargo read-manifest')
@@ -131,5 +149,3 @@ function! cargo#runtarget(args)
 endfunction
 
 " vim: set et sw=4 sts=4 ts=8:
-
-endif

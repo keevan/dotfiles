@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'stylus') == -1
+if has_key(g:polyglot_is_disabled, 'stylus')
+  finish
+endif
 
 " Vim indent file
 " Language: Stylus
@@ -129,5 +131,3 @@ function! GetStylusIndent()
 endfunction
 
 " vim:set sw=2;
-
-endif

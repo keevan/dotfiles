@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'smt2') == -1
+if has_key(g:polyglot_is_disabled, 'smt2')
+  finish
+endif
 
 " Vim syntax file
 " " Language:     SMT-LIB2 with Z3's extensions
@@ -175,5 +177,3 @@ highlight def link smt2Binary      Number
 highlight def link smt2Int         Number
 highlight def link smt2Delimiter   Delimiter
 highlight def link smt2Error       Error
-
-endif

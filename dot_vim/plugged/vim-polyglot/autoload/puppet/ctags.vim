@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'puppet') == -1
+if has_key(g:polyglot_is_disabled, 'puppet')
+  finish
+endif
 
 
 if !exists('s:ctags_type')
@@ -36,5 +38,3 @@ function! puppet#ctags#Type()
   return s:ctags_type
 endfunction
 
-
-endif

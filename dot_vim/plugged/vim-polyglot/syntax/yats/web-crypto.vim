@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptCryptoGlobal containedin=typescriptIdentifierName crypto
 if exists("did_typescript_hilink") | HiLink typescriptCryptoGlobal Structure
@@ -15,6 +17,4 @@ endif
 syntax keyword typescriptCryptoMethod contained getRandomValues nextgroup=typescriptFuncCallArg
 syntax cluster props add=typescriptCryptoMethod
 if exists("did_typescript_hilink") | HiLink typescriptCryptoMethod Keyword
-endif
-
 endif

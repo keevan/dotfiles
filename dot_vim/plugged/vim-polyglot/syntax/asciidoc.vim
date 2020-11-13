@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'asciidoc') == -1
+if has_key(g:polyglot_is_disabled, 'asciidoc')
+  finish
+endif
 
 " Vim syntax file
 " Language:     AsciiDoc
@@ -183,5 +185,3 @@ hi def link asciidocURL Macro
 let b:current_syntax = "asciidoc"
 
 " vim: wrap et sw=2 sts=2:
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'idris') == -1
+if has_key(g:polyglot_is_disabled, 'idris')
+  finish
+endif
 
 " indentation for idris (idris-lang.org)
 "
@@ -144,5 +146,3 @@ function! GetIdrisIndent()
 
   return match(prevline, '\S')
 endfunction
-
-endif

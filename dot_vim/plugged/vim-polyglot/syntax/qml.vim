@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'qml') == -1
+if has_key(g:polyglot_is_disabled, 'qml')
+  finish
+endif
 
 
 " Vim syntax file
@@ -54,7 +56,7 @@ syn keyword qmlRepeat            while for do in
 syn keyword qmlBranch            break continue
 syn keyword qmlOperator          new delete instanceof typeof
 syn keyword qmlJsType            Array Boolean Date Function Number Object String RegExp
-syn keyword qmlType              action alias bool color date double enumeration font int list point real rect size string time url variant vector3d
+syn keyword qmlType              action alias bool color date double enumeration font int list point real rect size string time url variant vector2d vector3d vector4d
 syn keyword qmlStatement         return with
 syn keyword qmlBoolean           true false
 syn keyword qmlNull              null undefined
@@ -63,7 +65,7 @@ syn keyword qmlLabel             case default
 syn keyword qmlException         try catch finally throw
 syn keyword qmlMessage           alert confirm prompt status
 syn keyword qmlGlobal            self
-syn keyword qmlDeclaration       property signal readonly
+syn keyword qmlDeclaration       property signal component readonly required
 syn keyword qmlReserved          abstract boolean byte char class const debugger enum export extends final float goto implements import interface long native package pragma private protected public short static super synchronized throws transient volatile
 
 if get(g:, 'qml_fold', 0)
@@ -141,6 +143,4 @@ endif
 let b:current_syntax = "qml"
 if main_syntax == 'qml'
   unlet main_syntax
-endif
-
 endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'carp') == -1
+if has_key(g:polyglot_is_disabled, 'carp')
+  finish
+endif
 
 " Vim syntax file
 " Language:     Carp
@@ -165,5 +167,3 @@ if version >= 508 || !exists("carp_syntax_init")
 endif
 
 let b:current_syntax = "carp"
-
-endif

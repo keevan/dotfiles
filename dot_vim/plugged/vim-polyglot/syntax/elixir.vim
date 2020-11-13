@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elixir') == -1
+if has_key(g:polyglot_is_disabled, 'elixir')
+  finish
+endif
 
 if !exists("main_syntax")
   if exists("b:current_syntax")
@@ -40,10 +42,11 @@ syn match   elixirOperator '|||\|||\||>\||'
 syn match   elixirOperator '\.\.\|\.'
 syn match   elixirOperator "\^\^\^\|\^"
 syn match   elixirOperator '\\\\\|::\|\*\|/\|\~\~\~\|@'
+syn match   elixirOperator '\~>\|\~>>\|<\~\|<<\~\|<\~>'
 
 syn match   elixirAlias '\([a-z]\)\@<![A-Z]\w*\%(\.[A-Z]\w*\)*'
 
-syn match   elixirAtom '\(:\)\@<!:\%([a-zA-Z_]\w*\%([?!]\|=[>=]\@!\)\?\|<>\|===\?\|>=\?\|<=\?\)'
+syn match   elixirAtom '\(:\)\@<!:\%([a-zA-Z_*]\w*\%([?!]\|=[>=]\@!\)\?\|<>\|===\?\|>=\?\|<=\?\)'
 syn match   elixirAtom '\(:\)\@<!:\%(<=>\|&&\?\|%\(()\|\[\]\|{}\)\|++\?\|--\?\|||\?\|!\|//\|[%&`/|]\)'
 syn match   elixirAtom "\%([a-zA-Z_]\w*[?!]\?\):\(:\)\@!"
 
@@ -243,5 +246,3 @@ endif
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
-
-endif

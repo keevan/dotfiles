@@ -1,15 +1,30 @@
-" MIT License. Copyright (c) 2013-2019 Bailey Ling et al.
+" MIT License. Copyright (c) 2013-2020 Bailey Ling et al.
 " Plugin: vim-gitgutter, vim-signify, changesPlugin, quickfixsigns, coc-git
 " vim: et ts=2 sts=2 sw=2
 
 scriptencoding utf-8
 
-if !get(g:, 'loaded_signify', 0) && !get(g:, 'loaded_gitgutter', 0) && !get(g:, 'loaded_changes', 0) && !get(g:, 'loaded_quickfixsigns', 0) && !empty(get(g:, 'coc_git_status',''))
+if !get(g:, 'loaded_signify', 0)
+  \ && !get(g:, 'loaded_gitgutter', 0)
+  \ && !get(g:, 'loaded_changes', 0)
+  \ && !get(g:, 'loaded_quickfixsigns', 0)
+  \ && !exists("*CocAction")
   finish
 endif
 
 let s:non_zero_only = get(g:, 'airline#extensions#hunks#non_zero_only', 0)
 let s:hunk_symbols = get(g:, 'airline#extensions#hunks#hunk_symbols', ['+', '~', '-'])
+
+function! s:coc_git_enabled() abort
+  if !exists("*CocAction") ||
+   \ !get(g:, 'airline#extensions#hunks#coc_git', 0)
+     " coc-git extension is disabled by default
+     " unless specifically being enabled by the user
+     " (as requested from coc maintainer)
+    return 0
+  endif
+  return 1
+endfunction
 
 function! s:get_hunks_signify() abort
   let hunks = sy#repo#get_stats()
@@ -68,7 +83,7 @@ function! airline#extensions#hunks#get_raw_hunks() abort
       let b:source_func = 's:get_hunks_changes'
     elseif exists('*quickfixsigns#vcsdiff#GetHunkSummary')
       let b:source_func = 'quickfixsigns#vcsdiff#GetHunkSummary'
-    elseif exists("g:coc_git_status")
+    elseif s:coc_git_enabled()
       let b:source_func = 's:get_hunks_coc'
     else
       let b:source_func = 's:get_hunks_empty'
@@ -103,6 +118,11 @@ function! airline#extensions#hunks#get_hunks() abort
       endif
     endfor
   endif
+  if index(airline#extensions#get_loaded_extensions(), 'branch') == -1 && string[-1:] == ' '
+    " branch extension not loaded, skip trailing whitespace
+    let string = string[0:-2]
+  endif
+
   let b:airline_hunks = string
   let b:airline_changenr = b:changedtick
   let s:airline_winwidth = airline#util#winwidth()

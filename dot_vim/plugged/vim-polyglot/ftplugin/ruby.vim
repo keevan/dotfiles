@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ruby') == -1
+if has_key(g:polyglot_is_disabled, 'ruby')
+  finish
+endif
 
 " Vim filetype plugin
 " Language:		Ruby
@@ -436,5 +438,3 @@ endfunction
 "
 
 " vim: nowrap sw=2 sts=2 ts=8:
-
-endif

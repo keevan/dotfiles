@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rust') == -1
+if has_key(g:polyglot_is_disabled, 'rust')
+  finish
+endif
 
 " Description: Helper functions for Rust commands/mappings
 " Last Modified: May 27, 2014
@@ -501,7 +503,15 @@ function! s:SearchTestFunctionNameUnderCursor() abort
 
     " Search the end of test function (closing brace) to ensure that the
     " cursor position is within function definition
-    normal! %
+    if maparg('<Plug>(MatchitNormalForward)') ==# ''
+        keepjumps normal! %
+    else
+        " Prefer matchit.vim official plugin to native % since the plugin
+        " provides better behavior than original % (#391)
+        " To load the plugin, run:
+        "   :packadd matchit
+        execute 'keepjumps' 'normal' "\<Plug>(MatchitNormalForward)"
+    endif
     if line('.') < cursor_line
         return ''
     endif
@@ -543,25 +553,22 @@ function! rust#Test(mods, winsize, all, options) abort
     let saved = getpos('.')
     try
         let func_name = s:SearchTestFunctionNameUnderCursor()
-        if func_name ==# ''
-            echohl ErrorMsg
-            echomsg 'No test function was found under the cursor. Please add ! to command if you want to run all tests'
-            echohl None
-            return
-        endif
-        if a:options ==# ''
-            execute cmd . 'cargo test --manifest-path' manifest func_name
-        else
-            execute cmd . 'cargo test --manifest-path' manifest func_name a:options
-        endif
-        return
     finally
         call setpos('.', saved)
     endtry
+    if func_name ==# ''
+        echohl ErrorMsg
+        echomsg 'No test function was found under the cursor. Please add ! to command if you want to run all tests'
+        echohl None
+        return
+    endif
+    if a:options ==# ''
+        execute cmd . 'cargo test --manifest-path' manifest func_name
+    else
+        execute cmd . 'cargo test --manifest-path' manifest func_name a:options
+    endif
 endfunction
 
 " }}}1
 
 " vim: set et sw=4 sts=4 ts=8:
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rust') == -1
+if has_key(g:polyglot_is_disabled, 'rust')
+  finish
+endif
 
 " Vim compiler file
 " Compiler:         Cargo Compiler
@@ -49,5 +51,3 @@ unlet s:save_cpo
 " vint: +ProhibitAbbreviationOption
 
 " vim: set et sw=4 sts=4 ts=8:
-
-endif

@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'puppet') == -1
+if has_key(g:polyglot_is_disabled, 'puppet')
+  finish
+endif
 
 " Vim syntax plugin
 " Language:             embedded puppet
@@ -29,5 +31,3 @@ hi def link ePuppetComment                Comment
 
 let b:current_syntax = "embeddedpuppet"
 
-
-endif

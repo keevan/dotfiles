@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'ocaml') == -1
+if has_key(g:polyglot_is_disabled, 'ocaml')
+  finish
+endif
 
 " Vim filetype plugin file
 " Language:	OMake
@@ -24,5 +26,3 @@ setlocal expandtab
 
 " Including files.
 let &l:include = '^\s*include'
-
-endif

@@ -1,5 +1,5 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'i3') == -1
+if has_key(g:polyglot_is_disabled, 'i3')
+  finish
+endif
 
 setlocal commentstring=#\ %s
-
-endif

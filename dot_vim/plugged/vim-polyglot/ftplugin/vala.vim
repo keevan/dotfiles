@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'vala') == -1
+if has_key(g:polyglot_is_disabled, 'vala')
+  finish
+endif
 
 if exists('b:did_ftplugin')
   finish
@@ -37,7 +39,7 @@ endfunction
 command! -buffer -bar CCode call CCode()
 command! -buffer -bar ValaCodingStyle call ValaCodingStyle()
 
-if get(g:, 'vala_syntax_folding_enabled', 1)
+if get(g:, 'vala_syntax_folding_enabled', 0)
   setlocal foldmethod=syntax
 endif
 
@@ -46,6 +48,4 @@ if (has("browsefilter")) && !exists("b:browsefilter")
   let b:browsefilter = "Vala Source Files (*.vala)\t*.vala\n" .
         \ "Vala Vapi Files (*.vapi)\t*.vapi\n" .
         \ "All Files (*.*)\t*.*\n"
-endif
-
 endif

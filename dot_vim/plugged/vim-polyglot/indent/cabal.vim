@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'haskell') == -1
+if has_key(g:polyglot_is_disabled, 'haskell')
+  finish
+endif
 
 " indentation for cabal
 "
@@ -31,5 +33,3 @@ function! GetCabalIndent()
     return match(l:prevline, '\S')
   endif
 endfunction
-
-endif

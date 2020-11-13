@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'plantuml') == -1
+if has_key(g:polyglot_is_disabled, 'plantuml')
+  finish
+endif
 
 scriptencoding utf-8
 " Vim indent file
@@ -77,7 +79,7 @@ endfunction
 function! s:getIncIndent() abort
   " Function to determine the s:incIndent pattern
   return
-        \ '^\s*\%(class\|object\|interface\|partition\|rectangle\|enum\|namespace\|package\)\>.*{\s*$\|' .
+        \ '^\s*\%(artifact\|class\|cloud\|database\|entity\|enum\|file\|folder\|frame\|interface\|namespace\|node\|object\|package\|partition\|rectangle\|skinparam\|state\|storage\|together\)\>.*{\s*$\|' .
         \ '^\s*\%(loop\|alt\|opt\|group\|critical\|else\|legend\|box\|if\|while\|fork\|split\)\>\|' .
         \ '^\s*ref\>[^:]*$\|' .
         \ '^\s*[hr]\?note\>\%(\%("[^"]*" \<as\>\)\@![^:]\)*$\|' .
@@ -85,5 +87,3 @@ function! s:getIncIndent() abort
         \ '^\s*skinparam\>.*{\s*$\|' .
         \ s:typeKeywordIncPattern()
 endfunction
-
-endif

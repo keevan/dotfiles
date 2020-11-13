@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || !(index(g:polyglot_disabled, 'typescript') != -1 || index(g:polyglot_disabled, 'typescript') != -1 || index(g:polyglot_disabled, 'jsx') != -1)
+if has_key(g:polyglot_is_disabled, 'jsx')
+  finish
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vim indent file
@@ -25,6 +27,8 @@ if exists('s:did_indent')
   let b:did_indent = s:did_indent
 endif
 
+runtime! indent/typescript.vim
+
 setlocal indentexpr=GetJsxIndent()
 setlocal indentkeys=0.,0{,0},0),0],0?,0\*,0\,,!^F,:,<:>,o,O,e,<>>,=*/
 
@@ -34,5 +38,3 @@ endfunction
 
 let &cpo = s:keepcpo
 unlet s:keepcpo
-
-endif

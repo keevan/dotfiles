@@ -1,5 +1,4 @@
 :Goyo	goyo.txt	/*:Goyo*
-:PlugInstall	goyo.txt	/*:PlugInstall*
 g:goyo_height	goyo.txt	/*g:goyo_height*
 g:goyo_linenr	goyo.txt	/*g:goyo_linenr*
 g:goyo_width	goyo.txt	/*g:goyo_width*

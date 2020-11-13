@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'meson') == -1
+if has_key(g:polyglot_is_disabled, 'meson')
+  finish
+endif
 
 " Vim indent file
 " Language:		Meson
@@ -180,5 +182,3 @@ let &cpo = s:keepcpo
 unlet s:keepcpo
 
 " vim:sw=2
-
-endif

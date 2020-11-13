@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptGlobal containedin=typescriptIdentifierName Reflect
 syntax keyword typescriptReflectMethod contained apply construct defineProperty deleteProperty nextgroup=typescriptFuncCallArg
@@ -7,6 +9,4 @@ syntax keyword typescriptReflectMethod contained getPrototypeOf has isExtensible
 syntax keyword typescriptReflectMethod contained preventExtensions set setPrototypeOf nextgroup=typescriptFuncCallArg
 syntax cluster props add=typescriptReflectMethod
 if exists("did_typescript_hilink") | HiLink typescriptReflectMethod Keyword
-endif
-
 endif

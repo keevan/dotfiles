@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'typescript') == -1
+if has_key(g:polyglot_is_disabled, 'typescript')
+  finish
+endif
 
 syntax keyword typescriptDOMStyle contained alignContent alignItems alignSelf animation
 syntax keyword typescriptDOMStyle contained animationDelay animationDirection animationDuration
@@ -70,6 +72,4 @@ syntax keyword typescriptDOMStyle contained userSelect userZoom verticalAlign vi
 syntax keyword typescriptDOMStyle contained whiteSpace width willChange wordBreak
 syntax keyword typescriptDOMStyle contained wordSpacing wordWrap writingMode zIndex
 if exists("did_typescript_hilink") | HiLink typescriptDOMStyle Keyword
-endif
-
 endif

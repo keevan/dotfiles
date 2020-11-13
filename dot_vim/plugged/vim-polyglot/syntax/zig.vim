@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'zig') == -1
+if has_key(g:polyglot_is_disabled, 'zig')
+  finish
+endif
 
 " Vim syntax file
 " Language: Zig
@@ -10,9 +12,9 @@ if exists("b:current_syntax")
 endif
 let b:current_syntax = "zig"
 
-syn keyword zigStorage const var extern packed export pub noalias inline noinline comptime callconv volatile allowzero align linksection threadlocal
-syn keyword zigStructure struct enum union error
-syn keyword zigStatement break return continue asm defer errdefer unreachable try catch async noasync await suspend resume
+syn keyword zigStorage const var extern packed export pub noalias inline noinline comptime callconv volatile allowzero align linksection threadlocal anytype
+syn keyword zigStructure struct enum union error opaque
+syn keyword zigStatement break return continue asm defer errdefer unreachable try catch async nosuspend await suspend resume
 syn keyword zigConditional if else switch and or orelse
 syn keyword zigRepeat while for
 
@@ -26,32 +28,31 @@ syn keyword zigBoolean true false
 
 syn match zigType "\v<[iu][1-9]\d*>"
 
-syn match zigOperator display "\%(+%\?\|-%\?\|/\|*%\?\|=\|\^\|&\|?\||\|!\|>\|<\|%\|<<%\?\|>>\)=\?"
-syn match zigArrowCharacter display "->"
+syn match zigOperator display "\V\[-+/*=^&?|!><%~]"
+syn match zigArrowCharacter display "\V->"
 
-syn match zigBuiltinFn "\v\@(addWithOverflow|ArgType|atomicLoad|atomicStore|bitCast|breakpoint)>"
+syn match zigBuiltinFn "\v\@(addWithOverflow|as|atomicLoad|atomicStore|bitCast|breakpoint)>"
 syn match zigBuiltinFn "\v\@(alignCast|alignOf|cDefine|cImport|cInclude)>"
 syn match zigBuiltinFn "\v\@(cUndef|canImplicitCast|clz|cmpxchgWeak|cmpxchgStrong|compileError)>"
 syn match zigBuiltinFn "\v\@(compileLog|ctz|popCount|divExact|divFloor|divTrunc)>"
 syn match zigBuiltinFn "\v\@(embedFile|export|tagName|TagType|errorName|call)>"
 syn match zigBuiltinFn "\v\@(errorReturnTrace|fence|fieldParentPtr|field|unionInit)>"
-syn match zigBuiltinFn "\v\@(frameAddress|import|newStackCall|asyncCall|intToPtr|IntType)>"
-syn match zigBuiltinFn "\v\@(memberCount|memberName|memberType|as)>"
-syn match zigBuiltinFn "\v\@(memcpy|memset|mod|mulWithOverflow|splat)>"
+syn match zigBuiltinFn "\v\@(frameAddress|import|newStackCall|asyncCall|intToPtr)>"
+syn match zigBuiltinFn "\v\@(memcpy|memset|mod|mulWithOverflow|splat|src)>"
 syn match zigBuiltinFn "\v\@(bitOffsetOf|byteOffsetOf|OpaqueType|panic|ptrCast)>"
-syn match zigBuiltinFn "\v\@(ptrToInt|rem|returnAddress|setCold|Type|shuffle)>"
+syn match zigBuiltinFn "\v\@(ptrToInt|rem|returnAddress|setCold|Type|shuffle|reduce)>"
 syn match zigBuiltinFn "\v\@(setRuntimeSafety|setEvalBranchQuota|setFloatMode)>"
 syn match zigBuiltinFn "\v\@(setGlobalLinkage|setGlobalSection|shlExact|This|hasDecl|hasField)>"
 syn match zigBuiltinFn "\v\@(shlWithOverflow|shrExact|sizeOf|bitSizeOf|sqrt|byteSwap|subWithOverflow|intCast|floatCast|intToFloat|floatToInt|boolToInt|errSetCast)>"
-syn match zigBuiltinFn "\v\@(truncate|typeId|typeInfo|typeName|TypeOf|atomicRmw|bytesToSlice|sliceToBytes)>"
+syn match zigBuiltinFn "\v\@(truncate|typeInfo|typeName|TypeOf|atomicRmw|bytesToSlice|sliceToBytes)>"
 syn match zigBuiltinFn "\v\@(intToError|errorToInt|intToEnum|enumToInt|setAlignStack|frame|Frame|frameSize|bitReverse|Vector)>"
 syn match zigBuiltinFn "\v\@(sin|cos|exp|exp2|log|log2|log10|fabs|floor|ceil|trunc|round)>"
 
-syn match zigDecNumber display "\<[0-9]\+\%(.[0-9]\+\)\=\%([eE][+-]\?[0-9]\+\)\="
-syn match zigHexNumber display "\<0x[a-fA-F0-9]\+\%([a-fA-F0-9]\+\%([pP][+-]\?[0-9]\+\)\?\)\="
-syn match zigOctNumber display "\<0o[0-7]\+"
-syn match zigBinNumber display "\<0b[01]\+\%(.[01]\+\%([eE][+-]\?[0-9]\+\)\?\)\="
-
+"                                     12_34  (. but not ..)? (12_34)?     (exponent  12_34)?
+syn match zigDecNumber display   "\v<\d%(_?\d)*%(\.\.@!)?%(\d%(_?\d)*)?%([eE][+-]?\d%(_?\d)*)?"
+syn match zigHexNumber display "\v<0x\x%(_?\x)*%(\.\.@!)?%(\x%(_?\x)*)?%([pP][+-]?\d%(_?\d)*)?"
+syn match zigOctNumber display "\v<0o\o%(_?\o)*"
+syn match zigBinNumber display "\v<0b[01]%(_?[01])*"
 
 syn match zigCharacterInvalid display contained /b\?'\zs[\n\r\t']\ze'/
 syn match zigCharacterInvalidUnicode display contained /b'\zs[^[:cntrl:][:graph:][:alnum:][:space:]]\ze'/
@@ -61,7 +62,7 @@ syn match zigCharacter /'\([^\\]\|\\\(.\|x\x\{2}\|u\x\{4}\|U\x\{6}\)\)'/ contain
 syn region zigBlock start="{" end="}" transparent fold
 
 syn region zigCommentLine start="//" end="$" contains=zigTodo,@Spell
-syn region zigCommentLineDoc start="////\@!" end="$" contains=zigTodo,@Spell
+syn region zigCommentLineDoc start="//[/!]/\@!" end="$" contains=zigTodo,@Spell
 
 " TODO: match only the first '\\' within the zigMultilineString as zigMultilineStringPrefix
 syn match zigMultilineStringPrefix display contained /c\?\\\\/
@@ -105,5 +106,3 @@ hi def link zigStructure Structure
 hi def link zigStatement Statement
 hi def link zigConditional Conditional
 hi def link zigRepeat Repeat
-
-endif

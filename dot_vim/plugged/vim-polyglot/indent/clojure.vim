@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'clojure') == -1
+if has_key(g:polyglot_is_disabled, 'clojure')
+  finish
+endif
 
 " Vim indent file
 " Language:     Clojure
@@ -403,5 +405,3 @@ let &cpo = s:save_cpo
 unlet! s:save_cpo
 
 " vim:sts=8:sw=8:ts=8:noet
-
-endif

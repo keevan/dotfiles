@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'rust') == -1
+if has_key(g:polyglot_is_disabled, 'rust')
+  finish
+endif
 
 " Language:     Rust
 " Description:  Vim ftplugin for Rust
@@ -123,7 +125,7 @@ command! -nargs=* -buffer RustEmitAsm call rust#Emit("asm", <q-args>)
 command! -range=% RustPlay :call rust#Play(<count>, <line1>, <line2>, <f-args>)
 
 " See |:RustFmt| for docs
-command! -buffer RustFmt call rustfmt#Format()
+command! -bar -buffer RustFmt call rustfmt#Format()
 
 " See |:RustFmtRange| for docs
 command! -range -buffer RustFmtRange call rustfmt#FormatRange(<line1>, <line2>)
@@ -200,5 +202,3 @@ unlet s:save_cpo
 " vint: +ProhibitAbbreviationOption
 
 " vim: set et sw=4 sts=4 ts=8:
-
-endif

@@ -2,10 +2,10 @@
 #    / __/___  / __/
 #   / /_/_  / / /_
 #  / __/ / /_/ __/
-# /_/   /___/_/-completion.zsh
+# /_/   /___/_/ completion.zsh
 #
 # - $FZF_TMUX               (default: 0)
-# - $FZF_TMUX_HEIGHT        (default: '40%')
+# - $FZF_TMUX_OPTS          (default: '-d 40%')
 # - $FZF_COMPLETION_TRIGGER (default: '**')
 # - $FZF_COMPLETION_OPTS    (default: empty)
 
@@ -99,9 +99,13 @@ fi
 __fzf_comprun() {
   if [[ "$(type _fzf_comprun 2>&1)" =~ function ]]; then
     _fzf_comprun "$@"
-  elif [ -n "$TMUX_PANE" ] && [ "${FZF_TMUX:-0}" != 0 ] && [ ${LINES:-40} -gt 15 ]; then
+  elif [ -n "$TMUX_PANE" ] && { [ "${FZF_TMUX:-0}" != 0 ] || [ -n "$FZF_TMUX_OPTS" ]; }; then
     shift
-    fzf-tmux -d "${FZF_TMUX_HEIGHT:-40%}" "$@"
+    if [ -n "$FZF_TMUX_OPTS" ]; then
+      fzf-tmux ${(Q)${(Z+n+)FZF_TMUX_OPTS}} -- "$@"
+    else
+      fzf-tmux -d ${FZF_TMUX_HEIGHT:-40%} -- "$@"
+    fi
   else
     shift
     fzf "$@"
@@ -113,6 +117,7 @@ __fzf_extract_command() {
   local token tokens
   tokens=(${(z)1})
   for token in $tokens; do
+    token=${(Q)token}
     if [[ "$token" =~ [[:alnum:]] && ! "$token" =~ "=" ]]; then
       echo "$token"
       return
@@ -220,7 +225,7 @@ _fzf_complete_telnet() {
 _fzf_complete_ssh() {
   _fzf_complete +m -- "$@" < <(
     setopt localoptions nonomatch
-    command cat <(cat ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?]') \
+    command cat <(command tail -n +1 ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?]') \
         <(command grep -oE '^[[a-z0-9.,:-]+' ~/.ssh/known_hosts | tr ',' '\n' | tr -d '[' | awk '{ print $1 " " $1 }') \
         <(command grep -v '^\s*\(#\|$\)' /etc/hosts | command grep -Fv '0.0.0.0') |
         awk '{if (length($2) > 0) {print $2}}' | sort -u
@@ -243,6 +248,16 @@ _fzf_complete_unalias() {
   _fzf_complete +m -- "$@" < <(
     alias | sed 's/=.*//'
   )
+}
+
+_fzf_complete_kill() {
+  _fzf_complete -m --preview 'echo {}' --preview-window down:3:wrap --min-height 15 -- "$@" < <(
+    command ps -ef | sed 1d
+  )
+}
+
+_fzf_complete_kill_post() {
+  awk '{print $2}'
 }
 
 fzf-completion() {
@@ -269,20 +284,21 @@ fzf-completion() {
     tokens=(${tokens[0,-2]})
   fi
 
+  lbuf=$LBUFFER
   tail=${LBUFFER:$(( ${#LBUFFER} - ${#trigger} ))}
   # Kill completion (do not require trigger sequence)
-  if [ $cmd = kill -a ${LBUFFER[-1]} = ' ' ]; then
-    matches=$(command ps -ef | sed 1d | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-50%} --min-height 15 --reverse $FZF_DEFAULT_OPTS $FZF_COMPLETION_OPTS --preview 'echo {}' --preview-window down:3:wrap" __fzf_comprun "$cmd" -m | awk '{print $2}' | tr '\n' ' ')
-    if [ -n "$matches" ]; then
-      LBUFFER="$LBUFFER$matches"
-    fi
-    zle reset-prompt
+  if [ "$cmd" = kill -a ${LBUFFER[-1]} = ' ' ]; then
+    tail=$trigger
+    tokens+=$trigger
+    lbuf="$lbuf$trigger"
+  fi
+
   # Trigger sequence given
-  elif [ ${#tokens} -gt 1 -a "$tail" = "$trigger" ]; then
+  if [ ${#tokens} -gt 1 -a "$tail" = "$trigger" ]; then
     d_cmds=(${=FZF_COMPLETION_DIR_COMMANDS:-cd pushd rmdir})
 
     [ -z "$trigger"      ] && prefix=${tokens[-1]} || prefix=${tokens[-1]:0:-${#trigger}}
-    [ -z "${tokens[-1]}" ] && lbuf=$LBUFFER        || lbuf=${LBUFFER:0:-${#tokens[-1]}}
+    [ -n "${tokens[-1]}" ] && lbuf=${lbuf:0:-${#tokens[-1]}}
 
     if eval "type _fzf_complete_${cmd} > /dev/null"; then
       prefix="$prefix" eval _fzf_complete_${cmd} ${(q)lbuf}

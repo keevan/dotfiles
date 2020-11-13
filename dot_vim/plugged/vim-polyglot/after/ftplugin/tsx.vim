@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || !(index(g:polyglot_disabled, 'typescript') != -1 || index(g:polyglot_disabled, 'typescript') != -1 || index(g:polyglot_disabled, 'jsx') != -1)
+if has_key(g:polyglot_is_disabled, 'jsx')
+  finish
+endif
 
 " modified from html.vim
 " For matchit plugin
@@ -20,13 +22,11 @@ if exists("loaded_matchup")
   let b:match_skip = 's:comment\|string'
 endif
 
-let b:original_commentstring = &l:commentstring
+let b:jsx_pretty_old_cms = &l:commentstring
 
 augroup jsx_comment
   autocmd! CursorMoved <buffer>
-  autocmd CursorMoved <buffer> call jsx_pretty#comment#update_commentstring(b:original_commentstring)
+  autocmd CursorMoved <buffer> call jsx_pretty#comment#update_commentstring(b:jsx_pretty_old_cms)
 augroup end
 
 setlocal suffixesadd+=.tsx
-
-endif

@@ -2,7 +2,7 @@
 " Description: Client api used by vim8
 " Author: Qiming Zhao <chemzqm@gmail.com>
 " Licence: MIT licence
-" Last Modified:  June 28, 2019
+" Last Modified:  Nov 11, 2020
 " ============================================================================
 if has('nvim') | finish | endif
 let s:funcs = {}
@@ -121,7 +121,7 @@ function! s:funcs.get_api_info()
 endfunction
 
 function! s:funcs.list_bufs()
-  return map(getbufinfo({'buflisted': 1}), 'v:val["bufnr"]')
+  return map(getbufinfo({'bufloaded': 1}), 'v:val["bufnr"]')
 endfunction
 
 function! s:funcs.feedkeys(keys, mode, escape_csi)
@@ -215,12 +215,10 @@ endfunction
 " buffer methods {{
 function! s:funcs.buf_set_option(bufnr, name, val)
   let val = a:val
-  if type(val) == type(v:true)
-    if val == v:true
-      let val = 1
-    else
-      let val = 0
-    endif
+  if val is v:true
+    let val = 1
+  elseif val is v:false
+    let val = 0
   endif
   return setbufvar(a:bufnr, '&'.a:name, val)
 endfunction
@@ -242,13 +240,13 @@ function! s:funcs.buf_get_mark(bufnr, name)
 endfunction
 
 function! s:funcs.buf_add_highlight(bufnr, srcId, hlGroup, line, colStart, colEnd) abort
-  if !has('textprop')
+  if !has('textprop') || !has('patch-8.1.1719')
     return
   endif
   let bufnr = a:bufnr == 0 ? bufnr('%') : a:bufnr
-  let key = 'Coc'.a:hlGroup
-  if empty(prop_type_get(key))
-    call prop_type_add(key, {'highlight': a:hlGroup, 'combine': 1})
+  let type = 'CocHighlight'.(a:srcId == -1 ? '' : a:srcId)
+  if empty(prop_type_get(type, {'bufnr': a:bufnr}))
+    call prop_type_add(type, {'highlight': a:hlGroup, 'combine': 1, 'bufnr': a:bufnr})
   endif
   let total = strlen(getbufline(bufnr, a:line + 1)[0])
   let end = a:colEnd
@@ -260,50 +258,30 @@ function! s:funcs.buf_add_highlight(bufnr, srcId, hlGroup, line, colStart, colEn
   if end <= a:colStart
     return
   endif
-  let id = 0
-  if a:srcId != -1
-    let cached = getbufvar(bufnr, 'prop_namespace_'.a:srcId, [])
-    let id = s:prop_id
-    let s:prop_id = id + 1
-    call add(cached, id)
-    call setbufvar(bufnr, 'prop_namespace_'.a:srcId, cached)
-  endif
+  let id = s:prop_id
+  let s:prop_id = id + 1
   try
-    call prop_add(a:line + 1, a:colStart + 1, {'length': end - a:colStart, 'bufnr': bufnr, 'type': key, 'id': id})
+    call prop_add(a:line + 1, a:colStart + 1, {'length': end - a:colStart, 'bufnr': bufnr, 'type': type, 'id': id})
   catch /^Vim\%((\a\+)\)\=:E967/
     " ignore 967
   endtry
 endfunction
 
 function! s:funcs.buf_clear_namespace(bufnr, srcId, startLine, endLine) abort
-  if !has('textprop')
+  if !has('textprop') || !has('patch-8.1.1719')
     return
   endif
+  let bufnr = a:bufnr == 0 ? bufnr('%') : a:bufnr
+  let start = a:startLine + 1
+  let end = a:endLine == -1 ? len(getbufline(bufnr, 1, '$')) : a:endLine + 1
   if a:srcId == -1
-    if a:endLine == -1
-      call prop_clear(a:startLine + 1, {'bufnr': a:bufnr})
-    else
-      call prop_clear(a:startLine + 1, a:endLine + 1, {'bufnr': a:bufnr})
-    endif
-  else
-    let cached = getbufvar(a:bufnr, 'prop_namespace_'.a:srcId, [])
-    if empty(cached)
-      return
-    endif
-    call setbufvar(a:bufnr, 'prop_namespace_'.a:srcId, [])
-    for id in cached
-      if a:endLine == -1
-        if a:startLine == 0 && a:endLine == -1
-          call prop_remove({'id':id, 'bufnr': a:bufnr})
-        elseif a:endLine != -1
-          call prop_remove({'id':id, 'bufnr': a:bufnr}, a:startLine, a:endLine)
-        else
-          let len = s:buf_line_count(a:bufnr)
-          call prop_remove({'id':id, 'bufnr': a:bufnr}, a:startLine, len)
-        endif
-      else
-      endif
+    let types = filter(prop_type_list({'bufnr': bufnr}), 'v:val =~# "^CocHighlight"')
+    for type in types
+      call prop_remove({'type': type, 'bufnr': bufnr, 'all': 1}, start, end)
     endfor
+  else
+    let type = 'CocHighlight'.a:srcId
+    call prop_remove({'type': type, 'bufnr': bufnr, 'all': 1}, start, end)
   endif
 endfunction
 
@@ -332,6 +310,9 @@ function! s:funcs.buf_get_lines(bufnr, start, end, strict) abort
 endfunction
 
 function! s:funcs.buf_set_lines(bufnr, start, end, strict, ...) abort
+  if !bufloaded(a:bufnr)
+    return
+  endif
   let replacement = get(a:, 1, [])
   let lineCount = s:buf_line_count(a:bufnr)
   let startLnum = a:start >= 0 ? a:start + 1 : lineCount + a:start + 1
@@ -348,6 +329,7 @@ function! s:funcs.buf_set_lines(bufnr, start, end, strict, ...) abort
   endif
   if a:bufnr == curr || changeBuffer
     " replace
+    let storeView = winsaveview()
     if delCount == len(replacement)
       call setline(startLnum, replacement)
     else
@@ -361,6 +343,7 @@ function! s:funcs.buf_set_lines(bufnr, start, end, strict, ...) abort
         let @" = saved_reg
       endif
     endif
+    call winrestview(storeView)
     if changeBuffer
       exe 'buffer '.curr
     endif
@@ -436,12 +419,34 @@ function! s:funcs.win_get_width(win_id) abort
   return winwidth(a:win_id)
 endfunction
 
+if exists('*win_execute')
+  function! s:win_execute(win_id, cmd, ...) abort
+    let ref = get(a:000, 0, v:null)
+    let cmd = ref is v:null ? a:cmd : 'let ref["out"] = ' . a:cmd
+    call win_execute(a:win_id, cmd)
+  endfunction
+else
+  function! s:win_execute(win_id, cmd, ...) abort
+    let ref = get(a:000, 0, v:null)
+    let cmd = ref is v:null ? a:cmd : 'let ref["out"] = ' . a:cmd
+    let winid = win_getid()
+    if winid == a:win_id
+      execute cmd
+    else
+      let goto_status = win_gotoid(a:win_id)
+      if !goto_status
+        return
+      endif
+      execute cmd
+      call win_gotoid(winid)
+    endif
+  endfunction
+endif
+
 function! s:funcs.win_get_cursor(win_id) abort
-  let winid = win_getid()
-  call win_gotoid(a:win_id)
-  let pos = [line('.'), col('.')-1]
-  call win_gotoid(winid)
-  return pos
+  let ref = {}
+  call s:win_execute(a:win_id, "[line('.'), col('.')-1]", ref)
+  return ref['out']
 endfunction
 
 function! s:funcs.win_get_var(win_id, name) abort
@@ -449,10 +454,11 @@ function! s:funcs.win_get_var(win_id, name) abort
 endfunction
 
 function! s:funcs.win_set_width(win_id, width) abort
-  let winid = win_getid()
-  call win_gotoid(a:win_id)
-  execute 'vertical resize '.a:width
-  call win_gotoid(winid)
+  return s:win_execute(a:win_id, 'vertical resize '.a:width)
+endfunction
+
+function! s:funcs.win_set_buf(win_id, buf_id) abort
+  return s:win_execute(a:win_id, 'buffer '.a:buf_id)
 endfunction
 
 function! s:funcs.win_get_option(win_id, name) abort
@@ -460,27 +466,15 @@ function! s:funcs.win_get_option(win_id, name) abort
 endfunction
 
 function! s:funcs.win_set_height(win_id, height) abort
-  let winnr = win_id2win(a:win_id)
-  if winnr != 0
-    let curr = winnr()
-    if winnr == curr
-      execute 'resize '.a:height
-    else
-      execute winnr.'wincmd w'
-      execute 'resize '.a:height
-      wincmd p
-    endif
-  endif
+  return s:win_execute(a:win_id, 'resize '.a:height)
 endfunction
 
 function! s:funcs.win_set_option(win_id, name, value) abort
   let val = a:value
-  if type(val) == type(v:true)
-    if val == v:true
-      let val = 1
-    else
-      let val = 0
-    endif
+  if val is v:true
+    let val = 1
+  elseif val is v:false
+    let val = 0
   endif
   call setwinvar(a:win_id, '&'.a:name, val)
 endfunction
@@ -507,25 +501,12 @@ function! s:funcs.win_get_number(win_id) abort
 endfunction
 
 function! s:funcs.win_set_cursor(win_id, pos) abort
-  let winnr = win_id2win(a:win_id)
-  if winnr != 0
-    let [line, col] = a:pos
-    let curr = winnr()
-    if winnr == curr
-      call cursor(line, col + 1)
-    else
-      execute winnr.'wincmd w'
-      call cursor(line, col + 1)
-      execute curr.'wincmd w'
-    endif
-  endif
+  let [line, col] = a:pos
+  call s:win_execute(a:win_id, 'call cursor('.line.','.(col + 1).')')
 endfunction
 
 function! s:funcs.win_close(win_id, ...) abort
-  let curr = win_getid(a:win_id)
-  call win_gotoid(a:win_id)
-  close!
-  call win_gotoid(curr)
+  call s:win_execute(a:win_id, 'close!')
 endfunction
 
 function! s:funcs.win_get_tabpage(win_id) abort

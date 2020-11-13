@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'razor') == -1
+if has_key(g:polyglot_is_disabled, 'razor')
+  finish
+endif
 
 " Vim indent file
 " Language:	    Razor
@@ -10,5 +12,3 @@ if exists("b:did_indent")
 endif
 runtime! indent/html.vim
 runtime! indent/javscript.vim
-
-endif

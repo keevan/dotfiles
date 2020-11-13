@@ -1,4 +1,6 @@
-if !exists('g:polyglot_disabled') || index(g:polyglot_disabled, 'elixir') == -1
+if has_key(g:polyglot_is_disabled, 'elixir')
+  finish
+endif
 
 if exists('b:did_ftplugin')
   finish
@@ -51,5 +53,3 @@ onoremap <buffer> <silent> <expr> [] ':silent keeppatterns ?'.b:block_end  .'<CR
 
 let b:undo_ftplugin = 'setlocal sw< sts< et< isk< com< cms< path< inex< sua< def< fo<'.
       \ '| unlet! b:match_ignorecase b:match_words b:block_begin b:block_end'
-
-endif
