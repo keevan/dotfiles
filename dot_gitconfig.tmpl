@@ -1,3 +1,15 @@
 [user]
 	email = keevan.pham@gmail.com
 	name = {{ .name }}
+
+[includeIf "gitdir:~/apps/"]
+	path = .gitconfig.work
+
+[alias]
+	s=status
+	b=branch
+	out=log origin/master.. --pretty='format:%C(auto)%h %<(72,trunc)%s | %ar'
+	in=!git fetch && git log ..origin/master --pretty='format:%C(auto)%h [%<(7,trunc)%cn] %<(72,trunc)%s | %ar'
+	outs=!git out --stat
+	ins=!git in --stat
+	out-summary=log origin/master.. --pretty='format:  %<(72,trunc)%s'
