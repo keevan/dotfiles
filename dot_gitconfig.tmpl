@@ -5,6 +5,9 @@
 [includeIf "gitdir:~/apps/"]
 	path = .gitconfig.work
 
+[push]
+	recurseSubmodules = check
+
 [alias]
 	s=status
 	b=branch
@@ -13,3 +16,8 @@
 	outs=!git out --stat
 	ins=!git in --stat
 	out-summary=log origin/master.. --pretty='format:  %<(72,trunc)%s'
+	co=checkout
+	uncommit=reset HEAD^
+	rename=branch -m
+	cp=cherry-pick
+	pushh=!git push --set-upstream origin $(git branch --show-current)
