@@ -29,6 +29,11 @@
 " TODO: Set up NERDTree mappings such that it matches with existing atom setup
 " (and have hjkl for tree navigation)
 
+" Change write method as a workaround for docker bind mounts not updating the
+" file on save, due to the inodes changing by default on vim save. More
+" information cn be found here: https://github.com/moby/moby/issues/15793#issuecomment-161162118
+set backupcopy=yes
+
 scriptencoding utf-8
 set encoding=utf-8
 let g:coc_disable_startup_warning = 1
