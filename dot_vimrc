@@ -34,6 +34,10 @@
 " information cn be found here: https://github.com/moby/moby/issues/15793#issuecomment-161162118
 set backupcopy=yes
 
+"chezmoi integration
+autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
+
+
 scriptencoding utf-8
 set encoding=utf-8
 let g:coc_disable_startup_warning = 1
@@ -45,6 +49,18 @@ let g:coc_disable_startup_warning = 1
 	let mapleader=' '
 
 " Theme and Syntax
+""" Customize colors (linter menu, autocomplete, etc)
+	func! s:my_colors_setup() abort
+			" this is an example
+			hi Pmenu guibg=#222222 gui=NONE
+			" hi PmenuSel guibg=#b7c7b7 gui=NONE
+			hi PmenuSbar guibg=#222222
+			hi PmenuThumb guibg=#585858
+	endfunc
+
+	augroup colorscheme_coc_setup | au!
+			au ColorScheme * call s:my_colors_setup()
+	augroup END
 	set t_Co=256
 	syntax on
 	colorscheme jellybeans
@@ -162,13 +178,99 @@ silent! call plug#begin(g:dot_vim_path . '/plugged')
 	" tpope's plugin it's probably minimal and pure vim)
 		Plug 'tpope/vim-commentary'
 
+	" Ferret - Similar to Narrow I guess?
+	Plug 'wincent/ferret'
+	" https://github.com/wincent/ferret#user-content-ferretgetdefaultarguments
+	let g:FerretExecutableArguments = {
+				\   'ack': '--column --with-filename -s',
+				\   'rg': '--vimgrep --no-heading --no-config --max-columns 4096 -g !{vendor,.git,build,dist,tags,composer.lock}'
+				\ }
+	" Instead of <Leader>a, use <Leader>x.
+	nmap <Leader>s <Plug>(FerretAck)
+	nmap <C-e> <Plug>(FerretAckWord)
+
+
+	" Substitution helper
+		Plug 'tpope/vim-abolish'
+
 	Plug 'vim-airline/vim-airline'
 		set noshowmode  " to get rid of thing like --INSERT-- since we are using vim-airline
 
-	" Syntax error highlighting?
+	" Syntax error highlighting? - allows jumping to files in jsx files (without
+	" jsx extension being specified
 		Plug 'sheerun/vim-polyglot'
 
+	" Auto generate tags (trialing)
+		Plug 'ludovicchabant/vim-gutentags'
+		let g:gutentags_add_default_project_roots = 0
+		let g:gutentags_project_root = ['package.json', '.git']
+		" Don't add tag files to project repos
+		let g:gutentags_cache_dir = expand('~/.cache/vim/ctags/')
+		" Clear gutentags cache: command! -nargs=0 GutentagsClearCache call system('rm ' . g:gutentags_cache_dir . '/*')
+		let g:gutentags_generate_on_write = 1
+		let g:gutentags_generate_on_new = 1
+		let g:gutentags_generate_on_missing = 1
+		let g:gutentags_generate_on_write = 1
+		let g:gutentags_generate_on_empty_buffer = 0
+		" More info?
+		let g:gutentags_ctags_extra_args = [
+      \ '--tag-relative=yes',
+      \ '--fields=+ailmnS',
+      \ ]
+		" Cherry on top - ignore all these files from being tagged
+		let g:gutentags_ctags_exclude = [
+      \ '*.git', '*.svg', '*.hg',
+      \ '*/tests/*',
+      \ 'build',
+      \ 'dist',
+      \ '*sites/*/files/*',
+      \ 'bin',
+      \ 'node_modules',
+      \ 'bower_components',
+      \ 'cache',
+      \ 'compiled',
+      \ 'docs',
+      \ 'example',
+      \ 'bundle',
+      \ 'vendor',
+      \ '*.md',
+      \ '*-lock.json',
+      \ '*.lock',
+      \ '*bundle*.js',
+      \ '*build*.js',
+      \ '.*rc*',
+      \ '*.json',
+      \ '*.min.*',
+      \ '*.map',
+      \ '*.bak',
+      \ '*.zip',
+      \ '*.pyc',
+      \ '*.class',
+      \ '*.sln',
+      \ '*.Master',
+      \ '*.csproj',
+      \ '*.tmp',
+      \ '*.csproj.user',
+      \ '*.cache',
+      \ '*.pdb',
+      \ 'tags*',
+      \ 'cscope.*',
+      \ '*.css',
+      \ '*.less',
+      \ '*.scss',
+      \ '*.exe', '*.dll',
+      \ '*.mp3', '*.ogg', '*.flac',
+      \ '*.swp', '*.swo',
+      \ '*.bmp', '*.gif', '*.ico', '*.jpg', '*.png',
+      \ '*.rar', '*.zip', '*.tar', '*.tar.gz', '*.tar.xz', '*.tar.bz2',
+      \ '*.pdf', '*.doc', '*.docx', '*.ppt', '*.pptx',
+      \ ]
+
+
 	" Plug 'scrooloose/syntastic'
+
+	" Didn't know I needed this.. automatically sets CWD to project root
+	Plug 'airblade/vim-rooter'
 
 	Plug 'junegunn/fzf', { 'do': './install --bin' }
 		nnoremap <Leader>f :FZF --reverse<cr>
@@ -212,16 +314,18 @@ silent! call plug#begin(g:dot_vim_path . '/plugged')
 
 		" Function to toggle the Nerd Tree
 			function! ToggleNerdTree()
-				"if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
-				if &modifiable && strlen(expand('%')) > 0 && !&diff
-					NERDTreeFind
-					" wincmd p
-				else
+				" if &modifiable && strlen(expand('%')) > 0 && !&diff
+				" 	NERDTreeFind
+				" 	" wincmd p
+				" else
 					NERDTreeToggle
-				endif
+				" endif
 			endfunction
 
 			nmap <C-\> :call ToggleNerdTree()<CR>
+			" Similar keys to Atom
+			let NERDTreeMapActivateNode='l'
+			let NERDTreeMapCloseDir='h'
 
 	" Move lines up and down using alt+k or alt+j
 		nnoremap <A-k> :m .-2<CR>==
