@@ -164,6 +164,7 @@
   # 'ctrl-k': 'window:focus-pane-above'
   'g _': 'text-manipulation:format-underscore' # test_me_out
   'g m': 'vim-mode-plus:mark'
+  'g n': 'notifications:clear-log'
   'j': 'vim-mode-plus:move-down-screen'
   'k': 'vim-mode-plus:move-up-screen'
   'g p': 'vim-mode-plus:put-after-with-auto-indent'
@@ -219,6 +220,7 @@
   'm': 'vim-mode-plus:toggle-preset-occurrence'
   'M': 'vim-mode-plus:toggle-preset-subword-occurrence'
   'ctrl-k ctrl-d': 'find-and-replace:select-skip'
+  'g R': 'vim-mode-plus:resolve-git-conflict'
 
 # 'atom-text-editor.vim-mode-plus.visual-mode':
 # 	'ctrl-j': 'editor:move-line-down'
@@ -261,12 +263,14 @@
   'ctrl-f': 'narrow-ui:confirm-keep-open'
   'n': 'narrow-ui:move-to-next-file-item'
   'p': 'narrow-ui:move-to-previous-file-item'
+  'ctrl-alt-w': 'narrow-ui:toggle-search-whole-word'
   # 'ctrl-t': 'narrow-ui:switch-ui-location'
-
+# narrow editor insert mode
 'atom-text-editor.narrow.narrow-editor.vim-mode-plus.insert-mode.prompt':
   'up': 'narrow:previous-query-history'
   'down': 'narrow:next-query-history'
   'ctrl-alt-/': 'narrow-ui:toggle-search-use-regex'
+  'ctrl-alt-w': 'narrow-ui:toggle-search-whole-word'
   # 'ctrl-p': 'narrow:previous-query-history'
   # 'ctrl-n': 'narrow:next-query-history'
 
@@ -297,6 +301,8 @@
   'a )': 'vim-mode-plus:a-parenthesis-allow-forwarding'
 
 'atom-text-editor.autocomplete-active':
+  # 'tab': 'autocomplete-plus:move-down'
+  # 'shift-tab': 'autocomplete-plus:move-up'
   'tab': 'core:move-down'
   'shift-tab': 'core:move-up'
   ';': 'autocomplete-plus:confirm'

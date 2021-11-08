@@ -3,24 +3,38 @@
     autocomplete: false
     languageMappings: "{\"javascript\": \"babel es6 javascript\"}"
     startDir: "dirOfFile"
+  "atom-autocomplete-php":
+    binComposer: "/usr/bin/composer"
   "atom-clock":
     dateFormat: "Y-MM-DD | h:mm a"
+  "atom-debug-ui":
+    display: {}
+    gutters: {}
   "atom-ide-ui":
     "atom-ide-code-format":
-      formatOnSave: true
-    use: {}
+      formatOnType: false
+    "atom-ide-datatip": {}
+    "atom-ide-debugger": {}
+    "atom-ide-diagnostics-ui":
+      statusBarPosition: "right"
+    "atom-ide-outline-view": {}
+    use:
+      "atom-ide-code-highlight": "never"
+      "atom-ide-debugger": "never"
   "atom-limelight": {}
   "atom-minify":
     minifyOnSave: true
     showSavingInfo: false
   "atom-scale-factor":
     setLatest: true
+  "atom-typescript":
+    allowJS: true
+    checkAllFilesOnSave: false
   "atomic-management":
     enforceConfiguredPackages: false
   "autocomplete-emojis":
     enableUnicodeEmojis: false
   "autocomplete-plus":
-    autoActivationDelay: 50
     fileBlacklist: [
       "*.md"
     ]
@@ -106,7 +120,6 @@
       "project-folder"
     ]
     audioBeep: false
-    autoHideMenuBar: true
     customFileTypes:
       "source.ini": [
         ".buckconfig"
@@ -120,7 +133,6 @@
         "BUCK"
       ]
     disabledPackages: [
-      "atom-minify"
       "package-with-broken-package-json"
       "background-tips"
       "welcome"
@@ -134,13 +146,11 @@
       "markdown-table-formatter"
       "focus-pane-or-panel"
       "ide-typescript"
-      "atom-ide-ui"
       "package-generator"
       "submode"
       "vim-mode-plus-replace-with-execution"
       "nuclide"
       "vim-mode-plus-auto-ime"
-      "intentions"
       "vim-mode-plus-move-to-symbols"
       "git-time-machine"
       "git-control"
@@ -153,24 +163,31 @@
       "styleguide"
       "open-on-github"
       "atom-hg"
-      "busy-signal"
       "title-bar-replacer"
       "git-plus"
       "disable-arrow-keys"
-      "github"
       "deprecation-cop"
       "atom-keyboard-macros-vim"
       "ex-mode"
-      "project-manager"
       "zebra-stripes"
-      "linter"
       "react"
       "minimap"
-      "atom-minify"
       "deprecation-cop"
       "TabNine"
       "go-debug"
-      "highlight-selected"
+      "tester"
+      "phpunit"
+      "atom-minify"
+      "autocomplete-atom-api"
+      "atom-debug-ui"
+      "atom-beautify"
+      "linter-ui-default"
+      "linter"
+      "project-manager"
+      "atom-autocomplete-php"
+      "ide-php"
+      "atom-ide-signature-help"
+      "atom-ide-datatip"
     ]
     followSymlinks: false
     ignoredNames: [
@@ -203,6 +220,9 @@
       "*.old"
       ".gradle*"
       ".idea"
+      "vendor/*"
+      "sitedata"
+      "sitedata/*"
     ]
     openEmptyEditorOnStart: false
     packagesWithKeymapsDisabled: [
@@ -219,10 +239,13 @@
     titleBar: "hidden"
     uriHandlerRegistration: "always"
     useTreeSitterParsers: false
+    warnOnLargeFileLimit: 20
   "cursor-history":
     columnDeltaToRemember: 5
     flashOnLand: true
     searchAllPanes: false
+  "date-plus":
+    dateFormat: "YYYYMMDD00"
   "demo-mode":
     autoHideTimeout: 1000
     maxKeystrokeToShow: 3
@@ -236,10 +259,9 @@
   editor:
     atomicSoftTabs: false
     fontFamily: "Fira Code"
-    fontSize: 12
     invisibles: {}
     scrollPastEnd: true
-    softTabs: false
+    tabLength: 4
     zoomFontWhenCtrlScrolling: false
   "ex-mode":
     gdefault: true
@@ -274,9 +296,11 @@
     contextMenuDisplayAtFirst: false
     performanceMode: true
   "highlight-selected": {}
+  "ide-php":
+    memoryLimit: "300M"
   "ide-typescript": {}
   "inline-git-diff":
-    statusBarStyle: "icon"
+    statusBarStyle: "text"
   "js-hyperclick":
     jumpToImport: true
   keystroke:
@@ -296,11 +320,21 @@
     disabling:
       disableWhenNoEslintConfig: false
     global: {}
+  "linter-phpcs":
+    codeStandardOrConfigFile: "moodle"
+    disableWhenNoConfigFile: true
+    otherLanguages: {}
   "linter-ui-default":
+    alwaysTakeMinimumSpace: true
+    decorateOnTreeView: "None"
+    gutterPosition: "Left"
+    largeFileLineCount: 1000
+    longLineLength: 1000
     panelHeight: 300
     showPanel: true
-    showStatusBar: false
-    useBusySignal: false
+    statusBarClickBehavior: "Jump to next issue"
+    statusBarPosition: "Right"
+    statusBarRepresents: "Current File"
   "markdown-preview": {}
   "markdown-table-formatter":
     autoSelectEntireDocument: false
@@ -333,7 +367,7 @@
     Scan: {}
     Search:
       agExtraArgs: "--path-to-ignore /home/user/rg/.gitignore"
-      rgExtraArgs: "--ignore-file=D:\\projects\\ripgrep\\.gitignore --ignore-file=/home/user/rg/.gitignore"
+      rgExtraArgs: "--ignore-file=D:\\projects\\ripgrep\\.gitignore --ignore-file=/home/user/rg/.gitignore --ignore-file=/home/kevinpham/rg/.gitignore"
       searcher: "rg"
     SelectFiles:
       rememberQuery: true
@@ -341,17 +375,44 @@
       locationToOpen: "bottom"
     confirmOnUpdateRealFile: false
     locationToOpen: "center"
+  "native-ui":
+    ui:
+      seamlessScrollbars: true
   "nord-atom-ui": {}
   nuclide:
     "nuclide-home":
       showHome: false
   paner:
     debug: true
+  "php-debug":
+    display:
+      arraySort: true
+    exceptions:
+      catchableFatalError: false
+      notice: false
+      strictStandards: false
+      unknownError: false
+      warning: false
+    server:
+      serverPort: 9003
+    showWelcome: false
+    xdebug:
+      multipleSessions: false
+      projectScan: false
+  "php-ide-serenata":
+    core: {}
+    general:
+      doNotShowProjectChangeMessage: true
+      projectOpenCount: 1
+    storagePath: "/home/kevinpham/.cache/php-ide-serenata"
+  phpunit:
+    execPath: "./vendor/bin/phpunit"
   "prettier-atom":
     formatOnSaveOptions:
       excludedGlobs: [
         "tryit.js"
       ]
+      isDisabledIfNoConfigFile: true
       showInStatusBar: true
     prettierOptions:
       bracketSpacing: false
@@ -359,7 +420,8 @@
       printWidth: 120
       semi: false
       trailingComma: "es5"
-    useEditorConfig: false
+    useEslint: true
+    useStylelint: true
   "project-folder":
     closeItemsForRemovedProject: true
     gitProjectDirectories: [
@@ -430,6 +492,9 @@
       "minimap"
       "linter"
       "atom-minify"
+      "php-debug"
+      "ide-intelephense-forked"
+      "prettier-atom"
     ]
   "toggle-quotes": {}
   "tone-syntax":
@@ -439,6 +504,7 @@
   "tree-view":
     alwaysOpenExisting: true
     hideIgnoredNames: true
+    hideVcsIgnoredFiles: true
   try:
     basename: "tryit"
     root: "~/tryit"
@@ -543,7 +609,8 @@
   "vim-mode-plus-move-selected-text": {}
   "vim-mode-plus-replace-with-execution":
     registerToSelectList: true
-  whitespace: {}
+  whitespace:
+    ensureSingleTrailingNewline: false
   "wrap-guide": {}
   "zebra-stripes":
     active_on_open: true
@@ -562,6 +629,9 @@
   editor:
     tabLength: 4
     tabType: "hard"
+".html.php.text":
+  editor:
+    nonWordCharacters: "/\\()\"':,.;<>~!@#%^&*|+=[]{}`?-"
 ".js.source":
   editor:
     autoIndent: true
