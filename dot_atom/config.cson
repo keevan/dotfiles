@@ -3,13 +3,18 @@
     autocomplete: false
     languageMappings: "{\"javascript\": \"babel es6 javascript\"}"
     startDir: "dirOfFile"
-  "atom-autocomplete-php":
-    binComposer: "/usr/bin/composer"
+  "atom-autocomplete-php": {}
   "atom-clock":
     dateFormat: "Y-MM-DD | h:mm a"
   "atom-debug-ui":
-    display: {}
+    display:
+      enableActionBar: false
     gutters: {}
+  "atom-ide-code-format":
+    formatOnSave: false
+  "atom-ide-datatip": {}
+  "atom-ide-deno":
+    modes: {}
   "atom-ide-ui":
     "atom-ide-code-format":
       formatOnType: false
@@ -18,10 +23,16 @@
     "atom-ide-diagnostics-ui":
       statusBarPosition: "right"
     "atom-ide-outline-view": {}
+    "atom-ide-signature-help":
+      enable: false
     use:
       "atom-ide-code-highlight": "never"
       "atom-ide-debugger": "never"
   "atom-limelight": {}
+  "atom-linter-phpstan":
+    disableWhenNoConfigFile: true
+    executablePath: "/home/kevinpham/.config/composer/vendor/bin/phpstan"
+    memoryLimit: "200M"
   "atom-minify":
     minifyOnSave: true
     showSavingInfo: false
@@ -29,7 +40,20 @@
     setLatest: true
   "atom-typescript":
     allowJS: true
-    checkAllFilesOnSave: false
+    ignoredDiagnosticCodes: [
+      "8002"
+      "8003"
+      "8004"
+      "8006"
+      "8008"
+      "8010"
+    ]
+    jsSyntaxScopes: [
+      "source.js"
+      "source.jsx"
+      "javascript"
+      "source.flow"
+    ]
   "atomic-management":
     enforceConfiguredPackages: false
   "autocomplete-emojis":
@@ -118,6 +142,7 @@
       "vim-mode-plus-jasmine-increase-focus"
       "cursor-history"
       "project-folder"
+      "atom-ide-diagnostics-ui"
     ]
     audioBeep: false
     customFileTypes:
@@ -159,35 +184,38 @@
       "js-hyperclick"
       "autocomplete-emojis"
       "language-gfm"
-      "spell-check"
       "styleguide"
       "open-on-github"
-      "atom-hg"
       "title-bar-replacer"
       "git-plus"
       "disable-arrow-keys"
       "deprecation-cop"
       "atom-keyboard-macros-vim"
       "ex-mode"
-      "zebra-stripes"
       "react"
       "minimap"
       "deprecation-cop"
       "TabNine"
       "go-debug"
-      "tester"
       "phpunit"
-      "atom-minify"
       "autocomplete-atom-api"
-      "atom-debug-ui"
       "atom-beautify"
-      "linter-ui-default"
-      "linter"
-      "project-manager"
+      "language-javascript-jsx"
+      "atom-minify"
+      "spell-check"
+      "atom-linter-phpstan"
+      "linter-spell-javascript"
+      "linter-spell"
       "atom-autocomplete-php"
+      "atom-ide-deno"
+      "php-composer-completion"
+      "goto-definition"
+      "ide-html"
+      "php-ide-serenata"
+      "atom-ide-ui"
+      "atom-ide-debugger"
       "ide-php"
-      "atom-ide-signature-help"
-      "atom-ide-datatip"
+      "php-debug"
     ]
     followSymlinks: false
     ignoredNames: [
@@ -201,7 +229,6 @@
       "*.min.css"
       ".gitignore"
       ".gitattributes"
-      "artisan"
       "composer.lock"
       "node_modules"
       "/vendor"
@@ -223,6 +250,7 @@
       "vendor/*"
       "sitedata"
       "sitedata/*"
+      ""
     ]
     openEmptyEditorOnStart: false
     packagesWithKeymapsDisabled: [
@@ -230,6 +258,7 @@
       "inline-git-diff"
       "atom-limelight"
       "emmet"
+      "atom-ide-code-format"
     ]
     telemetryConsent: "no"
     themes: [
@@ -259,6 +288,7 @@
   editor:
     atomicSoftTabs: false
     fontFamily: "Fira Code"
+    fontSize: 13
     invisibles: {}
     scrollPastEnd: true
     tabLength: 4
@@ -285,6 +315,7 @@
       splitPane: "Right"
   github:
     automaticCommitMessageWrapping: false
+    remoteFetchProtocol: "ssh"
     showDiffIconGutter: true
   "go-plus":
     config: {}
@@ -296,6 +327,8 @@
     contextMenuDisplayAtFirst: false
     performanceMode: true
   "highlight-selected": {}
+  "ide-intelephense-forked":
+    licenseKey: "               "
   "ide-php":
     memoryLimit: "300M"
   "ide-typescript": {}
@@ -317,12 +350,15 @@
   "linter-eslint":
     autofix:
       ignoreFixableRulesWhileTyping: true
-    disabling:
-      disableWhenNoEslintConfig: false
+    disabling: {}
     global: {}
   "linter-phpcs":
     codeStandardOrConfigFile: "moodle"
-    disableWhenNoConfigFile: true
+    ignorePatterns: [
+      "**/*.blade.php"
+      "**/*.twig.php"
+      "**/*.js"
+    ]
     otherLanguages: {}
   "linter-ui-default":
     alwaysTakeMinimumSpace: true
@@ -330,11 +366,13 @@
     gutterPosition: "Left"
     largeFileLineCount: 1000
     longLineLength: 1000
-    panelHeight: 300
-    showPanel: true
+    panelHeight: 359
     statusBarClickBehavior: "Jump to next issue"
     statusBarPosition: "Right"
     statusBarRepresents: "Current File"
+  "linter-write-good":
+    additionalArgs: "--no-passive --yes-eprime"
+    severityLevel: "info"
   "markdown-preview": {}
   "markdown-table-formatter":
     autoSelectEntireDocument: false
@@ -373,8 +411,10 @@
       rememberQuery: true
     Symbols:
       locationToOpen: "bottom"
+      negateNarrowQueryByEndingExclamation: true
     confirmOnUpdateRealFile: false
     locationToOpen: "center"
+    textTruncationThreshold: 400
   "native-ui":
     ui:
       seamlessScrollbars: true
@@ -398,12 +438,15 @@
     showWelcome: false
     xdebug:
       multipleSessions: false
+      pathMaps: "[{\"remotePath\":\"/var/www/\",\"localPath\":\"/home/kevinpham/work/docker-dev/sites/\"}]"
       projectScan: false
   "php-ide-serenata":
     core: {}
     general:
       doNotShowProjectChangeMessage: true
-      projectOpenCount: 1
+      projectOpenCount: 10
+    refactoring:
+      enable: false
     storagePath: "/home/kevinpham/.cache/php-ide-serenata"
   phpunit:
     execPath: "./vendor/bin/phpunit"
@@ -430,6 +473,9 @@
   "project-manager":
     alwaysOpenInSameWindow: true
     sortBy: "last modified"
+  "python-linters":
+    lintTrigger:
+      pydocstyle: "Never"
   "quick-highlight":
     highlightSelection: false
     highlightSelectionMinimumLength: 4
@@ -438,10 +484,18 @@
     clearConsole: false
     openDeveloperToolsOnRun: false
   "sass-autocompile":
-    compressedFilenamePattern: "$1.css"
+    compileOnSave: false
   "spell-check":
-    locales: [
-      "en-US"
+    enableDebug: true
+    grammars: [
+      "source.asciidoc"
+      "source.gfm"
+      "text.git-commit"
+      "text.plain"
+      "text.plain.null-grammar"
+      "source.rst"
+      "text.restructuredtext"
+      "meta.embedded.block.php"
     ]
   "split-diff":
     colors: {}
@@ -495,6 +549,7 @@
       "php-debug"
       "ide-intelephense-forked"
       "prettier-atom"
+      "phpstan"
     ]
   "toggle-quotes": {}
   "tone-syntax":
@@ -503,7 +558,6 @@
   transformer: {}
   "tree-view":
     alwaysOpenExisting: true
-    hideIgnoredNames: true
     hideVcsIgnoredFiles: true
   try:
     basename: "tryit"
@@ -519,7 +573,6 @@
       "+"
     ]
     clearHighlightSearchOnResetNormalMode: true
-    clearMultipleCursorsOnEscapeInsertMode: true
     clearPersistentSelectionOnResetNormalMode: true
     customSurroundPairs: '''
       
@@ -612,6 +665,8 @@
   whitespace:
     ensureSingleTrailingNewline: false
   "wrap-guide": {}
+  "xatom-debug":
+    toolbarStyle: "BottomPanel"
   "zebra-stripes":
     active_on_open: true
     enabled: true
