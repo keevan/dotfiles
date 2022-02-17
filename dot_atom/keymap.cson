@@ -88,6 +88,7 @@
   'ctrl-shift-up': 'text-manipulation:format-humanize' # test me out
   'ctrl-shift-down': 'text-manipulation:format-underscore' # test me out
   'ctrl-shift-x': 'path-copy:current-relativepath'
+  'ctrl-)': 'git-link:copy-link-to-selection'
   'ctrl-shift-|': 'tree-view:reveal-active-file'
   'ctrl-shift-h': 'file-header:add'
   # 'shift-enter': 'lazy-motion:forward'
@@ -96,13 +97,14 @@
   'ctrl-shift-r': 'run-command:re-run-last-command'
   'alt-shift-o': 'tabs:close-other-tabs'
   'alt-:': 'pane:split-right-and-move-active-item' # Split right and move item (not exactly "L" for right)
-  'ctrl-shift-o': 'tree-view:show-current-file-in-file-manager'
+  'ctrl-shift-o': 'tree-view:show-currrent-file-in-file-manager'
   # 'ctrl-j ctrl-v': 'toggle-packages:toggle-vim-mode-plus'
   'ctrl-alt-shift->': 'emmet:remove-tag'
   # 'ctrl-shift-s': 'lines:sort'
   #'ctrl-shift-[': 'editor:select-to-beginning-of-line'
   #'ctrl-shift-]': 'editor:select-to-end-of-line'
   'ctrl-shift-[': 'editor:auto-indent'
+  'shift-escape': 'vim-mode-plus:activate-normal-mode' # Shift Escape to Escape
   'ctrl-shift-]': 'editor:auto-indent'
   'alt-up': 'keyboard-scroll:scrollUpWithCursor'
   'alt-down': 'keyboard-scroll:scrollDownWithCursor'
@@ -131,7 +133,6 @@
   'ctrl-k l': 'pane:split-right-and-move-active-item' # Test me out
   'ctrl-k h': 'pane:split-left-and-move-active-item' # Test me out
   'ctrl-k ctrl-p': 'editor:split-selections-into-lines'
-  'ctrl-k ctrl-o': 'one-liner:run'
   'ctrl-k ctrl-d': 'find-and-replace:select-skip'
   # 'ctrl-.': 'vim-mode-plus:insert-last-inserted' # test
   # 'ctrl-{': 'vim-mode-plus:move-to-previous-fold-start'
@@ -193,7 +194,7 @@
   '(': 'vim-mode-plus:move-to-previous-fold-start-with-same-indent'
   ')': 'vim-mode-plus:move-to-next-fold-start-with-same-indent'
   # Linter
-  # 'space j': 'linter-ui-default:next'
+  'space j': 'linter-ui-default:next'
   # 'space k': 'linter-ui-default:previous'
   'space k': 'linter-ui-default:previous'
   # [cursor history]

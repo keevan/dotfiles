@@ -4,12 +4,18 @@
     languageMappings: "{\"javascript\": \"babel es6 javascript\"}"
     startDir: "dirOfFile"
   "atom-autocomplete-php": {}
+  "atom-beautify":
+    php:
+      default_beautifier: "PHPCBF"
+      phpcbf_version: 3
   "atom-clock":
     dateFormat: "Y-MM-DD | h:mm a"
   "atom-debug-ui":
     display:
       enableActionBar: false
     gutters: {}
+  "atom-hot-package-loader":
+    outputLog: true
   "atom-ide-code-format":
     formatOnSave: false
   "atom-ide-datatip": {}
@@ -30,10 +36,13 @@
       "atom-ide-debugger": "never"
   "atom-limelight": {}
   "atom-linter-phpstan":
+    autoloadFile: "_ide_helper.php"
     disableWhenNoConfigFile: true
     executablePath: "/home/kevinpham/.config/composer/vendor/bin/phpstan"
+    level: "9"
     memoryLimit: "200M"
   "atom-minify":
+    jsMinifier: "Google Closure Compiler"
     minifyOnSave: true
     showSavingInfo: false
   "atom-scale-factor":
@@ -77,6 +86,38 @@
     allowCoreCopyWithEmptySelectionCopySelectedItemText: "display-name"
     surroundByBacktickWhenCopyCommandName: true
     surroundByBacktickWhenCopyDisplayName: true
+  "context-menu-remove":
+    remove:
+      "atom-text-editor": [
+        "Undo"
+        "Redo"
+        "Cut"
+        "Copy"
+        "Paste"
+        "Delete"
+        "Select All"
+        "Split Up"
+        "Split Down"
+        "Split Left"
+        "Split Right"
+        "Close Pane"
+        "View Staged Changes"
+        "View Unstaged Changes"
+        "Go to Declaration"
+        "Beautify editor contents"
+        "Debug Atom Beautify"
+        "Go to Definition"
+        "Show Call Hierarchy"
+        "Toggle"
+        "Toggle blame"
+        "Toggle Block Comment"
+        "Toggle Stream Censor"
+        "Reveal in Tree View"
+        "Format Code"
+        "HTML -> JS"
+      ]
+  "conventional-changelog":
+    releaseCount: 1000
   core:
     _disabledPackages: [
       "nuclide"
@@ -166,18 +207,15 @@
       "archive-view"
       "autosave"
       "color-picker"
-      "atom-hot-package-loader"
       "language-julia"
       "markdown-table-formatter"
       "focus-pane-or-panel"
       "ide-typescript"
-      "package-generator"
       "submode"
       "vim-mode-plus-replace-with-execution"
       "nuclide"
       "vim-mode-plus-auto-ime"
       "vim-mode-plus-move-to-symbols"
-      "git-time-machine"
       "git-control"
       "git-history"
       "git-diff-details"
@@ -193,17 +231,10 @@
       "atom-keyboard-macros-vim"
       "ex-mode"
       "react"
-      "minimap"
       "deprecation-cop"
-      "TabNine"
       "go-debug"
       "phpunit"
-      "autocomplete-atom-api"
-      "atom-beautify"
-      "language-javascript-jsx"
-      "atom-minify"
       "spell-check"
-      "atom-linter-phpstan"
       "linter-spell-javascript"
       "linter-spell"
       "atom-autocomplete-php"
@@ -215,6 +246,31 @@
       "atom-ide-ui"
       "atom-ide-debugger"
       "ide-php"
+      "language-javascript-jsx"
+      "minimap"
+      "git-line"
+      "atom-inline-blame"
+      "linter-ui-plus"
+      "atom-linter-phpstan"
+      "php-cs-fixer"
+      "tidy-markdown"
+      "atom-minify"
+      "linter-write-good"
+      "language-sql-mysql"
+      "TabNine"
+      "language-pgsql"
+      "atom-hot-package-loader"
+      "tester-phpunit"
+      "tester"
+      "xatom-debug"
+      "xatom-debug-nodejs"
+      "autocomplete-javascript"
+      "git-time-machine"
+      "split-diff"
+      "xatom-debug-php"
+      "sass-autocompile"
+      "themed-context-menu"
+      "incompatible-packages"
       "php-debug"
     ]
     followSymlinks: false
@@ -250,7 +306,7 @@
       "vendor/*"
       "sitedata"
       "sitedata/*"
-      ""
+      "compile-cache/*"
     ]
     openEmptyEditorOnStart: false
     packagesWithKeymapsDisabled: [
@@ -259,6 +315,8 @@
       "atom-limelight"
       "emmet"
       "atom-ide-code-format"
+      "atom-typescript"
+      "blame"
     ]
     telemetryConsent: "no"
     themes: [
@@ -267,7 +325,6 @@
     ]
     titleBar: "hidden"
     uriHandlerRegistration: "always"
-    useTreeSitterParsers: false
     warnOnLargeFileLimit: 20
   "cursor-history":
     columnDeltaToRemember: 5
@@ -291,6 +348,7 @@
     fontSize: 13
     invisibles: {}
     scrollPastEnd: true
+    showLineNumbers: false
     tabLength: 4
     zoomFontWhenCtrlScrolling: false
   "ex-mode":
@@ -326,14 +384,15 @@
   "goto-definition":
     contextMenuDisplayAtFirst: false
     performanceMode: true
+  "grammar-selector": {}
   "highlight-selected": {}
-  "ide-intelephense-forked":
+  "ide-intelephense":
     licenseKey: "               "
   "ide-php":
     memoryLimit: "300M"
   "ide-typescript": {}
   "inline-git-diff":
-    statusBarStyle: "text"
+    statusBarStyle: "icon"
   "js-hyperclick":
     jumpToImport: true
   keystroke:
@@ -354,6 +413,7 @@
     global: {}
   "linter-phpcs":
     codeStandardOrConfigFile: "moodle"
+    disableWhenNoConfigFile: true
     ignorePatterns: [
       "**/*.blade.php"
       "**/*.twig.php"
@@ -364,8 +424,6 @@
     alwaysTakeMinimumSpace: true
     decorateOnTreeView: "None"
     gutterPosition: "Left"
-    largeFileLineCount: 1000
-    longLineLength: 1000
     panelHeight: 359
     statusBarClickBehavior: "Jump to next issue"
     statusBarPosition: "Right"
@@ -373,11 +431,14 @@
   "linter-write-good":
     additionalArgs: "--no-passive --yes-eprime"
     severityLevel: "info"
-  "markdown-preview": {}
+  "markdown-preview":
+    useGitHubStyle: true
   "markdown-table-formatter":
     autoSelectEntireDocument: false
     formatOnSave: false
   mgit: {}
+  monaco:
+    theme: "vs-dark"
   mprettier:
     formatOnSave:
       disabledParsers: [
@@ -427,6 +488,7 @@
   "php-debug":
     display:
       arraySort: true
+      views: {}
     exceptions:
       catchableFatalError: false
       notice: false
@@ -439,15 +501,6 @@
     xdebug:
       multipleSessions: false
       pathMaps: "[{\"remotePath\":\"/var/www/\",\"localPath\":\"/home/kevinpham/work/docker-dev/sites/\"}]"
-      projectScan: false
-  "php-ide-serenata":
-    core: {}
-    general:
-      doNotShowProjectChangeMessage: true
-      projectOpenCount: 10
-    refactoring:
-      enable: false
-    storagePath: "/home/kevinpham/.cache/php-ide-serenata"
   phpunit:
     execPath: "./vendor/bin/phpunit"
   "prettier-atom":
@@ -480,6 +533,7 @@
     highlightSelection: false
     highlightSelectionMinimumLength: 4
   "recent-finder": {}
+  "relative-numbers": {}
   "run-in-atom":
     clearConsole: false
     openDeveloperToolsOnRun: false
@@ -506,6 +560,8 @@
       "text.html.basic"
     ]
   "status-bar": {}
+  "stream-censor":
+    isEnabled: true
   submode:
     submode:
       "gt-mode":
@@ -558,7 +614,6 @@
   transformer: {}
   "tree-view":
     alwaysOpenExisting: true
-    hideVcsIgnoredFiles: true
   try:
     basename: "tryit"
     root: "~/tryit"
@@ -575,7 +630,7 @@
     clearHighlightSearchOnResetNormalMode: true
     clearPersistentSelectionOnResetNormalMode: true
     customSurroundPairs: '''
-      
+
       {
          "p":[
             "<p>",
@@ -606,7 +661,7 @@
             ".\\"%\\""
          ]
       }
-      
+
     '''
     debugOutput: "console"
     debugOutputFilePath: "~/github/atom-vim-mode-plus/debug.log"
@@ -665,8 +720,7 @@
   whitespace:
     ensureSingleTrailingNewline: false
   "wrap-guide": {}
-  "xatom-debug":
-    toolbarStyle: "BottomPanel"
+  "xatom-debug": {}
   "zebra-stripes":
     active_on_open: true
     enabled: true
