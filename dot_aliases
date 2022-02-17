@@ -19,6 +19,7 @@ function unrm() {
 # Change directory for projects/apps
 alias cda='cd ~/apps'
 alias cdp='cd ~/projects'
+alias cdg='cd ~/github'
 
 # From https://madebynathan.com/2011/10/04/a-nicer-way-to-use-xclip/
 # A shortcut function that simplifies usage of xclip.
@@ -64,3 +65,5 @@ alias cbssh="cbf ~/.ssh/id_rsa.pub"
 alias cbwd="pwd | cb"
 # Copy most recent command in bash history
 alias cbhs="cat $HISTFILE | tail -n 1 | cb"
+
+
