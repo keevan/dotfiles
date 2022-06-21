@@ -8,6 +8,8 @@
     php:
       default_beautifier: "PHPCBF"
       phpcbf_version: 3
+  "atom-chat":
+    username: "keevan"
   "atom-clock":
     dateFormat: "Y-MM-DD | h:mm a"
   "atom-debug-ui":
@@ -21,6 +23,8 @@
   "atom-ide-datatip": {}
   "atom-ide-deno":
     modes: {}
+  "atom-ide-outline":
+    initialDisplay: false
   "atom-ide-ui":
     "atom-ide-code-format":
       formatOnType: false
@@ -47,6 +51,8 @@
     showSavingInfo: false
   "atom-scale-factor":
     setLatest: true
+  "atom-tailwindcss":
+    isDisabledIfNotInPackageJson: false
   "atom-typescript":
     allowJS: true
     ignoredDiagnosticCodes: [
@@ -68,9 +74,6 @@
   "autocomplete-emojis":
     enableUnicodeEmojis: false
   "autocomplete-plus":
-    fileBlacklist: [
-      "*.md"
-    ]
     suppressActivationForEditorClasses: [
       "vim-mode-plus.normal-mode"
       "vim-mode-plus.visual-mode"
@@ -79,6 +82,7 @@
       "narrow"
       "suppress-autocomplete-plus"
     ]
+  "bottom-dock": {}
   "choose-pane":
     labelChars: "HJKL;"
   "clip-history": {}
@@ -198,6 +202,7 @@
       "source.python": [
         "BUCK"
       ]
+    debugLSP: true
     disabledPackages: [
       "package-with-broken-package-json"
       "background-tips"
@@ -222,7 +227,6 @@
       "js-hyperclick"
       "autocomplete-emojis"
       "language-gfm"
-      "styleguide"
       "open-on-github"
       "title-bar-replacer"
       "git-plus"
@@ -230,7 +234,6 @@
       "deprecation-cop"
       "atom-keyboard-macros-vim"
       "ex-mode"
-      "react"
       "deprecation-cop"
       "go-debug"
       "phpunit"
@@ -246,16 +249,10 @@
       "atom-ide-ui"
       "atom-ide-debugger"
       "ide-php"
-      "language-javascript-jsx"
-      "minimap"
       "git-line"
       "atom-inline-blame"
       "linter-ui-plus"
-      "atom-linter-phpstan"
       "php-cs-fixer"
-      "tidy-markdown"
-      "atom-minify"
-      "linter-write-good"
       "language-sql-mysql"
       "TabNine"
       "language-pgsql"
@@ -271,8 +268,16 @@
       "sass-autocompile"
       "themed-context-menu"
       "incompatible-packages"
+      "monaco"
+      "minimap"
+      "atom-linter-phpstan"
+      "markdown-toc"
+      "pigments"
+      "react"
+      "atom-minify"
       "php-debug"
     ]
+    excludeVcsIgnoredPaths: false
     followSymlinks: false
     ignoredNames: [
       ".git"
@@ -307,6 +312,7 @@
       "sitedata"
       "sitedata/*"
       "compile-cache/*"
+      "sites/*"
     ]
     openEmptyEditorOnStart: false
     packagesWithKeymapsDisabled: [
@@ -317,7 +323,10 @@
       "atom-ide-code-format"
       "atom-typescript"
       "blame"
+      "monaco"
+      "bottom-dock"
     ]
+    restorePreviousWindowsOnStart: "no"
     telemetryConsent: "no"
     themes: [
       "one-dark-ui"
@@ -345,7 +354,6 @@
   editor:
     atomicSoftTabs: false
     fontFamily: "Fira Code"
-    fontSize: 13
     invisibles: {}
     scrollPastEnd: true
     showLineNumbers: false
@@ -357,9 +365,13 @@
   "exception-reporting":
     userId: "e4cd677f-7184-fb31-7448-ec0b8eb79d92"
   "fast-eslint": {}
+  "file-icons":
+    colourChangedOnly: true
   "find-and-replace":
     projectSearchResultsPaneSplitDirection: "right"
     scrollToResultOnLiveSearch: true
+  fonts:
+    fontFamily: "JetBrains Mono"
   "fuzzy-finder":
     scoringSystem: "fast"
     useRipGrep: true
@@ -386,11 +398,11 @@
     performanceMode: true
   "grammar-selector": {}
   "highlight-selected": {}
-  "ide-intelephense":
-    licenseKey: "               "
   "ide-php":
     memoryLimit: "300M"
   "ide-typescript": {}
+  "in-style":
+    currentStyle: "code"
   "inline-git-diff":
     statusBarStyle: "icon"
   "js-hyperclick":
@@ -403,6 +415,9 @@
         scope: "atom-text-editor"
       }
     ]
+  "language-babel":
+    autoIndentJSX: true
+    emmetCSSAutocomplete: true
   "line-ending-selector":
     defaultLineEnding: "LF"
   linter: {}
@@ -431,12 +446,30 @@
   "linter-write-good":
     additionalArgs: "--no-passive --yes-eprime"
     severityLevel: "info"
+  "markdown-image-assistant":
+    suffixes: [
+      ".markdown"
+      ".md"
+      ".mdown"
+      ".mkd"
+      ".mkdow"
+      ".mdx"
+    ]
   "markdown-preview":
     useGitHubStyle: true
+  "markdown-preview-enhanced-with-litvis":
+    breakOnSingleNewLine: false
+    enableTypographer: true
+    enableZenMode: true
+    frontMatterRenderingOption: "code block"
+    openPreviewPaneAutomatically: false
+    previewTheme: "github-dark.css"
+    revealjsTheme: "none.css"
   "markdown-table-formatter":
     autoSelectEntireDocument: false
     formatOnSave: false
   mgit: {}
+  minimap: {}
   monaco:
     theme: "vs-dark"
   mprettier:
@@ -483,6 +516,9 @@
   nuclide:
     "nuclide-home":
       showHome: false
+  "one-dark-ui":
+    hideDockButtons: true
+    stickyHeaders: true
   paner:
     debug: true
   "php-debug":
@@ -496,6 +532,7 @@
       unknownError: false
       warning: false
     server:
+      protocolDebugging: true
       serverPort: 9003
     showWelcome: false
     xdebug:
@@ -503,6 +540,8 @@
       pathMaps: "[{\"remotePath\":\"/var/www/\",\"localPath\":\"/home/kevinpham/work/docker-dev/sites/\"}]"
   phpunit:
     execPath: "./vendor/bin/phpunit"
+  pigments:
+    extendAutocompleteToVariables: true
   "prettier-atom":
     formatOnSaveOptions:
       excludedGlobs: [
@@ -560,8 +599,7 @@
       "text.html.basic"
     ]
   "status-bar": {}
-  "stream-censor":
-    isEnabled: true
+  "stream-censor": {}
   submode:
     submode:
       "gt-mode":
@@ -573,19 +611,14 @@
   "symbols-view":
     quickJumpToFileSymbol: false
     useEditorGrammarAsCtagsLanguage: false
+  "sync-settings":
+    autoCheckForUpdatedBackup: "no"
+    gistId: "9c8ac4c2b7ae7e91b10f5b901aca518e"
+    hiddenSettings:
+      _lastBackupTime: "2022-02-24T11:51:57Z"
   tabs: {}
   teletype:
     askBeforeJoiningPortalViaExternalApp: false
-  "theme-switch":
-    logToConsole: true
-    profiles: [
-      "one-light-ui one-light-syntax"
-      "one-dark-ui one-dark-syntax"
-      "one-dark-ui one-dark-vivid-syntax"
-      "one-dark-ui oceanic-next"
-      "one-dark-ui duotone-dark-syntax"
-      "one-dark-ui duotone-blue-dark-syntax"
-    ]
   "title-bar-replacer":
     colours:
       autoSelectColour: false
@@ -599,13 +632,8 @@
   toggle: {}
   "toggle-packages":
     togglePackages: [
-      "minimap"
-      "linter"
       "atom-minify"
       "php-debug"
-      "ide-intelephense-forked"
-      "prettier-atom"
-      "phpstan"
     ]
   "toggle-quotes": {}
   "tone-syntax":
@@ -630,7 +658,7 @@
     clearHighlightSearchOnResetNormalMode: true
     clearPersistentSelectionOnResetNormalMode: true
     customSurroundPairs: '''
-
+      
       {
          "p":[
             "<p>",
@@ -661,7 +689,7 @@
             ".\\"%\\""
          ]
       }
-
+      
     '''
     debugOutput: "console"
     debugOutputFilePath: "~/github/atom-vim-mode-plus/debug.log"

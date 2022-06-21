@@ -1,16 +1,24 @@
+// /** code, demo
+body:not(.platform-win32) {
+    atom-text-editor { font-size: 13px; }
+    atom-text-editor { font-family: 'JetBrains Mono' }
+    // Coding is more fun with ligatures <= != >= /=
+} //*/
+
+/** demo
+body:not(.platform-win32) {
+    atom-text-editor { font-size: 16px; }
+    // Nice and large for the viewers to see
+} //*/
+
+// The highlighted blocks are the ones that are applied
+
 atom-text-editor .cursor
-{ opacity: 0.4 !important }
+{ opacity: 0.4 }
 
 atom-text-editor .wrap-guide {
     width: 1px;
     background-color: rgba(0,0,0,0.1);
-}
-
-// Fonts (operator mono for comments)
-atom-text-editor::shadow {
-    .keyword.operator.js {
-        font-family: "Fira Code";
-    }
 }
 
 // Title Bar Replacer -- Remove the title bar always (it would show on reload)
@@ -30,20 +38,13 @@ atom-text-editor::shadow {
     }
 }
 
+// NOTE: Affects github commit pane
 atom-pane-container atom-pane .item-views {
-    background:black;
-}
-atom-text-editor:not(.is-focused) {
-    opacity:0.8;
+    // background:black;
 }
 
-atom-text-editor {
-    .cursor-line {
-        background-color: transparent;
-    }
-}
-atom-text-editor .gutter .line-number.cursor-line {
-    background-color: lightgreen;
+atom-text-editor:not(.is-focused) {
+    opacity:0.8;
 }
 
 atom-text-editor .gutter .line-number:not(.cursor-line) {
@@ -55,13 +56,13 @@ atom-text-editor .gutter .line-number:not(.cursor-line) {
 atom-text-editor .gutter .line-number.cursor-line,
 atom-text-editor.editor .line-numbers .relative.current-line {
     color: black;
+    font-weight: bold; // Just a bit more visible
 }
 
 // The very next indentation
 .indent-guide-improved.indent-guide-stack.indent-guide-active + .indent-guide-improved {
     background-color: #000;
 }
-
 
 .line-number {
     padding-left: 0;
@@ -75,21 +76,20 @@ atom-text-editor.editor .line-numbers .relative.current-line {
 }
 
 // Windows (fix the font size for HOME)
-body.platform-win32 {
-
-    // Monitor
-    atom-text-editor {
-        font-size: 16px;
-    }
-
-}
+// body.platform-win32 {
+//     // Monitor
+//     atom-text-editor {
+//         font-size: 16px;
+//     }
+//
+// }
 
 // Ubuntu
 body:not(.platform-win32) {
     // Styles only applicable for non-windows
-    atom-text-editor {
-        font-size: 13px;
-    }
+    // atom-text-editor {
+    //     font-size: 13px;
+    // }
     .tab-bar {
         margin-top: -2px; // To ensure there is no dead area above the tabs
         .tab {
@@ -114,7 +114,6 @@ body:not(.platform-win32) {
 
 
 atom-text-editor .invisible-character {
-    color: #312e2e;
     color: #444;
 }
 
@@ -139,10 +138,22 @@ atom-text-editor .line-number .icon-right {
         }
     }
 }
-
 .cursor-line-background(normal-mode, fadeout(gray, 80%));
 .cursor-line-background(insert-mode, fadeout(green, 80%));
 .cursor-line-background(operator-pending-mode, fadeout(yellow, 80%));
+
+// Default
+atom-text-editor .gutter .line-number.cursor-line {
+    background-color: yellow;
+}
+.line-number-background(@mode, @color) {
+    atom-text-editor.vim-mode-plus.@{mode}.is-focused .gutter .line-number.cursor-line {
+        background-color: @color;
+    }
+}
+.line-number-background(normal-mode, yellow);
+.line-number-background(insert-mode, lightblue);
+.line-number-background(operator-pending-mode, lightgreen);
 
 #status-bar-vim-mode-plus {
     display: none;
@@ -223,6 +234,9 @@ div[is=ex-command-mode-input] atom-text-editor[mini]::before {
         font-weight: bold;
         color: #fad07a; //.syntax--keyword.syntax--other
     }
+    p + ul {
+      margin-top: -15px  
+    }
 }
 
 // Autocomplete suggestion - update to match colors of signature snippet
@@ -289,6 +303,11 @@ div[is=ex-command-mode-input] atom-text-editor[mini]::before {
     }
 }
 
+// php-debug ui (gutter)
+.gutter[gutter-name="atom-debug-ui-gutter"] > .custom-decorations {
+    background: #252525;
+}
+
 // PHP Debug status bar buttons
 .php-debug-debug-view-toggle,
 .php-debug-console-view-toggle {
@@ -311,6 +330,7 @@ div[is=ex-command-mode-input] atom-text-editor[mini]::before {
     white-space: pre-line;
 }
 
+/*--mode
 // SQL syntax highlighting overrides:
 // Keywords (SELECT, AND, IN, FROM, WHERE...)
 .syntax--sql.syntax--keyword.syntax--other {
@@ -318,6 +338,8 @@ div[is=ex-command-mode-input] atom-text-editor[mini]::before {
     color: #d5e4b3;
     font-weight: 500;
 }
+// */
+
 // Table aliases (usage of user.id, user.name will affect user color)
 .syntax--sql.syntax--constant.syntax--other.syntax--database-name {
     color: #99ad6a; // test this out
@@ -334,4 +356,31 @@ span.syntax--keyword.syntax--operator.syntax--heredoc.syntax--php {
 // Relative numbers
 .gutter[gutter-name="relative-numbers"] {
     display: none;
+}
+
+// Ensure linter errors do not show on a narrow search, or an untitled new tab (no grammar)
+atom-text-editor.editor.narrow,
+atom-text-editor[data-grammar="text plain null-grammar"] {
+    .linter-highlight.linter-info, .linter-highlight.linter-info {
+        background-image: none;
+    }
+}
+
+// Remove weird double bottom border thing..
+atom-overlay.datatip-overlay {
+    border-bottom: 0;
+    .datatip-element {
+        padding: 10px;
+    }
+}
+
+atom-overlay.signature-overlay {
+    .signature-snippet > * {
+        margin: 0;
+    }
+    border-bottom: 0;
+    .signature-element,
+    .datatip-element {
+        padding: 0px;
+    }
 }

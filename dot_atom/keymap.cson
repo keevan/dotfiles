@@ -1,3 +1,54 @@
+# Ctrl-K be complicated
+'atom-workspace atom-text-editor:not([mini])':
+  'ctrl-k ctrl-0': 'unset!'
+  'ctrl-k ctrl-1': 'unset!'
+  'ctrl-k ctrl-2': 'unset!'
+  'ctrl-k ctrl-3': 'unset!'
+  'ctrl-k ctrl-4': 'unset!'
+  'ctrl-k ctrl-5': 'unset!'
+  'ctrl-k ctrl-6': 'unset!'
+  'ctrl-k ctrl-7': 'unset!'
+  'ctrl-k ctrl-8': 'unset!'
+  'ctrl-k ctrl-9': 'unset!'
+
+'body':
+  'ctrl-k ctrl-alt-w': 'unset!'
+  'ctrl-k ctrl-down': 'unset!'
+  'ctrl-k ctrl-left': 'unset!'
+  'ctrl-k ctrl-n': 'unset!'
+  'ctrl-k ctrl-p': 'unset!'
+  'ctrl-k ctrl-right': 'unset!'
+  'ctrl-k ctrl-up': 'unset!'
+  'ctrl-k ctrl-w': 'unset!'
+  'ctrl-k down': 'unset!'
+  'ctrl-k left': 'unset!'
+  'ctrl-k right': 'unset!'
+  'ctrl-k up': 'unset!'
+  'ctrl-k up': 'unset!'
+  'ctrl-k': 'command-palette-plus:command-mode'
+  'ctrl-shift-k': 'command-palette-plus:command-mode'
+
+'.platform-win32, .platform-linux':
+  'ctrl-k ctrl-b': 'unset!'
+
+'.platform-win32 atom-text-editor, .platform-linux atom-text-editor':
+  'ctrl-k ctrl-d': 'unset!'
+
+'atom-workspace atom-text-editor ':
+  'ctrl-k ctrl-l': 'unset!'
+  'ctrl-k ctrl-u': 'unset!'
+
+
+'.platform-win32 .tree-view, .platform-linux .tree-view':
+  'ctrl-k down': 'unset!'
+  'ctrl-k h': 'unset!'
+  'ctrl-k j': 'unset!'
+  'ctrl-k k': 'unset!'
+  'ctrl-k l': 'unset!'
+  'ctrl-k left': 'unset!'
+  'ctrl-k right': 'unset!'
+
+# Start of actual keymaps tyvm...
 # My Keymappings - some experimental
 # Requires - https://atom.io/packages/disable-keybindings with ctrl-k disabled
 # apm install disable-keybindings
@@ -26,8 +77,9 @@
 
 'atom-text-editor.vim-mode-plus.normal-mode:not(.narrow-editor)':
   'ctrl-h': 'window:focus-pane-on-left'
-  'ctrl-j': 'window:focus-pane-below'
-  'ctrl-k': 'window:focus-pane-above'
+  # Don't really use top/bottom panels when editing anyways (mainly split left right)
+  # 'ctrl-j': 'window:focus-pane-below'
+  # 'ctrl-k': 'window:focus-pane-above'
   'ctrl-l': 'window:focus-pane-on-right'
   'space f': 'fuzzy-finder:toggle-file-finder'
   'space t I': 'editor:toggle-indent-guide'
@@ -88,6 +140,7 @@
   'ctrl-shift-up': 'text-manipulation:format-humanize' # test me out
   'ctrl-shift-down': 'text-manipulation:format-underscore' # test me out
   'ctrl-shift-x': 'path-copy:current-relativepath'
+  'ctrl-alt-x': 'path-copy:current-fullpath' # Rarely ever need to reach for this, usually would be relative or path to nearest git project (e.g. in submodules)
   'ctrl-)': 'git-link:copy-link-to-selection'
   'ctrl-shift-|': 'tree-view:reveal-active-file'
   'ctrl-shift-h': 'file-header:add'
@@ -97,7 +150,7 @@
   'ctrl-shift-r': 'run-command:re-run-last-command'
   'alt-shift-o': 'tabs:close-other-tabs'
   'alt-:': 'pane:split-right-and-move-active-item' # Split right and move item (not exactly "L" for right)
-  'ctrl-shift-o': 'tree-view:show-currrent-file-in-file-manager'
+  'ctrl-shift-o': 'tree-view:show-current-file-in-file-manager'
   # 'ctrl-j ctrl-v': 'toggle-packages:toggle-vim-mode-plus'
   'ctrl-alt-shift->': 'emmet:remove-tag'
   # 'ctrl-shift-s': 'lines:sort'
@@ -130,10 +183,10 @@
   'j k': 'vim-mode-plus:activate-normal-mode' # jk to escape
   'ctrl-c': 'core:copy' # jk to escape
   # 'ctrl-k ctrl-i': 'change-case:title' # Test me out
-  'ctrl-k l': 'pane:split-right-and-move-active-item' # Test me out
-  'ctrl-k h': 'pane:split-left-and-move-active-item' # Test me out
-  'ctrl-k ctrl-p': 'editor:split-selections-into-lines'
-  'ctrl-k ctrl-d': 'find-and-replace:select-skip'
+  # 'ctrl-k l': 'pane:split-right-and-move-active-item' # Test me out
+  # 'ctrl-k h': 'pane:split-left-and-move-active-item' # Test me out
+  # 'ctrl-k ctrl-p': 'editor:split-selections-into-lines'
+  # 'ctrl-k ctrl-d': 'find-and-replace:select-skip'
   # 'ctrl-.': 'vim-mode-plus:insert-last-inserted' # test
   # 'ctrl-{': 'vim-mode-plus:move-to-previous-fold-start'
   # 'ctrl-}': 'vim-mode-plus:move-to-next-fold-start'
@@ -161,6 +214,8 @@
   '\\ w': 'core:save' # Test
   'space w': 'core:save' # Test
   'space o': 'vim-mode-plus:maximize-pane-without-center'
+  'space O': 'vim-mode-plus:maximize-pane'
+  'shift-space O': 'vim-mode-plus:maximize-pane'
   'ctrl-[': 'vim-mode-plus:reset-normal-mode'
   # 'ctrl-k': 'window:focus-pane-above'
   'g _': 'text-manipulation:format-underscore' # test_me_out
@@ -179,6 +234,8 @@
   'space a':     'narrow:atom-scan'
   'space A':     'narrow:atom-scan-by-current-word'
   'space G':     'narrow:git-diff-all'
+  'space g b':     'blame:toggle'
+  'space g l':     'linter-ui-default:toggle-panel'
   # Custom behaviour for atom attribute sorter with vim mode plus tag selection
   # 'space s': 'keystroke v a t space i t h' # Sort Attributes in surrounding tag (space i t)
   # 'space e': 'keystroke v a t o v g , a l d d < < } d d' # Generic breaking of a HTML element
@@ -193,10 +250,14 @@
   # '\\': 'choose-pane:start'
   '(': 'vim-mode-plus:move-to-previous-fold-start-with-same-indent'
   ')': 'vim-mode-plus:move-to-next-fold-start-with-same-indent'
-  # Linter
+  # Linter - down == next
   'space j': 'linter-ui-default:next'
-  # 'space k': 'linter-ui-default:previous'
-  'space k': 'linter-ui-default:previous'
+  # Linter - left == previous
+  'space h': 'linter-ui-default:previous'
+  'space k': 'command-palette-plus:search-mode'
+  'ctrl-k': 'command-palette-plus:command-mode'
+  'space K': 'command-palette-plus:command-mode'
+  'ctrl-shift-k': 'command-palette-plus:command-mode'
   # [cursor history]
   'ctrl-i': 'cursor-history:next'
   'ctrl-o': 'cursor-history:prev'
@@ -220,7 +281,7 @@
 'atom-text-editor.vim-mode-plus.normal-mode, atom-text-editor.vim-mode-plus.visual-mode':
   'm': 'vim-mode-plus:toggle-preset-occurrence'
   'M': 'vim-mode-plus:toggle-preset-subword-occurrence'
-  'ctrl-k ctrl-d': 'find-and-replace:select-skip'
+  # 'ctrl-k ctrl-d': 'find-and-replace:select-skip'
   'g R': 'vim-mode-plus:resolve-git-conflict'
 
 # 'atom-text-editor.vim-mode-plus.visual-mode':
@@ -357,3 +418,9 @@
 
 'atom-text-editor.vim-mode-plus.insert-mode:not(.narrow-editor)[data-grammar~="jsx"]':
   'tab': 'emmet:expand-abbreviation-with-tab'
+
+'atom-workspace':
+  'ctrl-=': 'in-style:next'
+  'ctrl-+': 'in-style:next'
+  'ctrl-_': 'in-style:prev'
+  'ctrl--': 'in-style:prev'
