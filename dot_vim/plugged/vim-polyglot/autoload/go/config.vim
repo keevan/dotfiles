@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'go')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'go', 'autoload/go/config.vim')
   finish
 endif
 
@@ -215,6 +215,10 @@ function! go#config#DebugWindows() abort
 
 endfunction
 
+function! go#config#DebugPreserveLayout() abort
+  return get(g:, 'go_debug_preserve_layout', 0)
+endfunction
+
 function! go#config#DebugAddress() abort
   return get(g:, 'go_debug_address', '127.0.0.1:8181')
 endfunction
@@ -263,13 +267,14 @@ function! go#config#SetTemplateAutocreate(value) abort
   let g:go_template_autocreate = a:value
 endfunction
 
+let s:default_metalinter = 'staticcheck'
 function! go#config#MetalinterCommand() abort
-  return get(g:, 'go_metalinter_command', 'golangci-lint')
+  return get(g:, 'go_metalinter_command', s:default_metalinter)
 endfunction
 
 function! go#config#MetalinterAutosaveEnabled() abort
   let l:default = []
-  if get(g:, 'go_metalinter_command', 'golangci-lint') == 'golangci-lint'
+  if get(g:, 'go_metalinter_command', s:default_metalinter) == 'golangci-lint'
     let l:default = ['govet', 'golint']
   endif
 
@@ -278,7 +283,7 @@ endfunction
 
 function! go#config#MetalinterEnabled() abort
   let l:default = []
-  if get(g:, 'go_metalinter_command', 'golangci-lint') == 'golangci-lint'
+  if get(g:, 'go_metalinter_command', s:default_metalinter) == 'golangci-lint'
     let l:default = ['vet', 'golint', 'errcheck']
   endif
 
@@ -310,7 +315,7 @@ function! go#config#FmtAutosave() abort
 endfunction
 
 function! go#config#ImportsAutosave() abort
-  return get(g:, 'go_imports_autosave', 0)
+  return get(g:, 'go_imports_autosave', 1)
 endfunction
 
 function! go#config#SetFmtAutosave(value) abort
@@ -354,11 +359,11 @@ function! go#config#DeclsMode() abort
 endfunction
 
 function! go#config#FmtCommand() abort
-  return get(g:, "go_fmt_command", "gofmt")
+  return get(g:, "go_fmt_command", go#config#GoplsEnabled() ? 'gopls' : 'gofmt')
 endfunction
 
 function! go#config#ImportsMode() abort
-  return get(g:, "go_imports_mode", "goimports")
+  return get(g:, "go_imports_mode", go#config#GoplsEnabled() ? 'gopls' : 'goimports')
 endfunction
 
 function! go#config#FmtOptions() abort
@@ -383,7 +388,7 @@ function! go#config#RenameCommand() abort
 endfunction
 
 function! go#config#GorenameBin() abort
-  return get(g:, "go_gorename_bin", "gopls")
+  return get(g:, "go_gorename_bin", 'gopls')
 endfunction
 
 function! go#config#GorenamePrefill() abort

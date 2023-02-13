@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'racket')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'racket', 'ftplugin/racket.vim')
   finish
 endif
 
@@ -34,7 +34,7 @@ setl lispwords+=match-letrec,match-define,match-define-values
 setl lisp
 
 " Enable auto begin new comment line when continuing from an old comment line
-setl comments+=:;
+setl comments=:;;;;,:;;;,:;;,:;
 setl formatoptions+=r
 
 setl makeprg=raco\ make\ --\ %

@@ -211,7 +211,6 @@ call TestExtension("cpp", "foobar.inl", "")
 call TestExtension("htmldjango", "foobar.j2", "")
 call TestExtension("htmldjango", "foobar.jinja", "")
 call TestExtension("htmldjango", "foobar.jinja2", "")
-call TestExtension("htmldjango", "foobar.njk", "")
 
 " vim-polyglot only
 call TestExtension("blade", "test.blade.php", "")
@@ -391,5 +390,7 @@ call TestExtension("conf", "auto.master", "")
 
 " https://github.com/sheerun/vim-polyglot/issues/579
 call TestExtension("dart", "reminders.dart", "")
+
+call TestExtension("racket", "empty.rkt", "")
 
 filetype off

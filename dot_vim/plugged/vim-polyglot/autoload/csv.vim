@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'csv')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'csv', 'autoload/csv.vim')
   finish
 endif
 
@@ -1195,7 +1195,7 @@ endfun
 fu! csv#Sort(bang, line1, line2, colnr) range "{{{3
     " :Sort command
     let wsv  = winsaveview()
-    let flag = matchstr(a:colnr, '[nixo]')
+    let flag = matchstr(a:colnr, '[nixof]')
     call csv#CheckHeaderLine()
     let line1 = a:line1
     let line2 = a:line2
@@ -1989,7 +1989,6 @@ fu! csv#AnalyzeColumn(...) "{{{3
     endif
 
     let  title="Nr\tCount\t % \tValue"
-    endif
     echohl Title
     echo printf("%s", title)
     echohl Normal
@@ -2200,7 +2199,15 @@ fu! csv#CSVMappings() "{{{3
         call csv#Map('nnoremap', 'W', ':<C-U>call csv#MoveCol(1, line("."))<CR>')
         call csv#Map('nnoremap', '<C-Right>', ':<C-U>call csv#MoveCol(1, line("."))<CR>')
         call csv#Map('nnoremap', 'L', ':<C-U>call csv#MoveCol(1, line("."))<CR>')
-        call csv#Map('nnoremap', 'E', ':<C-U>call csv#MoveCol(-1, line("."))<CR>')
+        try
+            if g:csv_bind_B == 1
+                call csv#Map('nnoremap', 'B', ':<C-U>call csv#MoveCol(-1, line("."))<CR>')
+            else
+                call csv#Map('nnoremap', 'E', ':<C-U>call csv#MoveCol(-1, line("."))<CR>')
+            endif
+        catch
+            call csv#Map('nnoremap', 'E', ':<C-U>call csv#MoveCol(-1, line("."))<CR>')
+        endtry
         call csv#Map('nnoremap', '<C-Left>', ':<C-U>call csv#MoveCol(-1, line("."))<CR>')
         call csv#Map('nnoremap', 'H', ':<C-U>call csv#MoveCol(-1, line("."), 1)<CR>')
         call csv#Map('nnoremap', 'K', ':<C-U>call csv#MoveCol(0, line(".")-v:count1)<CR>')
@@ -2311,7 +2318,7 @@ fu! csv#CommandDefinitions() "{{{3
     call csv#LocalCmd("NewDelimiter", ':call csv#NewDelimiter(<q-args>, 1, line(''$''))',
         \ '-nargs=1')
     call csv#LocalCmd("Duplicates", ':call csv#CheckDuplicates(<q-args>)',
-        \ '-nargs=1 -complete=custom,csv#CompleteColumnNr')
+        \ '-nargs=? -complete=custom,csv#CompleteColumnNr')
     call csv#LocalCmd('Transpose', ':call csv#Transpose(<line1>, <line2>)',
         \ '-range=%')
     call csv#LocalCmd('CSVTabularize', ':call csv#Tabularize(<bang>0,<line1>,<line2>)',
@@ -2499,12 +2506,16 @@ fu! csv#CompleteColumnNr(A,L,P) "{{{3
     return join(range(1,csv#MaxColumns()), "\n")
 endfu
 fu! csv#CheckDuplicates(list) "{{{3
-    let string = a:list
-    if string =~ '\d\s\?-\s\?\d'
-        let string = substitute(string, '\(\d\+\)\s\?-\s\?\(\d\+\)',
-            \ '\=join(range(submatch(1),submatch(2)), ",")', '')
+    if empty(a:list)
+        let list=[csv#WColumn()]
+    else
+        let string = a:list
+        if string =~ '\d\s\?-\s\?\d'
+            let string = substitute(string, '\(\d\+\)\s\?-\s\?\(\d\+\)',
+                \ '\=join(range(submatch(1),submatch(2)), ",")', '')
+        endif
+        let list=split(string, ',')
     endif
-    let list=split(string, ',')
     call csv#DuplicateRows(list)
 endfu
 fu! csv#Transpose(line1, line2) "{{{3

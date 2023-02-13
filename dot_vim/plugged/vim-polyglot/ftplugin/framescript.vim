@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'framescript')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'framescript', 'ftplugin/framescript.vim')
   finish
 endif
 
@@ -7,13 +7,13 @@ endif
 " Previous Maintainer:  Nikolai Weibull <now@bitwi.se>
 " Latest Revision:      2008-07-19
 
-let s:cpo_save = &cpo
-set cpo&vim
-
 if exists("b:did_ftplugin")
   finish
 endif
 let b:did_ftplugin = 1
+
+let s:cpo_save = &cpo
+set cpo&vim
 
 let b:undo_ftplugin = "setl com< cms< fo< inc< | unlet! b:matchwords"
 

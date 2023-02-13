@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'llvm')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'llvm', 'syntax/llvm.vim')
   finish
 endif
 
@@ -18,7 +18,7 @@ syn case match
 " Types.
 " Types also include struct, array, vector, etc. but these don't
 " benefit as much from having dedicated highlighting rules.
-syn keyword llvmType void half float double x86_fp80 fp128 ppc_fp128
+syn keyword llvmType void half bfloat float double x86_fp80 fp128 ppc_fp128
 syn keyword llvmType label metadata x86_mmx
 syn keyword llvmType type label opaque token
 syn match   llvmType /\<i\d\+\>/
@@ -59,6 +59,7 @@ syn keyword llvmKeyword
       \ available_externally
       \ blockaddress
       \ builtin
+      \ byref
       \ byval
       \ c
       \ catch
@@ -110,6 +111,7 @@ syn keyword llvmKeyword
       \ module
       \ monotonic
       \ msp430_intrcc
+      \ mustprogress
       \ musttail
       \ naked
       \ nest
@@ -123,6 +125,7 @@ syn keyword llvmKeyword
       \ norecurse
       \ noredzone
       \ noreturn
+      \ noundef
       \ nounwind
       \ optnone
       \ optsize
@@ -207,6 +210,7 @@ syn match   llvmConstant /\<DIFlag[A-Za-z]\+\>/
 syn match  llvmSpecialComment /;\s*PR\d*\s*$/
 syn match  llvmSpecialComment /;\s*REQUIRES:.*$/
 syn match  llvmSpecialComment /;\s*RUN:.*$/
+syn match  llvmSpecialComment /;\s*ALLOW_RETRIES:.*$/
 syn match  llvmSpecialComment /;\s*CHECK:.*$/
 syn match  llvmSpecialComment "\v;\s*CHECK-(NEXT|NOT|DAG|SAME|LABEL):.*$"
 syn match  llvmSpecialComment /;\s*XFAIL:.*$/

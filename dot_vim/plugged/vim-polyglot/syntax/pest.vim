@@ -1,3 +1,7 @@
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'pest', 'syntax/pest.vim')
+  finish
+endif
+
 " Comments
 syntax keyword pestTodo contained TODO FIXME XXX NOTE
 syntax match pestComment "\/\/.*$" contains=celTodo

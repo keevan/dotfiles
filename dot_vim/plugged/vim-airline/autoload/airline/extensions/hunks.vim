@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2020 Bailey Ling et al.
+" MIT License. Copyright (c) 2013-2021 Bailey Ling et al.
 " Plugin: vim-gitgutter, vim-signify, changesPlugin, quickfixsigns, coc-git
 " vim: et ts=2 sts=2 sw=2
 
@@ -52,16 +52,9 @@ function! s:get_hunks_coc() abort
   return result
 endfunction
 
-function! s:is_branch_empty() abort
-  return exists('*airline#extensions#branch#head') &&
-        \ empty(get(b:, 'airline_head', ''))
-endfunction
-
 function! s:get_hunks_gitgutter() abort
-  if !get(g:, 'gitgutter_enabled', 0) || s:is_branch_empty()
-    return ''
-  endif
-  return GitGutterGetHunkSummary()
+  let hunks = GitGutterGetHunkSummary()
+  return hunks == [0, 0, 0] ? [] : hunks
 endfunction
 
 function! s:get_hunks_changes() abort

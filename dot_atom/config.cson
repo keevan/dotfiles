@@ -5,6 +5,10 @@
     startDir: "dirOfFile"
   "atom-autocomplete-php": {}
   "atom-beautify":
+    general:
+      showLoadingView: false
+    go:
+      beautify_on_save: true
     php:
       default_beautifier: "PHPCBF"
       phpcbf_version: 3
@@ -46,9 +50,9 @@
     level: "9"
     memoryLimit: "200M"
   "atom-minify":
-    jsMinifier: "Google Closure Compiler"
+    jsMinifier: "UglifyJS2"
+    jsParametersForUglifyJS2: "webkit=true ie=true v8=true"
     minifyOnSave: true
-    showSavingInfo: false
   "atom-scale-factor":
     setLatest: true
   "atom-tailwindcss":
@@ -274,6 +278,8 @@
       "markdown-toc"
       "pigments"
       "react"
+      "todo-manager"
+      "ide-golang"
       "atom-minify"
       "php-debug"
     ]
@@ -325,6 +331,7 @@
       "blame"
       "monaco"
       "bottom-dock"
+      "todo-manager"
     ]
     restorePreviousWindowsOnStart: "no"
     telemetryConsent: "no"
@@ -341,6 +348,7 @@
     searchAllPanes: false
   "date-plus":
     dateFormat: "YYYYMMDD00"
+    timeFormat: "YYYY-MM-DDTHH24:MI:SS.000+11:00"
   "demo-mode":
     autoHideTimeout: 1000
     maxKeystrokeToShow: 3
@@ -422,6 +430,8 @@
     defaultLineEnding: "LF"
   linter: {}
   "linter-eslint":
+    advanced:
+      showIncompatibleVersionNotification: false
     autofix:
       ignoreFixableRulesWhileTyping: true
     disabling: {}
@@ -439,7 +449,7 @@
     alwaysTakeMinimumSpace: true
     decorateOnTreeView: "None"
     gutterPosition: "Left"
-    panelHeight: 359
+    panelHeight: 356
     statusBarClickBehavior: "Jump to next issue"
     statusBarPosition: "Right"
     statusBarRepresents: "Current File"
@@ -531,6 +541,7 @@
       strictStandards: false
       unknownError: false
       warning: false
+      xdebug: false
     server:
       protocolDebugging: true
       serverPort: 9003
@@ -544,6 +555,7 @@
     extendAutocompleteToVariables: true
   "prettier-atom":
     formatOnSaveOptions:
+      enabled: true
       excludedGlobs: [
         "tryit.js"
       ]
@@ -567,7 +579,10 @@
     sortBy: "last modified"
   "python-linters":
     lintTrigger:
-      pydocstyle: "Never"
+      flake8: "Never"
+      mypy: "Never"
+      pydocstyle: "LintOnFileSave"
+      pylint: "Never"
   "quick-highlight":
     highlightSelection: false
     highlightSelectionMinimumLength: 4
@@ -629,11 +644,39 @@
       displayTitleBar: false
       hideFullscreenTitle: false
       openAdjacent: false
+  "todo-show":
+    findTheseTodos: [
+      "TODO"
+      "FIXME"
+      "HACK"
+      "BUG"
+    ]
+    ignoreThesePaths: [
+      "node_modules"
+      "vendor"
+      "bower_components"
+      "*.pdf"
+      "client"
+      "jquery*"
+      "*.ini"
+      "*.js"
+      "migration*"
+      "public"
+      "storage"
+      ".git"
+    ]
+    showInTable: [
+      "File"
+      "Text"
+    ]
+    sortBy: "File"
+    statusBarIndicator: true
   toggle: {}
   "toggle-packages":
     togglePackages: [
       "atom-minify"
       "php-debug"
+      "linter-ui-default"
     ]
   "toggle-quotes": {}
   "tone-syntax":
@@ -642,6 +685,8 @@
   transformer: {}
   "tree-view":
     alwaysOpenExisting: true
+    hideVcsIgnoredFiles: true
+    squashDirectoryNames: true
   try:
     basename: "tryit"
     root: "~/tryit"

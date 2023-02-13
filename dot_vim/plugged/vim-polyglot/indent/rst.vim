@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'rst')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'rst', 'indent/rst.vim')
   finish
 endif
 
@@ -44,7 +44,7 @@ function GetRSTIndent()
   let psnum = s:get_paragraph_start()
   if psnum != 0
       if getline(psnum) =~ s:note_pattern
-          let ind = 3
+          let ind = max([3, ind])
       endif
   endif
 

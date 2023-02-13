@@ -1,18 +1,16 @@
-if has_key(g:polyglot_is_disabled, 'typescript')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'typescript', 'syntax/basic/function.vim')
   finish
 endif
 
 syntax keyword typescriptAsyncFuncKeyword      async
-  \ nextgroup=typescriptFuncKeyword,typescriptArrowFuncDef
+  \ nextgroup=typescriptFuncKeyword,typescriptArrowFuncDef,typescriptArrowFuncTypeParameter
   \ skipwhite
 
 syntax keyword typescriptAsyncFuncKeyword      await
   \ nextgroup=@typescriptValue
   \ skipwhite
 
-syntax keyword typescriptFuncKeyword           function
-  \ nextgroup=typescriptAsyncFunc,typescriptFuncName,@typescriptCallSignature
-  \ skipwhite skipempty
+exec 'syntax keyword typescriptFuncKeyword '.(exists('g:typescript_conceal_function') ? 'conceal cchar='.g:typescript_conceal_function : '').' function nextgroup=typescriptAsyncFunc,typescriptFuncName,@typescriptCallSignature skipwhite skipempty'
 
 syntax match   typescriptAsyncFunc             contained /*/
   \ nextgroup=typescriptFuncName,@typescriptCallSignature
@@ -22,34 +20,28 @@ syntax match   typescriptFuncName              contained /\K\k*/
   \ nextgroup=@typescriptCallSignature
   \ skipwhite
 
-" destructuring ({ a: ee }) =>
-syntax match   typescriptArrowFuncDef          contained /(\(\s*\({\_[^}]*}\|\k\+\)\(:\_[^)]\)\?,\?\)\+)\s*=>/
-  \ contains=typescriptArrowFuncArg,typescriptArrowFunc
-  \ nextgroup=@typescriptExpression,typescriptBlock
-  \ skipwhite skipempty
-
-" matches `(a) =>` or `([a]) =>` or
-" `(
-"  a) =>`
-syntax match   typescriptArrowFuncDef          contained /(\(\_s*[a-zA-Z\$_\[.]\_[^)]*\)*)\s*=>/
-  \ contains=typescriptArrowFuncArg,typescriptArrowFunc
-  \ nextgroup=@typescriptExpression,typescriptBlock
-  \ skipwhite skipempty
-
 syntax match   typescriptArrowFuncDef          contained /\K\k*\s*=>/
   \ contains=typescriptArrowFuncArg,typescriptArrowFunc
   \ nextgroup=@typescriptExpression,typescriptBlock
   \ skipwhite skipempty
 
-" TODO: optimize this pattern
-syntax region   typescriptArrowFuncDef          contained start=/(\_[^(^)]*):/ end=/=>/
-  \ contains=typescriptArrowFuncArg,typescriptArrowFunc,typescriptTypeAnnotation
+syntax match   typescriptArrowFuncDef          contained /(\%(\_[^()]\+\|(\_[^()]*)\)*)\_s*=>/
+  \ contains=typescriptArrowFuncArg,typescriptArrowFunc,@typescriptCallSignature
+  \ nextgroup=@typescriptExpression,typescriptBlock
+  \ skipwhite skipempty
+
+syntax region  typescriptArrowFuncDef          contained start=/(\%(\_[^()]\+\|(\_[^()]*)\)*):/ matchgroup=typescriptArrowFunc end=/=>/
+  \ contains=typescriptArrowFuncArg,typescriptTypeAnnotation,@typescriptCallSignature
   \ nextgroup=@typescriptExpression,typescriptBlock
   \ skipwhite skipempty keepend
 
+syntax region  typescriptArrowFuncTypeParameter start=/</ end=/>/
+  \ contains=@typescriptTypeParameterCluster
+  \ nextgroup=typescriptArrowFuncDef
+  \ contained skipwhite skipnl
+
 syntax match   typescriptArrowFunc             /=>/
 syntax match   typescriptArrowFuncArg          contained /\K\k*/
-syntax region  typescriptArrowFuncArg          contained start=/<\|(/ end=/\ze=>/ contains=@typescriptCallSignature
 
 syntax region typescriptReturnAnnotation contained start=/:/ end=/{/me=e-1 contains=@typescriptType nextgroup=typescriptBlock
 

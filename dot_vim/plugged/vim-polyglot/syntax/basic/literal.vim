@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'typescript')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'typescript', 'syntax/basic/literal.vim')
   finish
 endif
 
@@ -9,13 +9,15 @@ syntax match   typescriptASCII                 contained /\\\d\d\d/
 
 syntax region  typescriptTemplateSubstitution matchgroup=typescriptTemplateSB
   \ start=/\${/ end=/}/
-  \ contains=@typescriptValue
+  \ contains=@typescriptValue,typescriptCastKeyword
   \ contained
 
 
-syntax region  typescriptString 
+syntax region  typescriptString
   \ start=+\z(["']\)+  skip=+\\\%(\z1\|$\)+  end=+\z1+ end=+$+
   \ contains=typescriptSpecial,@Spell
+  \ nextgroup=@typescriptSymbols
+  \ skipwhite skipempty
   \ extend
 
 syntax match   typescriptSpecial            contained "\v\\%(x\x\x|u%(\x{4}|\{\x{1,6}})|c\u|.)"
@@ -33,7 +35,7 @@ syntax region  typescriptTemplate
 "Array
 syntax region  typescriptArray matchgroup=typescriptBraces
   \ start=/\[/ end=/]/
-  \ contains=@typescriptValue,@typescriptComments
+  \ contains=@typescriptValue,@typescriptComments,typescriptCastKeyword
   \ nextgroup=@typescriptSymbols,typescriptDotNotation
   \ skipwhite skipempty fold
 
@@ -42,4 +44,4 @@ syntax match typescriptNumber /\<0[bB][01][01_]*\>/        nextgroup=@typescript
 syntax match typescriptNumber /\<0[oO][0-7][0-7_]*\>/       nextgroup=@typescriptSymbols skipwhite skipempty
 syntax match typescriptNumber /\<0[xX][0-9a-fA-F][0-9a-fA-F_]*\>/ nextgroup=@typescriptSymbols skipwhite skipempty
 syntax match typescriptNumber /\<\%(\d[0-9_]*\%(\.\d[0-9_]*\)\=\|\.\d[0-9_]*\)\%([eE][+-]\=\d[0-9_]*\)\=\>/
-  \ nextgroup=typescriptSymbols skipwhite skipempty
+  \ nextgroup=@typescriptSymbols skipwhite skipempty

@@ -3,8 +3,10 @@
 :HighlightedyankOn	highlightedyank.jax	/*:HighlightedyankOn*
 :HighlightedyankToggle	highlightedyank.jax	/*:HighlightedyankToggle*
 b:highlightedyank_highlight_duration	highlightedyank.jax	/*b:highlightedyank_highlight_duration*
+b:highlightedyank_highlight_in_visual	highlightedyank.jax	/*b:highlightedyank_highlight_in_visual*
 b:highlightedyank_max_lines	highlightedyank.jax	/*b:highlightedyank_max_lines*
 g:highlightedyank_highlight_duration	highlightedyank.jax	/*g:highlightedyank_highlight_duration*
+g:highlightedyank_highlight_in_visual	highlightedyank.jax	/*g:highlightedyank_highlight_in_visual*
 g:highlightedyank_max_lines	highlightedyank.jax	/*g:highlightedyank_max_lines*
 highlightedyank-commands	highlightedyank.jax	/*highlightedyank-commands*
 highlightedyank-highlight-groups	highlightedyank.jax	/*highlightedyank-highlight-groups*

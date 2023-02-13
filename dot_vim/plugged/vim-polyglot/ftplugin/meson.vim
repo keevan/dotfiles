@@ -1,10 +1,11 @@
-if has_key(g:polyglot_is_disabled, 'meson')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'meson', 'ftplugin/meson.vim')
   finish
 endif
 
 " Vim filetype plugin file
 " Language:	meson
 " License:	VIM License
+" Maintainer:   Liam Beguin <liambeguin@gmail.com>
 " Original Author:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 " Last Change:		2018 Nov 27
 

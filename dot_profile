@@ -30,3 +30,7 @@ function ea() {
 }
 ea
 echo 'Welcome'
+
+# Include moodle-plugin-ci path in the PATH
+PATH="$HOME/work/moodle-plugin-ci/bin:$PATH"
+. "$HOME/.cargo/env"

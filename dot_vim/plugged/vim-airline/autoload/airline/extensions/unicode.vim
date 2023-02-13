@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2020 Bailey Ling, Christian Brabandt et al.
+" MIT License. Copyright (c) 2013-2021 Bailey Ling, Christian Brabandt et al.
 " Plugin: https://github.com/chrisbra/unicode.vim
 " vim: et ts=2 sts=2 sw=2
 
@@ -9,7 +9,7 @@ if !get(g:, 'loaded_unicodePlugin', 0)
 endif
 
 function! airline#extensions#unicode#apply(...)
-  if exists(":UnicodeTable") == 2 && bufname('') ==# 'UnicodeTable'
+  if exists(':UnicodeTable') == 2 && bufname('') =~# '/UnicodeTable.txt'
     call airline#parts#define('unicode', {
           \ 'text': '[UnicodeTable]',
           \ 'accent': 'bold' })

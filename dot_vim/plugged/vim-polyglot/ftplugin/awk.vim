@@ -1,11 +1,12 @@
-if has_key(g:polyglot_is_disabled, 'awk')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'awk', 'ftplugin/awk.vim')
   finish
 endif
 
 " Vim filetype plugin
-" Language:	awk, nawk, gawk, mawk
-" Maintainer:	Antonio Colombo <azc100@gmail.com>
-" Last Change:	2020 Sep 28
+" Language:		awk, nawk, gawk, mawk
+" Maintainer:		Doug Kearns <dougkearns@gmail.com>
+" Previous Maintainer:	Antonio Colombo <azc100@gmail.com>
+" Last Change:		2020 Sep 28
 
 " This plugin was prepared by Mark Sikora
 " This plugin was updated as proposed by Doug Kearns

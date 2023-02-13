@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'fennel')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'fennel', 'ftplugin/fennel.vim')
   finish
 endif
 
@@ -20,6 +20,8 @@ setlocal iskeyword=!,$,%,#,*,+,-,.,/,:,<,=,>,?,_,a-z,A-Z,48-57,128-247,124,126,3
 " There will be false positives, but this is better than missing the whole set
 " of user-defined def* definitions.
 setlocal define=\\v[(/]def(ault)@!\\S*
+
+setlocal suffixesadd=.fnl
 
 " Remove 't' from 'formatoptions' to avoid auto-wrapping code.
 setlocal formatoptions-=t

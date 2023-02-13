@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'fsharp')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'fsharp', 'autoload/fsharp.vim')
   finish
 endif
 
@@ -336,6 +336,7 @@ function! s:download(branch)
         \ )
     if v:shell_error == 0
         call system('unzip -o -d ' . s:script_root_dir . "/fsac " . zip)
+        call system('find ' . s:script_root_dir . '/fsac' . ' -type f -exec chmod 777 \{\} \;')
         echom "[FSAC] Updated FsAutoComplete to version " . a:branch . "" 
     else
         echom "[FSAC] Failed to update FsAutoComplete"
@@ -467,10 +468,10 @@ function! fsharp#sendFsi(text)
     if fsharp#openFsi(!g:fsharp#fsi_focus_on_send) > 0
         " Neovim
         if has('nvim')
-            call chansend(s:fsi_job, a:text . ";;". "\n")
+            call chansend(s:fsi_job, a:text . "\n" . ";;". "\n")
         " Vim 8
         else
-            call term_sendkeys(s:fsi_buffer, a:text . ";;" . "\<cr>")
+            call term_sendkeys(s:fsi_buffer, a:text . "\<cr>" . ";;" . "\<cr>")
             call term_wait(s:fsi_buffer)
         endif
     endif

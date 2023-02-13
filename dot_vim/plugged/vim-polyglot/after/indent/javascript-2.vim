@@ -1,8 +1,8 @@
-if has_key(g:polyglot_is_disabled, 'graphql')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'graphql', 'after/indent/javascript-2.vim')
   finish
 endif
 
-" Copyright (c) 2016-2020 Jon Parise <jon@indelible.org>
+" Copyright (c) 2016-2021 Jon Parise <jon@indelible.org>
 "
 " Permission is hereby granted, free of charge, to any person obtaining a copy
 " of this software and associated documentation files (the "Software"), to
@@ -38,7 +38,7 @@ setlocal indentexpr=GetJavascriptGraphQLIndent()
 
 function GetJavascriptGraphQLIndent()
   let l:stack = map(synstack(v:lnum, 1), "synIDattr(v:val, 'name')")
-  if get(l:stack, 0) ==# 'graphqlTemplateString'
+  if get(l:stack, 0, '') ==# 'graphqlTemplateString'
     return GetGraphQLIndent()
   endif
 

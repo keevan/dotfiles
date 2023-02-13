@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'dhall')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'dhall', 'ftplugin/dhall.vim')
   finish
 endif
 
@@ -33,7 +33,7 @@ endif
 function! DhallFormat()
     let cursor = getpos('.')
     exec 'normal! gg'
-    exec 'silent !dhall format --inplace ' . expand('%')
+    exec 'silent !dhall format ' . expand('%')
     exec 'e'
     call setpos('.', cursor)
 endfunction

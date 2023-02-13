@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'dart')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'dart', 'syntax/dart.vim')
   finish
 endif
 
@@ -53,7 +53,7 @@ syntax match   dartLibrary       "^\(library\|part of\|part\)\>"
 syntax match   dartMetadata      "@\([_$a-zA-Z][_$a-zA-Z0-9]*\.\)*[_$a-zA-Z][_$a-zA-Z0-9]*\>"
 
 " Numbers
-syntax match   dartNumber        "\<\d\+\(\.\d\+\)\=\>"
+syntax match   dartNumber        "\<0[xX]\x\+\>\|\<\d\+\(\.\d\+\)\=\([eE][+-]\=\d\+\)\=\>"
 
 " User Types
 syntax match   dartUserType      "\<[_$]*\u[a-zA-Z0-9_$]*\>"

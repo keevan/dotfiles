@@ -1,5 +1,3 @@
-// +build !tcell
-
 package fzf
 
 import (
@@ -18,8 +16,8 @@ func withIndex(i *Item, index int) *Item {
 
 func TestOffsetSort(t *testing.T) {
 	offsets := []Offset{
-		Offset{3, 5}, Offset{2, 7},
-		Offset{1, 3}, Offset{2, 9}}
+		{3, 5}, {2, 7},
+		{1, 3}, {2, 9}}
 	sort.Sort(ByOrder(offsets))
 
 	if offsets[0][0] != 1 || offsets[0][1] != 3 ||
@@ -56,9 +54,9 @@ func TestResultRank(t *testing.T) {
 	// FIXME global
 	sortCriteria = []criterion{byScore, byLength}
 
-	strs := [][]rune{[]rune("foo"), []rune("foobar"), []rune("bar"), []rune("baz")}
+	str := []rune("foo")
 	item1 := buildResult(
-		withIndex(&Item{text: util.RunesToChars(strs[0])}, 1), []Offset{}, 2)
+		withIndex(&Item{text: util.RunesToChars(str)}, 1), []Offset{}, 2)
 	if item1.points[3] != math.MaxUint16-2 || // Bonus
 		item1.points[2] != 3 || // Length
 		item1.points[1] != 0 || // Unused
@@ -67,7 +65,7 @@ func TestResultRank(t *testing.T) {
 		t.Error(item1)
 	}
 	// Only differ in index
-	item2 := buildResult(&Item{text: util.RunesToChars(strs[0])}, []Offset{}, 2)
+	item2 := buildResult(&Item{text: util.RunesToChars(str)}, []Offset{}, 2)
 
 	items := []Result{item1, item2}
 	sort.Sort(ByRelevance(items))
@@ -84,13 +82,13 @@ func TestResultRank(t *testing.T) {
 
 	// Sort by relevance
 	item3 := buildResult(
-		withIndex(&Item{}, 2), []Offset{Offset{1, 3}, Offset{5, 7}}, 3)
+		withIndex(&Item{}, 2), []Offset{{1, 3}, {5, 7}}, 3)
 	item4 := buildResult(
-		withIndex(&Item{}, 2), []Offset{Offset{1, 2}, Offset{6, 7}}, 4)
+		withIndex(&Item{}, 2), []Offset{{1, 2}, {6, 7}}, 4)
 	item5 := buildResult(
-		withIndex(&Item{}, 2), []Offset{Offset{1, 3}, Offset{5, 7}}, 5)
+		withIndex(&Item{}, 2), []Offset{{1, 3}, {5, 7}}, 5)
 	item6 := buildResult(
-		withIndex(&Item{}, 2), []Offset{Offset{1, 2}, Offset{6, 7}}, 6)
+		withIndex(&Item{}, 2), []Offset{{1, 2}, {6, 7}}, 6)
 	items = []Result{item1, item2, item3, item4, item5, item6}
 	sort.Sort(ByRelevance(items))
 	if !(items[0] == item6 && items[1] == item5 &&
@@ -98,6 +96,23 @@ func TestResultRank(t *testing.T) {
 		items[4] == item2 && items[5] == item1) {
 		t.Error(items, item1, item2, item3, item4, item5, item6)
 	}
+}
+
+func TestChunkTiebreak(t *testing.T) {
+	// FIXME global
+	sortCriteria = []criterion{byScore, byChunk}
+
+	score := 100
+	test := func(input string, offset Offset, chunk string) {
+		item := buildResult(withIndex(&Item{text: util.RunesToChars([]rune(input))}, 1), []Offset{offset}, score)
+		if !(item.points[3] == math.MaxUint16-uint16(score) && item.points[2] == uint16(len(chunk))) {
+			t.Error(item.points)
+		}
+	}
+	test("hello foobar goodbye", Offset{8, 9}, "foobar")
+	test("hello foobar goodbye", Offset{7, 18}, "foobar goodbye")
+	test("hello foobar goodbye", Offset{0, 1}, "hello")
+	test("hello foobar goodbye", Offset{5, 7}, "hello foobar") // TBD
 }
 
 func TestColorOffset(t *testing.T) {
@@ -109,10 +124,10 @@ func TestColorOffset(t *testing.T) {
 	item := Result{
 		item: &Item{
 			colors: &[]ansiOffset{
-				{[2]int32{0, 20}, ansiState{1, 5, 0}},
-				{[2]int32{22, 27}, ansiState{2, 6, tui.Bold}},
-				{[2]int32{30, 32}, ansiState{3, 7, 0}},
-				{[2]int32{33, 40}, ansiState{4, 8, tui.Bold}}}}}
+				{[2]int32{0, 20}, ansiState{1, 5, 0, -1}},
+				{[2]int32{22, 27}, ansiState{2, 6, tui.Bold, -1}},
+				{[2]int32{30, 32}, ansiState{3, 7, 0, -1}},
+				{[2]int32{33, 40}, ansiState{4, 8, tui.Bold, -1}}}}}
 
 	colBase := tui.NewColorPair(89, 189, tui.AttrUndefined)
 	colMatch := tui.NewColorPair(99, 199, tui.AttrUndefined)

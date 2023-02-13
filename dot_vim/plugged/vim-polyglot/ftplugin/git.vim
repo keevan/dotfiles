@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'git')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'git', 'ftplugin/git.vim')
   finish
 endif
 
@@ -37,7 +37,7 @@ if exists('*shellescape') && exists('b:git_dir') && b:git_dir != ''
 else
   setlocal keywordprg=git\ show
 endif
-if has('gui_running')
+if has('gui_running') && &guioptions !~# '!'
   let &l:keywordprg = substitute(&l:keywordprg,'^git\>','git --no-pager','')
 endif
 

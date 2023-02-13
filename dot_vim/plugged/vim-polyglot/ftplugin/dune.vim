@@ -1,6 +1,14 @@
-if has_key(g:polyglot_is_disabled, 'ocaml')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'ocaml', 'ftplugin/dune.vim')
   finish
 endif
+
+" Language:    Dune buildsystem
+" Maintainer:  Markus Mottl        <markus.mottl@gmail.com>
+"              Anton Kochkov       <anton.kochkov@gmail.com>
+" URL:         https://github.com/ocaml/vim-ocaml
+" Last Change:
+"              2018 Nov 3 - Added commentstring (Markus Mottl)
+"              2017 Sep 6 - Initial version (Etienne Millon)
 
 if exists("b:did_ftplugin")
   finish
@@ -11,4 +19,6 @@ set lisp
 
 " Comment string
 setl commentstring=;\ %s
-setl comments=:;
+setl comments=n:;
+
+setl iskeyword+=#,?,.,/

@@ -2,8 +2,10 @@
 :HighlightedyankOn	highlightedyank.txt	/*:HighlightedyankOn*
 :HighlightedyankToggle	highlightedyank.txt	/*:HighlightedyankToggle*
 b:highlightedyank_highlight_duration	highlightedyank.txt	/*b:highlightedyank_highlight_duration*
+b:highlightedyank_highlight_in_visual	highlightedyank.txt	/*b:highlightedyank_highlight_in_visual*
 b:highlightedyank_max_lines	highlightedyank.txt	/*b:highlightedyank_max_lines*
 g:highlightedyank_highlight_duration	highlightedyank.txt	/*g:highlightedyank_highlight_duration*
+g:highlightedyank_highlight_in_visual	highlightedyank.txt	/*g:highlightedyank_highlight_in_visual*
 g:highlightedyank_max_lines	highlightedyank.txt	/*g:highlightedyank_max_lines*
 highlightedyank-commands	highlightedyank.txt	/*highlightedyank-commands*
 highlightedyank-highlight-groups	highlightedyank.txt	/*highlightedyank-highlight-groups*

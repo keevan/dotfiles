@@ -22,6 +22,12 @@
 # NEOVIM
 
 	# Install "latest" stable NVIM (if not already installed)
+	rm ~/bin/nvim
 	curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
 	chmod u+x nvim.appimage
-	mv nvim.appimage ~/bin/nvim
+	./nvim.appimage --appimage-extract
+	./squashfs-root/AppRun --version
+	sudo mv squashfs-root /
+	sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
+	nvim
+	#mv nvim.appimage ~/bin/nvim

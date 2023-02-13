@@ -3,7 +3,7 @@ Make the yanked region apparent!
 
 ## Usage
 
-### If you are using Neovim or Vim 8.0.1394 (or later version),
+### If you are using Vim 8.0.1394 (or later version),
 
 there is no need for configuration, as the highlight event is automatically triggered by the `TextYankPost` event.
 
@@ -13,9 +13,16 @@ define a keymapping to `<Plug>(highlightedyank)`. Checking the existence of `Tex
 
 ```vim
 if !exists('##TextYankPost')
-  map y <Plug>(highlightedyank)
+  nmap y <Plug>(highlightedyank)
+  xmap y <Plug>(highlightedyank)
+  omap y <Plug>(highlightedyank)
 endif
 ```
+
+### If you are using Neovim,
+
+you don't need this plugin. Check out [here](https://neovim.io/doc/user/lua.html#lua-highlight).
+
 
 ## Optimizing highlight duration
 
@@ -37,11 +44,19 @@ When a new text is yanked or user starts editing, the old highlighting would be 
 
 If the highlight is not visible for some reason, you can redefine the `HighlightedyankRegion` highlight group like:
 
-```
+```vim
 highlight HighlightedyankRegion cterm=reverse gui=reverse
 ```
 
 Note that the line should be located after `:colorscheme` command execution in your vimrc.
+
+## Suppress highlight in visual mode
+
+The highlight may not be needed or even annoying in visual mode.
+
+```vim
+let g:highlightedyank_highlight_in_visual = 0
+```
 
 ## Inspired by
 

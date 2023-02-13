@@ -7,6 +7,7 @@ require 'English'
 require 'shellwords'
 require 'erb'
 require 'tempfile'
+require 'net/http'
 
 TEMPLATE = DATA.read
 UNSETS = %w[
@@ -22,7 +23,7 @@ DEFAULT_TIMEOUT = 10
 FILE = File.expand_path(__FILE__)
 BASE = File.expand_path('..', __dir__)
 Dir.chdir(BASE)
-FZF = "FZF_DEFAULT_OPTS= FZF_DEFAULT_COMMAND= #{BASE}/bin/fzf"
+FZF = "FZF_DEFAULT_OPTS=--no-scrollbar FZF_DEFAULT_COMMAND= #{BASE}/bin/fzf"
 
 def wait
   since = Time.now
@@ -64,7 +65,7 @@ class Shell
     end
 
     def fish
-      UNSETS.map { |v| v + '= ' }.join + 'fish'
+      UNSETS.map { |v| v + '= ' }.join + ' FZF_DEFAULT_OPTS=--no-scrollbar fish'
     end
   end
 end
@@ -148,14 +149,15 @@ class Tmux
   def prepare
     tries = 0
     begin
-      self.until do |lines|
-        send_keys ' ', 'C-u', :Enter, 'hello', :Left, :Right
-        lines[-1] == 'hello'
+      self.until(true) do |lines|
+        message = "Prepare[#{tries}]"
+        send_keys ' ', 'C-u', :Enter, message, :Left, :Right
+        lines[-1] == message
       end
     rescue Minitest::Assertion
       (tries += 1) < 5 ? retry : raise
     end
-    send_keys 'C-u'
+    send_keys 'C-u', 'C-l'
   end
 
   private
@@ -178,7 +180,7 @@ class TestBase < Minitest::Test
   end
 
   def writelines(path, lines)
-    File.unlink(path) while File.exist?(path)
+    FileUtils.rm_f(path) while File.exist?(path)
     File.open(path, 'w') { |f| f.puts lines }
   end
 
@@ -186,9 +188,16 @@ class TestBase < Minitest::Test
     wait { assert_path_exists tempname }
     File.read(tempname)
   ensure
-    File.unlink(tempname) while File.exist?(tempname)
+    FileUtils.rm_f(tempname) while File.exist?(tempname)
     @temp_suffix += 1
     tmux.prepare
+  end
+
+  alias assert_equal_org assert_equal
+  def assert_equal(expected, actual)
+    # Ignore info separator
+    actual = actual&.sub(/\s*─+$/, '') if actual.is_a?(String) && actual&.match?(%r{\d+/\d+})
+    assert_equal_org(expected, actual)
   end
 
   def fzf(*opts)
@@ -254,7 +263,7 @@ class TestGoFZF < TestBase
 
   def test_fzf_default_command_failure
     tmux.send_keys fzf.sub('FZF_DEFAULT_COMMAND=', 'FZF_DEFAULT_COMMAND=false'), :Enter
-    tmux.until { |lines| assert_equal '  [Command failed: false]', lines[-2] }
+    tmux.until { |lines| assert_includes lines[-2], '  [Command failed: false] ─' }
     tmux.send_keys :Enter
   end
 
@@ -446,7 +455,7 @@ class TestGoFZF < TestBase
   def test_scroll
     [true, false].each do |rev|
       tmux.send_keys "seq 1 100 | #{fzf(rev && :reverse)}", :Enter
-      tmux.until { |lines| assert_includes lines, '  100/100' }
+      tmux.until { |lines| assert_equal '  100/100', lines[rev ? 1 : -2] }
       tmux.send_keys(*Array.new(110) { rev ? :Down : :Up })
       tmux.until { |lines| assert_includes lines, '> 100' }
       tmux.send_keys :Enter
@@ -753,6 +762,30 @@ class TestGoFZF < TestBase
     assert_equal output, `#{FZF} -fh -n2 -d: < #{tempname}`.lines(chomp: true)
   end
 
+  def test_tiebreak_chunk
+    writelines(tempname, [
+                 '1 foobarbaz ba',
+                 '2 foobar baz',
+                 '3 foo barbaz'
+               ])
+
+    assert_equal [
+      '3 foo barbaz',
+      '2 foobar baz',
+      '1 foobarbaz ba'
+    ], `#{FZF} -fo --tiebreak=chunk < #{tempname}`.lines(chomp: true)
+
+    assert_equal [
+      '1 foobarbaz ba',
+      '2 foobar baz',
+      '3 foo barbaz'
+    ], `#{FZF} -fba --tiebreak=chunk < #{tempname}`.lines(chomp: true)
+
+    assert_equal [
+      '3 foo barbaz'
+    ], `#{FZF} -f'!foobar' --tiebreak=chunk < #{tempname}`.lines(chomp: true)
+  end
+
   def test_invalid_cache
     tmux.send_keys "(echo d; echo D; echo x) | #{fzf('-q d')}", :Enter
     tmux.until { |lines| assert_equal '  2/3', lines[-2] }
@@ -872,11 +905,7 @@ class TestGoFZF < TestBase
     history_file = '/tmp/fzf-test-history'
 
     # History with limited number of entries
-    begin
-      File.unlink(history_file)
-    rescue StandardError
-      nil
-    end
+    FileUtils.rm_f(history_file)
     opts = "--history=#{history_file} --history-size=4"
     input = %w[00 11 22 33 44]
     input.each do |keys|
@@ -889,7 +918,7 @@ class TestGoFZF < TestBase
     end
     wait do
       assert_path_exists history_file
-      assert_equal input[1..-1], File.readlines(history_file, chomp: true)
+      assert_equal input[1..], File.readlines(history_file, chomp: true)
     end
 
     # Update history entries (not changed on disk)
@@ -922,7 +951,7 @@ class TestGoFZF < TestBase
     tmux.until { |lines| assert_equal '> 33', lines[-1] }
     tmux.send_keys :Enter
   ensure
-    File.unlink(history_file)
+    FileUtils.rm_f(history_file)
   end
 
   def test_execute
@@ -951,11 +980,7 @@ class TestGoFZF < TestBase
       ], File.readlines(output, chomp: true)
     end
   ensure
-    begin
-      File.unlink(output)
-    rescue StandardError
-      nil
-    end
+    FileUtils.rm_f(output)
   end
 
   def test_execute_multi
@@ -980,20 +1005,12 @@ class TestGoFZF < TestBase
       ], File.readlines(output, chomp: true)
     end
   ensure
-    begin
-      File.unlink(output)
-    rescue StandardError
-      nil
-    end
+    FileUtils.rm_f(output)
   end
 
   def test_execute_plus_flag
     output = tempname + '.tmp'
-    begin
-      File.unlink(output)
-    rescue StandardError
-      nil
-    end
+    FileUtils.rm_f(output)
     writelines(tempname, ['foo bar', '123 456'])
 
     tmux.send_keys "cat #{tempname} | #{FZF} --multi --bind 'x:execute-silent(echo {+}/{}/{+2}/{2} >> #{output})'", :Enter
@@ -1026,21 +1043,13 @@ class TestGoFZF < TestBase
       ], File.readlines(output, chomp: true)
     end
   rescue StandardError
-    begin
-      File.unlink(output)
-    rescue StandardError
-      nil
-    end
+    FileUtils.rm_f(output)
   end
 
   def test_execute_shell
     # Custom script to use as $SHELL
     output = tempname + '.out'
-    begin
-      File.unlink(output)
-    rescue StandardError
-      nil
-    end
+    FileUtils.rm_f(output)
     writelines(tempname,
                ['#!/usr/bin/env bash', "echo $1 / $2 > #{output}"])
     system("chmod +x #{tempname}")
@@ -1054,11 +1063,7 @@ class TestGoFZF < TestBase
       assert_equal ["-c / 'foo'bar"], File.readlines(output, chomp: true)
     end
   ensure
-    begin
-      File.unlink(output)
-    rescue StandardError
-      nil
-    end
+    FileUtils.rm_f(output)
   end
 
   def test_cycle
@@ -1452,6 +1457,83 @@ class TestGoFZF < TestBase
     tmux.until { |lines| assert_includes lines[1], ' {5-1  3 4} ' }
   end
 
+  def test_toggle_preview_without_default_preview_command
+    tmux.send_keys %(seq 100 | #{FZF} --bind 'space:preview(echo [{}]),enter:toggle-preview' --preview-window up,border-double), :Enter
+    tmux.until do |lines|
+      assert_equal 100, lines.match_count
+      refute_includes lines[1], '║ [1]'
+    end
+
+    # toggle-preview should do nothing
+    tmux.send_keys :Enter
+    tmux.until { |lines| refute_includes lines[1], '║ [1]' }
+    tmux.send_keys :Up
+    tmux.until do |lines|
+      refute_includes lines[1], '║ [1]'
+      refute_includes lines[1], '║ [2]'
+    end
+
+    tmux.send_keys :Up
+    tmux.until do |lines|
+      assert_includes lines, '> 3'
+      refute_includes lines[1], '║ [3]'
+    end
+
+    # One-off preview action
+    tmux.send_keys :Space
+    tmux.until { |lines| assert_includes lines[1], '║ [3]' }
+
+    # toggle-preview to hide it
+    tmux.send_keys :Enter
+    tmux.until { |lines| refute_includes lines[1], '║ [3]' }
+
+    # toggle-preview again does nothing
+    tmux.send_keys :Enter, :Up
+    tmux.until do |lines|
+      assert_includes lines, '> 4'
+      refute_includes lines[1], '║ [4]'
+    end
+  end
+
+  def test_show_and_hide_preview
+    tmux.send_keys %(seq 100 | #{FZF} --preview-window hidden,border-bold --preview 'echo [{}]' --bind 'a:show-preview,b:hide-preview'), :Enter
+
+    # Hidden by default
+    tmux.until do |lines|
+      assert_equal 100, lines.match_count
+      refute_includes lines[1], '┃ [1]'
+    end
+
+    # Show
+    tmux.send_keys :a
+    tmux.until { |lines| assert_includes lines[1], '┃ [1]' }
+
+    # Already shown
+    tmux.send_keys :a
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_includes lines[1], '┃ [2]' }
+
+    # Hide
+    tmux.send_keys :b
+    tmux.send_keys :Up
+    tmux.until do |lines|
+      assert_includes lines, '> 3'
+      refute_includes lines[1], '┃ [3]'
+    end
+
+    # Already hidden
+    tmux.send_keys :b
+    tmux.send_keys :Up
+    tmux.until do |lines|
+      assert_includes lines, '> 4'
+      refute_includes lines[1], '┃ [4]'
+    end
+
+    # Show it again
+    tmux.send_keys :a
+    tmux.until { |lines| assert_includes lines[1], '┃ [4]' }
+  end
+
   def test_preview_hidden
     tmux.send_keys %(seq 1000 | #{FZF} --preview 'echo {{}-{}-$FZF_PREVIEW_LINES-$FZF_PREVIEW_COLUMNS}' --preview-window down:1:hidden --bind ?:toggle-preview), :Enter
     tmux.until { |lines| assert_equal '>', lines[-1] }
@@ -1464,12 +1546,8 @@ class TestGoFZF < TestBase
   end
 
   def test_preview_size_0
-    begin
-      File.unlink(tempname)
-    rescue StandardError
-      nil
-    end
-    tmux.send_keys %(seq 100 | #{FZF} --reverse --preview 'echo {} >> #{tempname}; echo ' --preview-window 0), :Enter
+    FileUtils.rm_f(tempname)
+    tmux.send_keys %(seq 100 | #{FZF} --reverse --preview 'echo {} >> #{tempname}; echo ' --preview-window 0 --bind space:toggle-preview), :Enter
     tmux.until do |lines|
       assert_equal 100, lines.item_count
       assert_equal '  100/100', lines[1]
@@ -1479,17 +1557,43 @@ class TestGoFZF < TestBase
       assert_path_exists tempname
       assert_equal %w[1], File.readlines(tempname, chomp: true)
     end
-    tmux.send_keys :Down
-    tmux.until { |lines| assert_equal '> 2', lines[3] }
-    wait do
-      assert_path_exists tempname
-      assert_equal %w[1 2], File.readlines(tempname, chomp: true)
-    end
-    tmux.send_keys :Down
+    tmux.send_keys :Space, :Down, :Down
     tmux.until { |lines| assert_equal '> 3', lines[4] }
     wait do
       assert_path_exists tempname
-      assert_equal %w[1 2 3], File.readlines(tempname, chomp: true)
+      assert_equal %w[1], File.readlines(tempname, chomp: true)
+    end
+    tmux.send_keys :Space, :Down
+    tmux.until { |lines| assert_equal '> 4', lines[5] }
+    wait do
+      assert_path_exists tempname
+      assert_equal %w[1 3 4], File.readlines(tempname, chomp: true)
+    end
+  end
+
+  def test_preview_size_0_hidden
+    FileUtils.rm_f(tempname)
+    tmux.send_keys %(seq 100 | #{FZF} --reverse --preview 'echo {} >> #{tempname}; echo ' --preview-window 0,hidden --bind space:toggle-preview), :Enter
+    tmux.until { |lines| assert_equal 100, lines.item_count }
+    tmux.send_keys :Down, :Down
+    tmux.until { |lines| assert_includes lines, '> 3' }
+    wait { refute_path_exists tempname }
+    tmux.send_keys :Space
+    wait do
+      assert_path_exists tempname
+      assert_equal %w[3], File.readlines(tempname, chomp: true)
+    end
+    tmux.send_keys :Down
+    wait do
+      assert_equal %w[3 4], File.readlines(tempname, chomp: true)
+    end
+    tmux.send_keys :Space, :Down
+    tmux.until { |lines| assert_includes lines, '> 5' }
+    tmux.send_keys :Down
+    tmux.until { |lines| assert_includes lines, '> 6' }
+    tmux.send_keys :Space
+    wait do
+      assert_equal %w[3 4 6], File.readlines(tempname, chomp: true)
     end
   end
 
@@ -1522,13 +1626,13 @@ class TestGoFZF < TestBase
   end
 
   def test_preview_q_no_match
-    tmux.send_keys %(: | #{FZF} --preview 'echo foo {q}'), :Enter
+    tmux.send_keys %(: | #{FZF} --preview 'echo foo {q} foo'), :Enter
     tmux.until { |lines| assert_equal 0, lines.match_count }
-    tmux.until { |lines| refute_includes lines[1], ' foo ' }
+    tmux.until { |lines| assert_includes lines[1], ' foo  foo' }
     tmux.send_keys 'bar'
-    tmux.until { |lines| assert_includes lines[1], ' foo bar ' }
+    tmux.until { |lines| assert_includes lines[1], ' foo bar foo' }
     tmux.send_keys 'C-u'
-    tmux.until { |lines| refute_includes lines[1], ' foo ' }
+    tmux.until { |lines| assert_includes lines[1], ' foo  foo' }
   end
 
   def test_preview_q_no_match_with_initial_query
@@ -1554,8 +1658,13 @@ class TestGoFZF < TestBase
     tmux.until { |lines| assert_equal '> 1', lines[-2] }
   end
 
-  def test_change_top
-    tmux.send_keys %(seq 1000 | #{FZF} --bind change:top), :Enter
+  def test_info_inline_separator
+    tmux.send_keys 'seq 10 | fzf --info=inline:___ --no-separator', :Enter
+    tmux.until { |lines| assert_equal '>  ___10/10', lines[-1] }
+  end
+
+  def test_change_first_last
+    tmux.send_keys %(seq 1000 | #{FZF} --bind change:first,alt-Z:last), :Enter
     tmux.until { |lines| assert_equal 1000, lines.match_count }
     tmux.send_keys :Up
     tmux.until { |lines| assert_equal '> 2', lines[-4] }
@@ -1565,7 +1674,35 @@ class TestGoFZF < TestBase
     tmux.until { |lines| assert_equal '> 10', lines[-4] }
     tmux.send_keys 1
     tmux.until { |lines| assert_equal '> 11', lines[-3] }
+    tmux.send_keys 'C-u'
+    tmux.until { |lines| assert_equal '> 1', lines[-3] }
+    tmux.send_keys :Escape, 'Z'
+    tmux.until { |lines| assert_equal '> 1000', lines[0] }
     tmux.send_keys :Enter
+  end
+
+  def test_pos
+    tmux.send_keys %(seq 1000 | #{FZF} --bind 'a:pos(3),b:pos(-3),c:pos(1),d:pos(-1),e:pos(0)' --preview 'echo {}/{}'), :Enter
+    tmux.until { |lines| assert_equal 1000, lines.match_count }
+    tmux.send_keys :a
+    tmux.until { |lines| assert_includes lines[1], ' 3/3' }
+    tmux.send_keys :b
+    tmux.until { |lines| assert_includes lines[1], ' 998/998' }
+    tmux.send_keys :c
+    tmux.until { |lines| assert_includes lines[1], ' 1/1' }
+    tmux.send_keys :d
+    tmux.until { |lines| assert_includes lines[1], ' 1000/1000' }
+    tmux.send_keys :e
+    tmux.until { |lines| assert_includes lines[1], ' 1/1' }
+  end
+
+  def test_put
+    tmux.send_keys %(seq 1000 | #{FZF} --bind 'a:put+put,b:put+put(ravo)' --preview 'echo {q}/{q}'), :Enter
+    tmux.until { |lines| assert_equal 1000, lines.match_count }
+    tmux.send_keys :a
+    tmux.until { |lines| assert_includes lines[1], ' aa/aa' }
+    tmux.send_keys :b
+    tmux.until { |lines| assert_includes lines[1], ' aabravo/aabravo' }
   end
 
   def test_accept_non_empty
@@ -1654,13 +1791,35 @@ class TestGoFZF < TestBase
     tmux.until { |lines| assert_includes lines[1], ' +       green ' }
   end
 
-  def test_phony
-    tmux.send_keys %(seq 1000 | #{FZF} --query 333 --phony --preview 'echo {} {q}'), :Enter
+  def test_disabled
+    tmux.send_keys %(seq 1000 | #{FZF} --query 333 --disabled --bind a:enable-search,b:disable-search,c:toggle-search --preview 'echo {} {q}'), :Enter
     tmux.until { |lines| assert_equal 1000, lines.match_count }
     tmux.until { |lines| assert_includes lines[1], ' 1 333 ' }
     tmux.send_keys 'foo'
     tmux.until { |lines| assert_equal 1000, lines.match_count }
     tmux.until { |lines| assert_includes lines[1], ' 1 333foo ' }
+
+    # Already disabled, no change
+    tmux.send_keys 'b'
+    tmux.until { |lines| assert_equal 1000, lines.match_count }
+
+    # Enable search
+    tmux.send_keys 'a'
+    tmux.until { |lines| assert_equal 0, lines.match_count }
+    tmux.send_keys :BSpace, :BSpace, :BSpace
+    tmux.until { |lines| assert_equal 1, lines.match_count }
+    tmux.until { |lines| assert_includes lines[1], ' 333 333 ' }
+
+    # Toggle search -> disabled again, but retains the previous result
+    tmux.send_keys 'c'
+    tmux.send_keys 'foo'
+    tmux.until { |lines| assert_includes lines[1], ' 333 333foo ' }
+    tmux.until { |lines| assert_equal 1, lines.match_count }
+
+    # Enabled, no match
+    tmux.send_keys 'c'
+    tmux.until { |lines| assert_equal 0, lines.match_count }
+    tmux.until { |lines| assert_includes lines[1], ' 333foo ' }
   end
 
   def test_reload
@@ -1704,6 +1863,32 @@ class TestGoFZF < TestBase
     tmux.until { |lines| assert_equal '> barfoo', lines.last }
     tmux.send_keys :Space
     tmux.until { |lines| assert_equal '>', lines.last }
+  end
+
+  def test_change_query
+    tmux.send_keys %(: | #{FZF} --query foo --bind space:change-query:foobar), :Enter
+    tmux.until { |lines| assert_equal 0, lines.item_count }
+    tmux.until { |lines| assert_equal '> foo', lines.last }
+    tmux.send_keys :Space, 'baz'
+    tmux.until { |lines| assert_equal '> foobarbaz', lines.last }
+  end
+
+  def test_transform_query
+    tmux.send_keys %{#{FZF} --bind 'ctrl-r:transform-query(rev <<< {q}),ctrl-u:transform-query: tr "[:lower:]" "[:upper:]" <<< {q}' --query bar}, :Enter
+    tmux.until { |lines| assert_equal '> bar', lines[-1] }
+    tmux.send_keys 'C-r'
+    tmux.until { |lines| assert_equal '> rab', lines[-1] }
+    tmux.send_keys 'C-u'
+    tmux.until { |lines| assert_equal '> RAB', lines[-1] }
+  end
+
+  def test_transform_prompt
+    tmux.send_keys %{#{FZF} --bind 'ctrl-r:transform-query(rev <<< {q}),ctrl-u:transform-query: tr "[:lower:]" "[:upper:]" <<< {q}' --query bar}, :Enter
+    tmux.until { |lines| assert_equal '> bar', lines[-1] }
+    tmux.send_keys 'C-r'
+    tmux.until { |lines| assert_equal '> rab', lines[-1] }
+    tmux.send_keys 'C-u'
+    tmux.until { |lines| assert_equal '> RAB', lines[-1] }
   end
 
   def test_clear_selection
@@ -1823,6 +2008,654 @@ class TestGoFZF < TestBase
     tmux.until { |lines| lines.item_count == 100 }
     tmux.until { |lines| lines[1]&.include?('[200]') }
   end
+
+  def test_change_prompt
+    tmux.send_keys "#{FZF} --bind 'a:change-prompt(a> ),b:change-prompt:b> ' --query foo", :Enter
+    tmux.until { |lines| assert_equal '> foo', lines[-1] }
+    tmux.send_keys 'a'
+    tmux.until { |lines| assert_equal 'a> foo', lines[-1] }
+    tmux.send_keys 'b'
+    tmux.until { |lines| assert_equal 'b> foo', lines[-1] }
+  end
+
+  def test_preview_window_follow
+    file = Tempfile.new('fzf-follow')
+    file.sync = true
+
+    tmux.send_keys %(seq 100 | #{FZF} --preview 'tail -f "#{file.path}"' --preview-window follow --bind 'up:preview-up,down:preview-down,space:change-preview-window:follow|nofollow' --preview-window '~3'), :Enter
+    tmux.until { |lines| lines.item_count == 100 }
+
+    # Write to the temporary file, and check if the preview window is showing
+    # the last line of the file
+    3.times { file.puts _1 } # header lines
+    1000.times { file.puts _1 }
+    tmux.until { |lines| assert_includes lines[1], '/1003' }
+    tmux.until { |lines| assert_includes lines[-2], '999' }
+
+    # Scroll the preview window and fzf should stop following the file content
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_includes lines[-2], '998' }
+    file.puts 'foo', 'bar'
+    tmux.until do |lines|
+      assert_includes lines[1], '/1005'
+      assert_includes lines[-2], '998'
+    end
+
+    # Scroll back to the bottom and fzf should start following the file again
+    %w[999 foo bar].each do |item|
+      wait do
+        tmux.send_keys :Down
+        tmux.until { |lines| assert_includes lines[-2], item }
+      end
+    end
+    file.puts 'baz'
+    tmux.until do |lines|
+      assert_includes lines[1], '/1006'
+      assert_includes lines[-2], 'baz'
+    end
+
+    # Scroll upwards to stop following
+    tmux.send_keys :Up
+    wait { assert_includes lines[-2], 'bar' }
+    file.puts 'aaa'
+    tmux.until do |lines|
+      assert_includes lines[1], '/1007'
+      assert_includes lines[-2], 'bar'
+    end
+
+    # Manually enable following
+    tmux.send_keys :Space
+    tmux.until { |lines| assert_includes lines[-2], 'aaa' }
+    file.puts 'bbb'
+    tmux.until do |lines|
+      assert_includes lines[1], '/1008'
+      assert_includes lines[-2], 'bbb'
+    end
+
+    # Disable following
+    tmux.send_keys :Space
+    file.puts 'ccc', 'ddd'
+    tmux.until do |lines|
+      assert_includes lines[1], '/1010'
+      assert_includes lines[-2], 'bbb'
+    end
+  rescue StandardError
+    file.close
+    file.unlink
+  end
+
+  def test_toggle_preview_wrap
+    tmux.send_keys "#{FZF} --preview 'for i in $(seq $FZF_PREVIEW_COLUMNS); do echo -n .; done; echo wrapped; echo 2nd line' --bind ctrl-w:toggle-preview-wrap", :Enter
+    2.times do
+      tmux.until { |lines| assert_includes lines[2], '2nd line' }
+      tmux.send_keys 'C-w'
+      tmux.until do |lines|
+        assert_includes lines[2], 'wrapped'
+        assert_includes lines[3], '2nd line'
+      end
+      tmux.send_keys 'C-w'
+    end
+  end
+
+  def test_close
+    tmux.send_keys "seq 100 | #{FZF} --preview 'echo foo' --bind ctrl-c:close", :Enter
+    tmux.until { |lines| assert_equal 100, lines.match_count }
+    tmux.until { |lines| assert_includes lines[1], 'foo' }
+    tmux.send_keys 'C-c'
+    tmux.until { |lines| refute_includes lines[1], 'foo' }
+    tmux.send_keys '10'
+    tmux.until { |lines| assert_equal 2, lines.match_count }
+    tmux.send_keys 'C-c'
+    tmux.send_keys 'C-l', 'closed'
+    tmux.until { |lines| assert_includes lines[0], 'closed' }
+  end
+
+  def test_select_deselect
+    tmux.send_keys "seq 3 | #{FZF} --multi --bind up:deselect+up,down:select+down", :Enter
+    tmux.until { |lines| assert_equal 3, lines.match_count }
+    tmux.send_keys :Tab
+    tmux.until { |lines| assert_equal 1, lines.select_count }
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_equal 0, lines.select_count }
+    tmux.send_keys :Down, :Down
+    tmux.until { |lines| assert_equal 2, lines.select_count }
+    tmux.send_keys :Tab
+    tmux.until { |lines| assert_equal 1, lines.select_count }
+    tmux.send_keys :Down, :Down
+    tmux.until { |lines| assert_equal 2, lines.select_count }
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_equal 1, lines.select_count }
+    tmux.send_keys :Down
+    tmux.until { |lines| assert_equal 1, lines.select_count }
+    tmux.send_keys :Down
+    tmux.until { |lines| assert_equal 2, lines.select_count }
+  end
+
+  def test_interrupt_execute
+    tmux.send_keys "seq 100 | #{FZF} --bind 'ctrl-l:execute:echo executing {}; sleep 100'", :Enter
+    tmux.until { |lines| assert_equal 100, lines.item_count }
+    tmux.send_keys 'C-l'
+    tmux.until { |lines| assert lines.any_include?('executing 1') }
+    tmux.send_keys 'C-c'
+    tmux.until { |lines| assert_equal 100, lines.item_count }
+    tmux.send_keys 99
+    tmux.until { |lines| assert_equal 1, lines.match_count }
+  end
+
+  def test_kill_default_command_on_abort
+    script = tempname + '.sh'
+    writelines(script,
+               ['#!/usr/bin/env bash',
+                "echo 'Started'",
+                'while :; do sleep 1; done'])
+    system("chmod +x #{script}")
+
+    tmux.send_keys fzf.sub('FZF_DEFAULT_COMMAND=', "FZF_DEFAULT_COMMAND=#{script}"), :Enter
+    tmux.until { |lines| assert_equal 1, lines.item_count }
+    tmux.send_keys 'C-c'
+    tmux.send_keys 'C-l', 'closed'
+    tmux.until { |lines| assert_includes lines[0], 'closed' }
+    wait { refute system("pgrep -f #{script}") }
+  ensure
+    system("pkill -9 -f #{script}")
+    FileUtils.rm_f(script)
+  end
+
+  def test_kill_default_command_on_accept
+    script = tempname + '.sh'
+    writelines(script,
+               ['#!/usr/bin/env bash',
+                "echo 'Started'",
+                'while :; do sleep 1; done'])
+    system("chmod +x #{script}")
+
+    tmux.send_keys fzf.sub('FZF_DEFAULT_COMMAND=', "FZF_DEFAULT_COMMAND=#{script}"), :Enter
+    tmux.until { |lines| assert_equal 1, lines.item_count }
+    tmux.send_keys :Enter
+    assert_equal 'Started', readonce.chomp
+    wait { refute system("pgrep -f #{script}") }
+  ensure
+    system("pkill -9 -f #{script}")
+    FileUtils.rm_f(script)
+  end
+
+  def test_kill_reload_command_on_abort
+    script = tempname + '.sh'
+    writelines(script,
+               ['#!/usr/bin/env bash',
+                "echo 'Started'",
+                'while :; do sleep 1; done'])
+    system("chmod +x #{script}")
+
+    tmux.send_keys "seq 1 3 | #{fzf("--bind 'ctrl-r:reload(#{script})'")}", :Enter
+    tmux.until { |lines| assert_equal 3, lines.item_count }
+    tmux.send_keys 'C-r'
+    tmux.until { |lines| assert_equal 1, lines.item_count }
+    tmux.send_keys 'C-c'
+    tmux.send_keys 'C-l', 'closed'
+    tmux.until { |lines| assert_includes lines[0], 'closed' }
+    wait { refute system("pgrep -f #{script}") }
+  ensure
+    system("pkill -9 -f #{script}")
+    FileUtils.rm_f(script)
+  end
+
+  def test_kill_reload_command_on_accept
+    script = tempname + '.sh'
+    writelines(script,
+               ['#!/usr/bin/env bash',
+                "echo 'Started'",
+                'while :; do sleep 1; done'])
+    system("chmod +x #{script}")
+
+    tmux.send_keys "seq 1 3 | #{fzf("--bind 'ctrl-r:reload(#{script})'")}", :Enter
+    tmux.until { |lines| assert_equal 3, lines.item_count }
+    tmux.send_keys 'C-r'
+    tmux.until { |lines| assert_equal 1, lines.item_count }
+    tmux.send_keys :Enter
+    assert_equal 'Started', readonce.chomp
+    wait { refute system("pgrep -f #{script}") }
+  ensure
+    system("pkill -9 -f #{script}")
+    FileUtils.rm_f(script)
+  end
+
+  def test_preview_header
+    tmux.send_keys "seq 100 | #{FZF} --bind ctrl-k:preview-up+preview-up,ctrl-j:preview-down+preview-down+preview-down --preview 'seq 1000' --preview-window 'top:+{1}:~3'", :Enter
+    tmux.until { |lines| assert_equal 100, lines.item_count }
+    top5 = ->(lines) { lines.drop(1).take(5).map { |s| s[/[0-9]+/] } }
+    tmux.until do |lines|
+      assert_includes lines[1], '4/1000'
+      assert_equal(%w[1 2 3 4 5], top5[lines])
+    end
+    tmux.send_keys '55'
+    tmux.until do |lines|
+      assert_equal 1, lines.match_count
+      assert_equal(%w[1 2 3 55 56], top5[lines])
+    end
+    tmux.send_keys 'C-J'
+    tmux.until do |lines|
+      assert_equal(%w[1 2 3 58 59], top5[lines])
+    end
+    tmux.send_keys :BSpace
+    tmux.until do |lines|
+      assert_equal 19, lines.match_count
+      assert_equal(%w[1 2 3 5 6], top5[lines])
+    end
+    tmux.send_keys 'C-K'
+    tmux.until { |lines| assert_equal(%w[1 2 3 4 5], top5[lines]) }
+  end
+
+  def test_unbind_rebind
+    tmux.send_keys "seq 100 | #{FZF} --bind 'c:clear-query,d:unbind(c,d),e:rebind(c,d)'", :Enter
+    tmux.until { |lines| assert_equal 100, lines.item_count }
+    tmux.send_keys 'ab'
+    tmux.until { |lines| assert_equal '> ab', lines[-1] }
+    tmux.send_keys 'c'
+    tmux.until { |lines| assert_equal '>', lines[-1] }
+    tmux.send_keys 'dabcd'
+    tmux.until { |lines| assert_equal '> abcd', lines[-1] }
+    tmux.send_keys 'ecabddc'
+    tmux.until { |lines| assert_equal '> abdc', lines[-1] }
+  end
+
+  def test_item_index_reset_on_reload
+    tmux.send_keys "seq 10 | #{FZF} --preview 'echo [[{n}]]' --bind 'up:last,down:first,space:reload:seq 100'", :Enter
+    tmux.until { |lines| assert_includes lines[1], '[[0]]' }
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_includes lines[1], '[[9]]' }
+    tmux.send_keys :Down
+    tmux.until { |lines| assert_includes lines[1], '[[0]]' }
+    tmux.send_keys :Space
+    tmux.until do |lines|
+      assert_equal 100, lines.item_count
+      assert_includes lines[1], '[[0]]'
+    end
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_includes lines[1], '[[99]]' }
+  end
+
+  def test_reload_should_update_preview
+    tmux.send_keys "seq 3 | #{FZF} --bind 'ctrl-t:reload:echo 4' --preview 'echo {}' --preview-window 'nohidden'", :Enter
+    tmux.until { |lines| assert_includes lines[1], '1' }
+    tmux.send_keys 'C-t'
+    tmux.until { |lines| assert_includes lines[1], '4' }
+  end
+
+  def test_reload_and_change_preview_should_update_preview
+    tmux.send_keys "seq 3 | #{FZF} --bind 'ctrl-t:reload(echo 4)+change-preview(echo {})'", :Enter
+    tmux.until { |lines| assert_equal 3, lines.item_count }
+    tmux.until { |lines| refute_includes lines[1], '1' }
+    tmux.send_keys 'C-t'
+    tmux.until { |lines| assert_equal 1, lines.item_count }
+    tmux.until { |lines| assert_includes lines[1], '4' }
+  end
+
+  def test_reload_sync
+    tmux.send_keys "seq 100 | #{FZF} --bind 'load:reload-sync(sleep 1; seq 1000)+unbind(load)'", :Enter
+    tmux.until { |lines| assert_equal 100, lines.item_count }
+    tmux.send_keys '00'
+    tmux.until { |lines| assert_equal 1, lines.match_count }
+    # After 1 second
+    tmux.until { |lines| assert_equal 10, lines.match_count }
+  end
+
+  def test_scroll_off
+    tmux.send_keys "seq 1000 | #{FZF} --scroll-off=3 --bind l:last", :Enter
+    tmux.until { |lines| assert_equal 1000, lines.item_count }
+    height = tmux.until { |lines| lines }.first.to_i
+    tmux.send_keys :PgUp
+    tmux.until do |lines|
+      assert_equal height + 3, lines.first.to_i
+      assert_equal "> #{height}", lines[3].strip
+    end
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_equal "> #{height + 1}", lines[3].strip }
+    tmux.send_keys 'l'
+    tmux.until { |lines| assert_equal '> 1000', lines.first.strip }
+    tmux.send_keys :PgDn
+    tmux.until { |lines| assert_equal "> #{1000 - height + 1}", lines.reverse[5].strip }
+    tmux.send_keys :Down
+    tmux.until { |lines| assert_equal "> #{1000 - height}", lines.reverse[5].strip }
+  end
+
+  def test_scroll_off_large
+    tmux.send_keys "seq 1000 | #{FZF} --scroll-off=9999", :Enter
+    tmux.until { |lines| assert_equal 1000, lines.item_count }
+    height = tmux.until { |lines| lines }.first.to_i
+    tmux.send_keys :PgUp
+    tmux.until { |lines| assert_equal "> #{height}", lines[height / 2].strip }
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_equal "> #{height + 1}", lines[height / 2].strip }
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_equal "> #{height + 2}", lines[height / 2].strip }
+    tmux.send_keys :Down
+    tmux.until { |lines| assert_equal "> #{height + 1}", lines[height / 2].strip }
+  end
+
+  def test_header_first
+    tmux.send_keys "seq 1000 | #{FZF} --header foobar --header-lines 3 --header-first", :Enter
+    tmux.until do |lines|
+      expected = <<~OUTPUT
+        > 4
+          997/997
+        >
+          3
+          2
+          1
+          foobar
+      OUTPUT
+
+      assert_equal expected.chomp, lines.reverse.take(7).reverse.join("\n")
+    end
+  end
+
+  def test_header_first_reverse
+    tmux.send_keys "seq 1000 | #{FZF} --header foobar --header-lines 3 --header-first --reverse --inline-info", :Enter
+    tmux.until do |lines|
+      expected = <<~OUTPUT
+          foobar
+          1
+          2
+          3
+        >   < 997/997
+        > 4
+      OUTPUT
+
+      assert_equal expected.chomp, lines.take(6).join("\n")
+    end
+  end
+
+  def test_change_preview_window
+    tmux.send_keys "seq 1000 | #{FZF} --preview 'echo [[{}]]' --preview-window border-none --bind '" \
+      'a:change-preview(echo __{}__),' \
+      'b:change-preview-window(down)+change-preview(echo =={}==)+change-preview-window(up),' \
+      'c:change-preview(),d:change-preview-window(hidden),' \
+      "e:preview(printf ::%${FZF_PREVIEW_COLUMNS}s{})+change-preview-window(up),f:change-preview-window(up,wrap)'", :Enter
+    tmux.until { |lines| assert_equal 1000, lines.item_count }
+    tmux.until { |lines| assert_includes lines[0], '[[1]]' }
+
+    # change-preview action permanently changes the preview command set by --preview
+    tmux.send_keys 'a'
+    tmux.until { |lines| assert_includes lines[0], '__1__' }
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_includes lines[0], '__2__' }
+
+    # When multiple change-preview-window actions are bound to a single key,
+    # the last one wins and the updated options are immediately applied to the new preview
+    tmux.send_keys 'b'
+    tmux.until { |lines| assert_equal '==2==', lines[0] }
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_equal '==3==', lines[0] }
+
+    # change-preview with an empty preview command closes the preview window
+    tmux.send_keys 'c'
+    tmux.until { |lines| refute_includes lines[0], '==' }
+
+    # change-preview again to re-open the preview window
+    tmux.send_keys 'a'
+    tmux.until { |lines| assert_equal '__3__', lines[0] }
+
+    # Hide the preview window with hidden flag
+    tmux.send_keys 'd'
+    tmux.until { |lines| refute_includes lines[0], '__3__' }
+
+    # One-off preview
+    tmux.send_keys 'e'
+    tmux.until do |lines|
+      assert_equal '::', lines[0]
+      refute_includes lines[1], '3'
+    end
+
+    # Wrapped
+    tmux.send_keys 'f'
+    tmux.until do |lines|
+      assert_equal '::', lines[0]
+      assert_equal '  3', lines[1]
+    end
+  end
+
+  def test_change_preview_window_rotate
+    tmux.send_keys "seq 100 | #{FZF} --preview-window left,border-none --preview 'echo hello' --bind '" \
+      "a:change-preview-window(right|down|up|hidden|)'", :Enter
+    3.times do
+      tmux.until { |lines| lines[0].start_with?('hello') }
+      tmux.send_keys 'a'
+      tmux.until { |lines| lines[0].end_with?('hello') }
+      tmux.send_keys 'a'
+      tmux.until { |lines| lines[-1].start_with?('hello') }
+      tmux.send_keys 'a'
+      tmux.until { |lines| assert_equal 'hello', lines[0] }
+      tmux.send_keys 'a'
+      tmux.until { |lines| refute_includes lines[0], 'hello' }
+      tmux.send_keys 'a'
+    end
+  end
+
+  def test_ellipsis
+    tmux.send_keys 'seq 1000 | tr "\n" , | fzf --ellipsis=SNIPSNIP -e -q500', :Enter
+    tmux.until { |lines| assert_equal 1, lines.match_count }
+    tmux.until { |lines| assert_match(/^> SNIPSNIP.*SNIPSNIP$/, lines[-3]) }
+  end
+
+  def assert_block(expected, lines)
+    cols = expected.lines.map(&:chomp).map(&:length).max
+    actual = lines.reverse.take(expected.lines.length).reverse.map { _1[0, cols].rstrip + "\n" }.join
+    assert_equal_org expected, actual
+  end
+
+  def test_height_range_fit
+    tmux.send_keys 'seq 3 | fzf --height ~100% --info=inline --border', :Enter
+    expected = <<~OUTPUT
+      ╭──────────
+      │   3
+      │   2
+      │ > 1
+      │ >   < 3/3
+      ╰──────────
+    OUTPUT
+    tmux.until { assert_block(expected, _1) }
+  end
+
+  def test_height_range_fit_preview_above
+    tmux.send_keys 'seq 3 | fzf --height ~100% --info=inline --border --preview "seq {}" --preview-window up,60%', :Enter
+    expected = <<~OUTPUT
+      ╭──────────
+      │ ╭────────
+      │ │ 1
+      │ │
+      │ │
+      │ │
+      │ ╰────────
+      │   3
+      │   2
+      │ > 1
+      │ >   < 3/3
+      ╰──────────
+    OUTPUT
+    tmux.until { assert_block(expected, _1) }
+  end
+
+  def test_height_range_fit_preview_above_alternative
+    tmux.send_keys 'seq 3 | fzf --height ~100% --border=sharp --preview "seq {}" --preview-window up,40%,border-bottom --padding 1 --exit-0 --header hello --header-lines=2', :Enter
+    expected = <<~OUTPUT
+      ┌─────────
+      │
+      │  1
+      │  2
+      │  3
+      │  ───────
+      │  > 3
+      │    2
+      │    1
+      │    hello
+      │    1/1 ─
+      │  >
+      │
+      └─────────
+    OUTPUT
+    tmux.until { assert_block(expected, _1) }
+  end
+
+  def test_height_range_fit_preview_left
+    tmux.send_keys "seq 3 | fzf --height ~100% --border=vertical --preview 'seq {}' --preview-window left,5,border-right --padding 1 --exit-0 --header $'hello\\nworld' --header-lines=2", :Enter
+    expected = <<~OUTPUT
+      │
+      │  1       │ > 3
+      │  2       │   2
+      │  3       │   1
+      │          │   hello
+      │          │   world
+      │          │   1/1 ─
+      │          │ >
+      │
+    OUTPUT
+    tmux.until { assert_block(expected, _1) }
+  end
+
+  def test_height_range_overflow
+    tmux.send_keys 'seq 100 | fzf --height ~5 --info=inline --border', :Enter
+    expected = <<~OUTPUT
+      ╭──────────────
+      │   2
+      │ > 1
+      │ >   < 100/100
+      ╰──────────────
+    OUTPUT
+    tmux.until { assert_block(expected, _1) }
+  end
+
+  def test_start_event
+    tmux.send_keys 'seq 100 | fzf --multi --sync --preview-window hidden:border-none --bind "start:select-all+last+preview(echo welcome)"', :Enter
+    tmux.until do |lines|
+      assert_match(/>100.*welcome/, lines[0])
+      assert_includes(lines[-2], '100/100 (100)')
+    end
+  end
+
+  def test_focus_event
+    tmux.send_keys 'seq 100 | fzf --bind "focus:transform-prompt(echo [[{}]])"', :Enter
+    tmux.until { |lines| assert_includes(lines[-1], '[[1]]') }
+    tmux.send_keys :Up
+    tmux.until { |lines| assert_includes(lines[-1], '[[2]]') }
+    tmux.send_keys :X
+    tmux.until { |lines| assert_includes(lines[-1], '[[]]') }
+  end
+
+  def test_labels_center
+    tmux.send_keys 'echo x | fzf --border --border-label foobar --preview : --preview-label barfoo --bind "space:change-border-label(foobarfoo)+change-preview-label(barfoobar),enter:transform-border-label(echo foo{}foo)+transform-preview-label(echo bar{}bar)"', :Enter
+    tmux.until do
+      assert_includes(_1[0], '─foobar─')
+      assert_includes(_1[1], '─barfoo─')
+    end
+    tmux.send_keys :space
+    tmux.until do
+      assert_includes(_1[0], '─foobarfoo─')
+      assert_includes(_1[1], '─barfoobar─')
+    end
+    tmux.send_keys :Enter
+    tmux.until do
+      assert_includes(_1[0], '─fooxfoo─')
+      assert_includes(_1[1], '─barxbar─')
+    end
+  end
+
+  def test_labels_left
+    tmux.send_keys ': | fzf --border --border-label foobar --border-label-pos 2 --preview : --preview-label barfoo --preview-label-pos 2', :Enter
+    tmux.until do
+      assert_includes(_1[0], '╭foobar─')
+      assert_includes(_1[1], '╭barfoo─')
+    end
+  end
+
+  def test_labels_right
+    tmux.send_keys ': | fzf --border --border-label foobar --border-label-pos -2 --preview : --preview-label barfoo --preview-label-pos -2', :Enter
+    tmux.until do
+      assert_includes(_1[0], '─foobar╮')
+      assert_includes(_1[1], '─barfoo╮')
+    end
+  end
+
+  def test_labels_bottom
+    tmux.send_keys ': | fzf --border --border-label foobar --border-label-pos 2:bottom --preview : --preview-label barfoo --preview-label-pos -2:bottom', :Enter
+    tmux.until do
+      assert_includes(_1[-1], '╰foobar─')
+      assert_includes(_1[-2], '─barfoo╯')
+    end
+  end
+
+  def test_info_separator_unicode
+    tmux.send_keys 'seq 100 | fzf -q55', :Enter
+    tmux.until { assert_includes(_1[-2], '  1/100 ─') }
+  end
+
+  def test_info_separator_no_unicode
+    tmux.send_keys 'seq 100 | fzf -q55 --no-unicode', :Enter
+    tmux.until { assert_includes(_1[-2], '  1/100 -') }
+  end
+
+  def test_info_separator_repeat
+    tmux.send_keys 'seq 100 | fzf -q55 --separator _-', :Enter
+    tmux.until { assert_includes(_1[-2], '  1/100 _-_-') }
+  end
+
+  def test_info_separator_ansi_colors_and_tabs
+    tmux.send_keys "seq 100 | fzf -q55 --tabstop 4 --separator $'\\x1b[33ma\\tb'", :Enter
+    tmux.until { assert_includes(_1[-2], '  1/100 a   ba   ba') }
+  end
+
+  def test_info_no_separator
+    tmux.send_keys 'seq 100 | fzf -q55 --no-separator', :Enter
+    tmux.until { assert(_1[-2] == '  1/100') }
+  end
+
+  def test_prev_next_selected
+    tmux.send_keys 'seq 10 | fzf --multi --bind ctrl-n:next-selected,ctrl-p:prev-selected', :Enter
+    tmux.until { |lines| assert_equal 10, lines.item_count }
+    tmux.send_keys :BTab, :BTab, :Up, :BTab
+    tmux.until { |lines| assert_equal 3, lines.select_count }
+    tmux.send_keys 'C-n'
+    tmux.until { |lines| assert_includes lines, '>>4' }
+    tmux.send_keys 'C-n'
+    tmux.until { |lines| assert_includes lines, '>>2' }
+    tmux.send_keys 'C-n'
+    tmux.until { |lines| assert_includes lines, '>>1' }
+    tmux.send_keys 'C-n'
+    tmux.until { |lines| assert_includes lines, '>>4' }
+    tmux.send_keys 'C-p'
+    tmux.until { |lines| assert_includes lines, '>>1' }
+    tmux.send_keys 'C-p'
+    tmux.until { |lines| assert_includes lines, '>>2' }
+  end
+
+  def test_listen
+    tmux.send_keys 'seq 10 | fzf --listen 6266', :Enter
+    tmux.until { |lines| assert_equal 10, lines.item_count }
+    Net::HTTP.post(URI('http://localhost:6266'), 'change-query(yo)+reload(seq 100)+change-prompt:hundred> ')
+    tmux.until { |lines| assert_equal 100, lines.item_count }
+    tmux.until { |lines| assert_equal 'hundred> yo', lines[-1] }
+  end
+
+  def test_toggle_alternative_preview_window
+    tmux.send_keys "seq 10 | #{FZF} --bind space:toggle-preview --preview-window '<100000(hidden,up,border-none)' --preview 'echo /{}/{}/'", :Enter
+    tmux.until { |lines| assert_equal 10, lines.item_count }
+    tmux.until { |lines| refute_includes lines, '/1/1/' }
+    tmux.send_keys :Space
+    tmux.until { |lines| assert_includes lines, '/1/1/' }
+  end
+
+  def test_become
+    tmux.send_keys "seq 100 | #{FZF} --bind 'enter:become:seq {} | #{FZF}'", :Enter
+    tmux.until { |lines| assert_equal 100, lines.item_count }
+    tmux.send_keys 999
+    tmux.until { |lines| assert_equal 0, lines.match_count }
+    tmux.send_keys :Enter
+    tmux.until { |lines| assert_equal 0, lines.match_count }
+    tmux.send_keys :BSpace
+    tmux.until { |lines| assert_equal 1, lines.match_count }
+    tmux.send_keys :Enter
+    tmux.until { |lines| assert_equal 99, lines.item_count }
+  end
 end
 
 module TestShell
@@ -1893,7 +2726,7 @@ module TestShell
     tmux.prepare
     tmux.send_keys :Escape, :c
     lines = tmux.until { |lines| assert_operator lines.match_count, :>, 0 }
-    expected = lines.reverse.find { |l| l.start_with?('> ') }[2..-1]
+    expected = lines.reverse.find { |l| l.start_with?('> ') }[2..]
     tmux.send_keys :Enter
     tmux.prepare
     tmux.send_keys :pwd, :Enter
@@ -1946,7 +2779,7 @@ module TestShell
 
   def test_ctrl_r_multiline
     tmux.send_keys 'echo "foo', :Enter, 'bar"', :Enter
-    tmux.until { |lines| assert_equal %w[foo bar], lines[-2..-1] }
+    tmux.until { |lines| assert_equal %w[foo bar], lines[-2..] }
     tmux.prepare
     tmux.send_keys 'C-r'
     tmux.until { |lines| assert_equal '>', lines[-1] }
@@ -1955,7 +2788,7 @@ module TestShell
     tmux.send_keys :Enter
     tmux.until { |lines| assert lines[-1]&.end_with?('bar"') }
     tmux.send_keys :Enter
-    tmux.until { |lines| assert_equal %w[foo bar], lines[-2..-1] }
+    tmux.until { |lines| assert_equal %w[foo bar], lines[-2..] }
   end
 
   def test_ctrl_r_abort
@@ -1993,7 +2826,7 @@ module CompletionTest
     end
 
     # ~USERNAME**<TAB>
-    user = ENV['USER']
+    user = `whoami`.chomp
     tmux.send_keys 'C-u'
     tmux.send_keys "cat ~#{user}**", :Tab
     tmux.until { |lines| assert_operator lines.match_count, :>, 0 }
@@ -2076,7 +2909,7 @@ module CompletionTest
     pid = lines[-1]&.split&.last
     tmux.prepare
     tmux.send_keys 'C-L'
-    tmux.send_keys 'kill ', :Tab
+    tmux.send_keys 'kill **', :Tab
     tmux.until { |lines| assert_operator lines.match_count, :>, 0 }
     tmux.send_keys 'sleep12345'
     tmux.until { |lines| assert lines.any_include?('sleep 12345') }
@@ -2146,7 +2979,7 @@ module CompletionTest
     tmux.send_keys :Enter
     tmux.until(true) { |lines| assert_match(/cat .*fzf-unicode.*1.* .*fzf-unicode.*2/, lines[-1]) }
     tmux.send_keys :Enter
-    tmux.until { |lines| assert_equal %w[test3 test4], lines[-2..-1] }
+    tmux.until { |lines| assert_equal %w[test3 test4], lines[-2..] }
   end
 
   def test_custom_completion_api
@@ -2236,7 +3069,7 @@ class TestFish < TestBase
   end
 
   def new_shell
-    tmux.send_keys 'env FZF_TMUX=1 fish', :Enter
+    tmux.send_keys 'env FZF_TMUX=1 FZF_DEFAULT_OPTS=--no-scrollbar fish', :Enter
     tmux.send_keys 'function fish_prompt; end; clear', :Enter
     tmux.until { |lines| assert_empty lines }
   end
@@ -2249,10 +3082,13 @@ class TestFish < TestBase
 end
 
 __END__
+set -u
 PS1= PROMPT_COMMAND= HISTFILE= HISTSIZE=100
 unset <%= UNSETS.join(' ') %>
 unset $(env | sed -n /^_fzf_orig/s/=.*//p)
 unset $(declare -F | sed -n "/_fzf/s/.*-f //p")
+
+export FZF_DEFAULT_OPTS=--no-scrollbar
 
 # Setup fzf
 # ---------
@@ -2292,8 +3128,8 @@ _fzf_complete_g_post() {
   awk '{print "g" $0 $0}'
 }
 
-[ -n "$BASH" ] && complete -F _fzf_complete_f -o default -o bashdefault f
-[ -n "$BASH" ] && complete -F _fzf_complete_g -o default -o bashdefault g
+[ -n "${BASH-}" ] && complete -F _fzf_complete_f -o default -o bashdefault f
+[ -n "${BASH-}" ] && complete -F _fzf_complete_g -o default -o bashdefault g
 
 _comprun() {
   local command=$1

@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'plantuml')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'plantuml', 'syntax/plantuml.vim')
   finish
 endif
 
@@ -99,7 +99,7 @@ syntax match plantumlNoteMultiLineStart /\%(^\s*[rh]\?\%(note\|legend\)\)\@<=\s\
 " Class
 syntax region plantumlClass
       \ start=/\%(\%(class\|interface\|object\)\s[^{]\+\)\@<=\zs{/
-      \ end=/^\s*}/ 
+      \ end=/^\s*}/
       \ contains=plantumlClassArrows,
       \          plantumlClassKeyword,
       \          @plantumlClassOp,
@@ -128,7 +128,7 @@ syntax match plantumlTag /<\/\?[bi]>/
 syntax region plantumlTag start=/<\/\?\%(back\|color\|del\|font\|img\|s\|size\|strike\|u\|w\)/ end=/>/
 
 " Labels with a colon
-syntax match plantumlColonLine /\S\@<=\s*\zs:.\+$/ contains=plantumlSpecialString
+syntax match plantumlColonLine /\S\@<=\s*\zs : .\+$/ contains=plantumlSpecialString
 
 " Stereotypes
 syntax match plantumlStereotype /<<[^-.]\+>>/ contains=plantumlSpecialString

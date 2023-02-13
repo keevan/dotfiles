@@ -1,9 +1,9 @@
-if has_key(g:polyglot_is_disabled, 'requirements')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'requirements', 'autoload/requirements.vim')
   finish
 endif
 
 " the Requirements File Format syntax support for Vim
-" Version: 1.5.3
+" Version: 1.6.0
 " Author:  raimon <raimon49@hotmail.com>
 " License: MIT LICENSE
 " The MIT License (MIT)

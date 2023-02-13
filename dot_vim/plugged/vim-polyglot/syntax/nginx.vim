@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'nginx')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'nginx', 'syntax/nginx.vim')
   finish
 endif
 
@@ -2280,7 +2280,6 @@ hi link ngxComment Comment
 hi link ngxVariable Identifier
 hi link ngxVariableBlock Identifier
 hi link ngxVariableString PreProc
-hi link ngxBlock Normal
 hi link ngxString String
 hi link ngxIPaddr Delimiter
 hi link ngxBoolean Boolean

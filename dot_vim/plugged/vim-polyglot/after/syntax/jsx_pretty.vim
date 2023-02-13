@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'jsx')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'jsx', 'after/syntax/jsx_pretty.vim')
   finish
 endif
 
@@ -140,7 +140,7 @@ exe 'syntax match jsxTagName
 " and
 " <tag id='sample'>
 "         ~~~~~~~~
-syntax region jsxString start=+\z(["']\)+  skip=+\\\\\|\\\z1\|\\\n+  end=+\z1+ contained contains=@Spell
+syntax region jsxString start=+\z(["']\)+  skip=+\\\\\|\\\z1\|\\\n+  end=+\z1+ extend contained contains=@Spell
 
 let s:tags = get(g:, 'vim_jsx_pretty_template_tags', ['html', 'jsx'])
 let s:enable_tagged_jsx = !empty(s:tags)

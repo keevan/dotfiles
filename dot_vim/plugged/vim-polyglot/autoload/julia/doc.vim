@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'julia')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'julia', 'autoload/julia/doc.vim')
   finish
 endif
 
@@ -97,7 +97,7 @@ function! s:write_to_preview_window(content, ftype, buffername)
   else
     " We couldn't make it to the preview window, so as a fallback we dump the
     " contents in the status area.
-    execute printf("echo '%s'", join(a:content, "\n"))
+    echo join(a:content, "\n")
   endif
 endfunction
 

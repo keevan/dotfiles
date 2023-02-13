@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'ruby')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'ruby', 'indent/ruby.vim')
   finish
 endif
 
@@ -646,8 +646,7 @@ function! s:PreviousNotMSL(msl_info) abort
       " TODO (2016-10-07) Wrong/unused? How could it be "1"?
       return indent(info.plnum) - 1
       " If previous line is a continuation return its indent.
-      " TODO: the || s:IsInString() thing worries me a bit.
-    elseif s:Match(info.plnum, s:non_bracket_continuation_regex) || s:IsInString(info.plnum, strlen(line))
+    elseif s:Match(info.plnum, s:non_bracket_continuation_regex)
       return indent(info.plnum)
     endif
   endif

@@ -1,4 +1,4 @@
-if has_key(g:polyglot_is_disabled, 'make')
+if polyglot#init#is_disabled(expand('<sfile>:p'), 'make', 'indent/make.vim')
   finish
 endif
 
@@ -24,8 +24,8 @@ let s:comment_rx = '^\s*#'
 let s:rule_rx = '^[^ \t#:][^#:]*:\{1,2}\%([^=:]\|$\)'
 let s:continued_rule_rx = '^[^#:]*:\{1,2}\%([^=:]\|$\)'
 let s:continuation_rx = '\\$'
-let s:assignment_rx = '^\s*\h\w*\s*[+?]\==\s*\zs.*\\$'
-let s:folded_assignment_rx = '^\s*\h\w*\s*[+?]\=='
+let s:assignment_rx = '^\s*\h\w*\s*[+:?]\==\s*\zs.*\\$'
+let s:folded_assignment_rx = '^\s*\h\w*\s*[+:?]\=='
 " TODO: This needs to be a lot more restrictive in what it matches.
 let s:just_inserted_rule_rx = '^\s*[^#:]\+:\{1,2}$'
 let s:conditional_directive_rx = '^ *\%(ifn\=\%(eq\|def\)\|else\)\>'
