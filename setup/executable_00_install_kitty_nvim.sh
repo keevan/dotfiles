@@ -29,5 +29,5 @@
 	./squashfs-root/AppRun --version
 	sudo mv squashfs-root /
 	sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
-	nvim
+	#nvim -- dont need to run it..
 	#mv nvim.appimage ~/bin/nvim
