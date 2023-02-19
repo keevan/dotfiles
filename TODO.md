@@ -24,8 +24,8 @@ Add setup commands for
 - [ ] - Capslock to ESC (Windows, Linux, etc) - may be a bios thing
 
 ### Designer tools
-- [ ] - install inkscape
-- [ ] - install gimp
+- [y] - install inkscape
+- [y] - install gimp
 
 ### Work / Life (copy, move or re-generate)
 - [ ] - Transfer bookmarks across for browsers
@@ -34,3 +34,8 @@ Add setup commands for
 
 - [ ] - ssh keys - recreate
 - [ ] - gpg keys - cycle/backup/move/etc
+
+### Setup checklist
+- [ ] - Folders (work, personal, etc) as required.
+    Strategies:
+    - Existing workplace - rsync from old laptop to upgraded

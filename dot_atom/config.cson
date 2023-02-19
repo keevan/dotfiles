@@ -685,7 +685,6 @@
   transformer: {}
   "tree-view":
     alwaysOpenExisting: true
-    hideVcsIgnoredFiles: true
     squashDirectoryNames: true
   try:
     basename: "tryit"

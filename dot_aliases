@@ -1,9 +1,9 @@
 #/usr/bin/bash
 
 # Set vim to nvim if nvim exists on the system
-	command -v nvim > /dev/null && {
-		alias vim='nvim'
-	}
+command -v nvim > /dev/null && {
+  alias vim='nvim'
+}
 
 alias 'du.'='du -hsx * | sort -rh | head -10'
 alias 'dua'='du -hax -d0 .[!.]* * | sort -rh | head -10'
@@ -67,3 +67,5 @@ alias cbwd="pwd | cb"
 alias cbhs="cat $HISTFILE | tail -n 1 | cb"
 
 
+# Open this file for editing
+alias vaa="vim $HOME/.aliases"
