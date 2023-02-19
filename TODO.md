@@ -20,6 +20,11 @@ Add setup commands for
 - [y] - install general go packages (e.g. gum)
 - [y] - install fontmanager (so much easier..)
 
+### PHP
+- [ ] - install PHP
+- [ ] - install PHPCS - and bring all relevant standards in
+- [ ] - install PHP misc tools (composer, etc)
+
 ### System tweaks
 - [ ] - Capslock to ESC (Windows, Linux, etc) - may be a bios thing
 

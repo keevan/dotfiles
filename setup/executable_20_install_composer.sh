@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Install PHP (fpm to not install apache)
+sudo apt update
+sudo apt install -y php-fpm
+
 # Install Composer
 
 EXPECTED_CHECKSUM="$(wget -q -O - https://composer.github.io/installer.sig)"
