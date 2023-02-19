@@ -19,6 +19,7 @@ Add setup commands for
 - [y] - install go (go.dev/doc/install)
 - [y] - install general go packages (e.g. gum)
 - [y] - install fontmanager (so much easier..)
+- [y] - install gh CLI
 
 ### PHP
 - [y] - install PHP
