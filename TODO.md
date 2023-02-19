@@ -21,7 +21,7 @@ Add setup commands for
 - [y] - install fontmanager (so much easier..)
 
 ### PHP
-- [ ] - install PHP
+- [y] - install PHP
 - [ ] - install PHPCS - and bring all relevant standards in
 - [ ] - install PHP misc tools (composer, etc)
 
