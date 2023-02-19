@@ -1,6 +1,8 @@
 [user]
 	email = keevan.pham@gmail.com
 	name = {{ .name }}
+  ; GPG key
+	signingkey = F7A418BDB8DB38E3
 
 [includeIf "gitdir:~/apps/"]
 	path = .gitconfig.work
@@ -9,9 +11,15 @@
 	recurseSubmodules = check
 
 [alias]
+	rehash = "!f() { \
+		echo \"Going for $1\"; \
+		$HOME/work/lucky-commit/target/release/lucky_commit $1; \
+		git log -1 --show-signature; \
+	}; f"
 	s=status
 	b=branch
 	out=log origin/master.. --pretty='format:%C(auto)%h %<(72,trunc)%s | %ar'
+	a=!git-add
 	in=!git fetch && git log ..origin/master --pretty='format:%C(auto)%h [%<(7,trunc)%cn] %<(72,trunc)%s | %ar'
 	outs=!git out --stat
 	ins=!git in --stat
@@ -22,3 +30,37 @@
 	cp=cherry-pick
 	pushh=!git push --set-upstream origin $(git branch --show-current)
 	remote-delete-branch=push origin --delete
+  lg=log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  psychic=!ctl --psychic
+	submodule-branch-check=!ctrl submodule-branch-check
+	; Adds the plugin to submodules
+	add-plugin = "!f() { \
+		git add `ctrl plugin-find $1`; \
+	}; f"
+	plugin-add = add-plugin
+	ap = add-plugin
+	; Does git operations at the plugin directory level
+	plugin = "!f() { \
+							pluginpath=`ctrl plugin-find $1`; \
+							cd $pluginpath; \
+							git $2 $3 $4 $5 $6 $7 ; \
+					  }; f"
+  ; Really wanted to use variable expansion instead but it wouldn't work, I'm probably doing something wrong:
+  ; e.g. git \"${@:2}\"; \
+	oldest-ancestor=!bash -c 'diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1' -
+	curious = blame
+;
+
+[commit]
+	gpgsign = true
+[tag]
+ 	gpgsign = true
+[rerere]
+	enabled = true
+	autoupdate = true
+[safe]
+	directory = {{ .chezmoi.homeDir }}/personal/music
+[gpg]
+	; format = ssh
+[gpg "ssh"]
+	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowed_signers
