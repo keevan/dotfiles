@@ -5,6 +5,10 @@ command -v nvim > /dev/null && {
   alias vim='nvim'
 }
 
+command -v lvim > /dev/null && {
+  alias vim='lvim'
+}
+
 alias 'du.'='du -hsx * | sort -rh | head -10'
 alias 'dua'='du -hax -d0 .[!.]* * | sort -rh | head -10'
 alias copy='xclip -sel clip'
