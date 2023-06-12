@@ -2,7 +2,6 @@
  THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
  `lvim` is the global options object
 ]]
-
 -- vim options
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
@@ -15,20 +14,12 @@ lvim.format_on_save = {
   pattern = "*.lua",
   timeout = 1000,
 }
+lvim.colorscheme = "jellybeans-nvim"
+
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
--- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
-lvim.leader = "space"
--- add your own keymapping
-lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
-
--- lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
--- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
-
--- -- Use which-key to add extra bindings with the leader-key prefix
--- lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
--- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+require('keevan')
 
 -- -- Change theme settings
 -- lvim.colorscheme = "lunar"
@@ -38,6 +29,7 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+lvim.builtin.project.patterns = { ".git", ">apps", ">projects" }
 
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
@@ -74,26 +66,221 @@ lvim.builtin.treesitter.auto_install = true
 --   buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 -- end
 
--- -- linters and formatters <https://www.lunarvim.org/docs/languages#lintingformatting>
--- local formatters = require "lvim.lsp.null-ls.formatters"
--- formatters.setup {
---   { command = "stylua" },
---   {
---     command = "prettier",
---     extra_args = { "--print-width", "100" },
---     filetypes = { "typescript", "typescriptreact" },
---   },
--- }
--- local linters = require "lvim.lsp.null-ls.linters"
--- linters.setup {
---   { command = "flake8", filetypes = { "python" } },
---   {
---     command = "shellcheck",
---     args = { "--severity", "warning" },
---   },
--- }
+-- linters and formatters <https://www.lunarvim.org/docs/languages#lintingformatting>
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  { command = "stylua" },
+  {
+    command = "prettier",
+    extra_args = { "--print-width", "100" },
+    filetypes = { "typescript", "typescriptreact" },
+  },
+  {
+    command = "pint",
+    filetypes = { "php" },
+  },
+  {
+    command = "phpcbf",
+  },
+}
+local linters = require "lvim.lsp.null-ls.linters"
+linters.setup {
+  { command = "flake8", filetypes = { "python" } },
+  {
+    command = "shellcheck",
+    args = { "--severity", "warning" },
+  },
+}
 
--- -- Additional Plugins <https://www.lunarvim.org/docs/plugins#user-plugins>
+-- -- Additional Plugins <https://www.lunarvim.org/docs/configuration/plugins/user-plugins>
+lvim.plugins = {
+  {
+    "folke/trouble.nvim",
+    cmd = "TroubleToggle",
+  },
+  {
+    'jdhao/better-escape.vim', cmd = 'InsertEnter',
+  },
+  -- Syntax and indent files
+  -- loading this on ft because that seems to work better for some reason
+  -- otherwise indents for example only work after set ft=blade
+  -- blade
+  {
+    "jwalton512/vim-blade",
+    ft = "blade",
+  },
+
+  {
+    "ruifm/gitlinker.nvim",
+    event = "BufRead",
+    config = function()
+      require("gitlinker").setup {
+        opts = {
+          -- remote = 'github', -- force the use of a specific remote
+          -- adds current line nr in the url for normal mode
+          add_current_line_on_normal_mode = true,
+          -- callback for what to do with the url
+          action_callback = require("gitlinker.actions").open_in_browser,
+          -- print the url after performing the action
+          print_url = false,
+          -- mapping to call url generation
+          mappings = "<leader>gy",
+        },
+      }
+    end,
+    dependencies = "nvim-lua/plenary.nvim",
+  },
+  {
+    "pwntester/octo.nvim",
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require("octo").setup()
+    end,
+  },
+  {
+    "metalelf0/jellybeans-nvim"
+  },
+  {
+    "rktjmp/lush.nvim"
+  },
+  {
+    "ggandor/leap.nvim",
+    name = "leap",
+    config = function()
+      require("leap").add_default_mappings()
+    end,
+  },
+
+  -- -- Tabnine (last working)
+  -- {
+  --   "tzachar/cmp-tabnine",
+  --   build = "./install.sh",
+  --   dependencies = "hrsh7th/nvim-cmp",
+  --   event = "InsertEnter",
+  --   config = function()
+  --     local tabnine = require "cmp_tabnine.config"
+  --     tabnine:setup {
+  --       max_lines = 1000,
+  --       max_num_results = 10,
+  --       sort = true,
+  --     }
+  --   end,
+  --   lazy = true,
+  -- },
+
+  -- {
+  --   "nvim-telescope/telescope-project.nvim",
+  --   event = "BufWinEnter",
+  --   init = function()
+  --     vim.cmd [[packadd telescope.nvim]]
+  --   end,
+  -- },
+
+  {
+    "chrisgrieser/nvim-various-textobjs",
+    config = function()
+      require("various-textobjs").setup({ useDefaultKeymaps = true })
+    end,
+  },
+
+  -- autoclose and autorename html tag
+  {
+    "windwp/nvim-ts-autotag",
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
+
+  -- Hint as you type
+  {
+    "ray-x/lsp_signature.nvim",
+    event = "BufRead",
+    config = function() require "lsp_signature".on_attach() end,
+  },
+
+  -- Session management
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre", -- this will only start session saving when an actual file was opened
+    config = function()
+      require("persistence").setup {
+        dir = vim.fn.expand(vim.fn.stdpath "config" .. "/session/"),
+        options = { "buffers", "curdir", "tabpages", "winsize" },
+      }
+    end,
+  },
+
+  -- Hey, check it out, it's pretty cool!
+  { "ThePrimeagen/harpoon" },
+
+  -- HTTP rest client - useful for testing, has ability to replay previous requests :-)
+  -- File would be in the typical format of tests.http
+  {
+    "rest-nvim/rest.nvim",
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    ft = 'http',
+    config = function()
+      require("rest-nvim").setup({
+        -- Open request results in a horizontal split
+        result_split_horizontal = false,
+        -- Keep the http file buffer above|left when split horizontal|vertical
+        result_split_in_place = false,
+        -- Skip SSL verification, useful for unknown certificates
+        skip_ssl_verification = true,
+        -- Encode URL before making request
+        encode_url = true,
+        -- Highlight request on run
+        highlight = {
+          enabled = true,
+          timeout = 150,
+        },
+        result = {
+          -- toggle showing URL, HTTP info, headers at top the of result window
+          show_url = true,
+          -- show the generated curl command in case you want to launch
+          -- the same request via the terminal (can be verbose)
+          show_curl_command = false,
+          show_http_info = true,
+          show_headers = true,
+          -- executables or functions for formatting response body [optional]
+          -- set them to false if you want to disable them
+          formatters = {
+            json = "jq",
+            html = function(body)
+              return vim.fn.system({ "tidy", "-i", "-q", "-" }, body)
+            end
+          },
+        },
+        -- Jump to request line on run
+        jump_to_request = false,
+        env_file = '.env',
+        custom_dynamic_variables = {},
+        yank_dry_run = true,
+      })
+    end
+  },
+
+  -- Was nice but I'm okay with using the preview in browser for now
+  -- {
+  --   "jackMort/ChatGPT.nvim",
+  --   event = "VeryLazy",
+  --   config = function()
+  --     require("chatgpt").setup()
+  --   end,
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-telescope/telescope.nvim"
+  --   }
+  -- }
+}
+
 -- lvim.plugins = {
 --     {
 --       "folke/trouble.nvim",
@@ -109,3 +296,49 @@ lvim.builtin.treesitter.auto_install = true
 --     require("nvim-treesitter.highlight").attach(0, "bash")
 --   end,
 -- })
+--
+
+
+-- Copilot
+table.insert(lvim.plugins, {
+  "zbirenbaum/copilot-cmp",
+  event = "InsertEnter",
+  dependencies = { "zbirenbaum/copilot.lua" },
+  config = function()
+    vim.defer_fn(function()
+      require("copilot").setup()     -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
+      require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
+    end, 100)
+  end,
+})
+
+-- require('tabnine').setup({
+--   disable_auto_comment=true,
+--   accept_keymap="<Tab>",
+--   dismiss_keymap = "<C-]>",
+--   debounce_ms = 800,
+--   suggestion_color = {gui = "#808080", cterm = 244},
+--   exclude_filetypes = {"TelescopePrompt"},
+--   log_file_path = nil, -- absolute path to Tabnine log file
+-- })
+--
+
+-- PHP to include $ in word (php variables).
+vim.opt.iskeyword = vim.opt.iskeyword + "$"
+
+-- Autotag config
+require('nvim-ts-autotag').setup()
+require('nvim-ts-autotag').setup({
+  filetypes = {
+    'html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'svelte', 'vue', 'tsx', 'jsx', 'rescript',
+    'xml',
+    'php', 'blade',
+    'markdown',
+    'astro', 'glimmer', 'handlebars', 'hbs'
+  },
+})
+
+
+
+print('hello from main config.lua')
+require('keevan')
