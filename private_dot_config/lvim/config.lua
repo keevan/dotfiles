@@ -7,6 +7,7 @@ vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
 vim.opt.relativenumber = true
 
+
 -- general
 lvim.log.level = "info"
 lvim.format_on_save = {

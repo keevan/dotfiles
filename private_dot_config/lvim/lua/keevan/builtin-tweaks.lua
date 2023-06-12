@@ -1,3 +1,8 @@
+-- [ Vim options ] --
+vim.opt.colorcolumn = "92"
+
+
+-- [ LunarVim options ] --
 lvim.builtin.project.patterns = { ".git", ">apps", ">projects" }
 
 -- Don't calculate root dir on specific directories
