@@ -210,3 +210,8 @@ assign [class="kitty"] $ws1
 # Suspend - disabled for now, too easy to hit :-) 
 # bindsym $mod+Shift+period exec systemctl suspend
 bindsym $mod+Shift+period exec ~/i3lock.sh
+
+# exec_always --no-startup-id feh --bg-scale ~/Pictures/bg.jpg
+
+# Honestly, no idea why 1 is the default. This fixes clicking the scrollbar in browsers.
+for_window [class="^.*"] border pixel 0
