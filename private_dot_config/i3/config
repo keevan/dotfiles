@@ -9,7 +9,12 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
-set $mod Mod4
+# Windows key as Mod key
+# set $mod Mod4
+set $super Mod4
+
+# Alt key as Mod key
+set $mod Mod1
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -61,15 +66,17 @@ bindsym $mod+d exec --no-startup-id dmenu_run
 
 # change focus
 bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
 bindsym $mod+l focus right
+# disabled since these keys are already used in vim for moving lines up/down
+# bindsym $mod+j focus down
+# bindsym $mod+k focus up
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+# Note: disabled because I use these for the browser
+# bindsym $mod+Left focus left
+# bindsym $mod+Down focus down
+# bindsym $mod+Up focus up
+# bindsym $mod+Right focus right
 
 # move focused window
 bindsym $mod+Shift+h move left
@@ -168,10 +175,10 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -209,9 +216,20 @@ assign [class="kitty"] $ws1
 
 # Suspend - disabled for now, too easy to hit :-) 
 # bindsym $mod+Shift+period exec systemctl suspend
-bindsym $mod+Shift+period exec ~/i3lock.sh
+
+# Lock screen
+# bindsym $mod+Shift+period exec ~/i3lock.sh
+bindsym $super+L exec ~/i3lock.sh
 
 # exec_always --no-startup-id feh --bg-scale ~/Pictures/bg.jpg
 
 # Honestly, no idea why 1 is the default. This fixes clicking the scrollbar in browsers.
 for_window [class="^.*"] border pixel 0
+
+# (Windows Explorer equivalent) Open nautilus in a floating window using super+E 
+for_window [class="Org.gnome.Nautilus"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
+bindsym $super+E exec nautilus ~ 
+
+# Take a quick note using mod+n
+for_window [title="take_note"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
+bindsym $mod+n exec kitty -T take_note -e $HOME/bin/take-note
