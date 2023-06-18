@@ -102,6 +102,9 @@ lvim.plugins = {
   {
     'jdhao/better-escape.vim', cmd = 'InsertEnter',
   },
+  {
+    'vim-scripts/ReplaceWithRegister'
+  },
   -- Syntax and indent files
   -- loading this on ft because that seems to work better for some reason
   -- otherwise indents for example only work after set ft=blade
@@ -280,6 +283,16 @@ lvim.plugins = {
   --     "nvim-telescope/telescope.nvim"
   --   }
   -- }
+
+  -- Comma split join plugin
+  {
+    'Wansmer/treesj',
+    keys = { '<space>m', '<space>j', '<space>s' },
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('treesj').setup({ --[[ your config ]] })
+    end,
+  }
 }
 
 -- lvim.plugins = {

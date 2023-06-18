@@ -50,3 +50,9 @@ lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Project
 lvim.keys.normal_mode["<leader>O"] = '<cmd>lua require("persistence").load()<cr>'
 -- restore the last session
 lvim.keys.normal_mode["<leader>o"] = '<cmd>lua require("persistence").load({ last = true })<cr>'
+
+-- Replace with register (or thing in clipboard)
+vim.keymap.set('n', "-", "<Plug>ReplaceWithRegisterOperator")   -- Search keeps things in the middle
+vim.keymap.set('n', "-l", "<Plug>ReplaceWithRegisterLine")      -- Search keeps things in the middle
+vim.keymap.set('x', "-", "<Plug>ReplaceWithRegisterVisual")     -- Search keeps things in the middle
+vim.keymap.set('n', "--", "viw<Plug>ReplaceWithRegisterVisual") -- Search keeps things in the middle
