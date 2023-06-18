@@ -38,9 +38,6 @@ lvim.keys.normal_mode[",ht"] = "<Plug>RestNvim"
 -- vim.keymap.set('n', "<leader>j", "<cmd>lnext<CR>zz")
 -- vim.keymap.set('n', "<leader>q", "<cmd>BufferKill!<CR>")
 
---
---
-
 -- -- Use which-key to add extra bindings with the leader-key prefix
 lvim.builtin.which_key.mappings["W"] = { "<cmd>noautocmd w<cr>", "Save without formatting" }
 lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
@@ -56,3 +53,13 @@ vim.keymap.set('n', "-", "<Plug>ReplaceWithRegisterOperator")   -- Search keeps 
 vim.keymap.set('n', "-l", "<Plug>ReplaceWithRegisterLine")      -- Search keeps things in the middle
 vim.keymap.set('x', "-", "<Plug>ReplaceWithRegisterVisual")     -- Search keeps things in the middle
 vim.keymap.set('n', "--", "viw<Plug>ReplaceWithRegisterVisual") -- Search keeps things in the middle
+
+-- ctrl-shift-d logic, similar to Atom
+-- The column should stay at the same e.g. the duplicate needs a change in the same place, next line
+-- Also, duplicating shouldn't put the content into the default clipboard (so put it in "z" register)
+-- Duplicate and don't yank to default clipboard
+vim.keymap.set('n', "<C-S-d>", 'mz"zyy"zp`zj')
+-- Duplicate selection, avoid default clipboard, keep selection range (for more
+-- duplication as required). Small bug where selection was done going up, the
+-- selection after the duplication is on the first line only.
+vim.keymap.set('x', "<C-S-d>", 'mz"zymx"zP`xV`z')
