@@ -218,7 +218,6 @@ for_window [class="^.*"] border pixel 0
 
 # (Windows Explorer equivalent) Open nautilus in a floating window using super+E
 for_window [class="Org.gnome.Nautilus"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
-bindsym $super+E exec nautilus ~
 
 # Take a quick note using mod+n
 for_window [title="take_note"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
@@ -243,3 +242,17 @@ focus_on_window_activation none
 
 # FOUND YOU. Turning off to keep kitty terminal ctrl+alt behaviour for block selection.
 tiling_drag off
+
+# "Super" launcher
+bindsym $super+G exec xdg-open https://google.com ; workspace number $ws2 ;
+bindsym $super+C exec catalystau-element-desktop
+bindsym $super+E exec nautilus ~
+bindsym $super+M exec xdg-open https://music.youtube.com ; workspace number $ws2 ;
+bindsym $super+T exec thunderbird
+bindsym $super+K exec keepassxc
+bindsym $super+O exec obinskit
+bindsym $super+U exec xdg-open https://youtube.com ; workspace number $ws2 ;
+
+# TKSS
+# for_window [title="tkss"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
+# bindsym $mod+t exec kitty -T tkss -e $HOME/scripts/tkss
