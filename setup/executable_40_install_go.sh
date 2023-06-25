@@ -23,3 +23,5 @@ bash -E ./go.sh
 # Reload
 source $HOME/.bashrc
 source $HOME/.exports
+
+sudo ln -sf $GOROOT/bin/go /usr/local/bin/go
