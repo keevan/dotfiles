@@ -28,7 +28,7 @@ function ea() {
         eval $(ssh-agent -s)
     fi
 }
-ea
+# ea
 echo 'Welcome'
 
 # Include moodle-plugin-ci path in the PATH
