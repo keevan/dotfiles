@@ -20,3 +20,8 @@ echo \
 # Install via apt
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Add docker to group (to use without sudo)
+sudo groupadd docker
+sudo usermod -aG docker $USER
+#newgrp docker
