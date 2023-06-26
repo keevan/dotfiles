@@ -255,4 +255,4 @@ bindsym $super+U exec xdg-open https://youtube.com ; workspace number $ws2 ;
 
 # TKSS
 # for_window [title="tkss"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
-# bindsym $mod+t exec kitty -T tkss -e $HOME/scripts/tkss
+# bindsym $mod+t exec kitty -T tkss -e $HOME/scripts/tkss && sleep 2
