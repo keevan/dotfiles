@@ -179,8 +179,8 @@ bar {
 }
 
 # Set monitors
-set $monitor1 "HDMI-2 DisplayPort-7"
-set $monitor2 "HDMI-1 DisplayPort-8"
+set $monitor1 HDMI-2 DisplayPort-7
+set $monitor2 HDMI-1 DisplayPort-8
 
 # Monitor 1
 workspace 1 output $monitor1
