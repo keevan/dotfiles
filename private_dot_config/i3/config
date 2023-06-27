@@ -39,7 +39,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec kitty
+bindsym $mod+Return exec kitty -o allow_remote_control=yes
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -205,7 +205,7 @@ assign [class="thunderbird"] $ws4
 assign [class="KeePassXC"] $ws5
 assign [class="ObinsKit"] $ws5
 
-# Suspend - similar to the lock screen but shift for more power.
+# Suspend/Sleep - similar to the lock screen but shift for more power.
 bindsym $super+Shift+L exec systemctl suspend
 
 # Lock screen
@@ -221,7 +221,7 @@ for_window [class="Org.gnome.Nautilus"] floating enable ; [floating] resize set 
 
 # Take a quick note using mod+n
 for_window [title="take_note"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
-bindsym $mod+n exec kitty -T take_note -e $HOME/bin/take-note
+bindsym $mod+n exec kitty -T take_note -e $HOME/bin/take-note ; workspace number $ws1 ;
 
 # This was annoying, so turning it off.
 focus_follows_mouse no
