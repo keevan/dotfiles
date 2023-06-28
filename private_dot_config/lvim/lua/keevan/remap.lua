@@ -19,7 +19,9 @@ lvim.keys.normal_mode["<A-S-p>"] = ":Telescope projects<CR>"
 -- Operator mappings
 vim.keymap.set('o', "p", "ip", {})
 -- vim.keymap.set('o', "il", "il", {})
--- vim.keymap.set('o', "ie", "ip", {})
+vim.keymap.set('o', "ie", "gG", {})   -- From textobj
+vim.keymap.set('n', "yie", "ygG", {}) -- From textobj
+
 -- Mappings from theprimeagen (mixed with those from t9md's vmp)
 vim.keymap.set('n', "J", "mzJ`z", {})     -- Join the next line, but stay in the same pos
 vim.keymap.set('n', "<C-d>", "<C-d>zz")   -- Half page up & down with cursor in middle
@@ -102,3 +104,6 @@ vim.keymap.set("o", "r", function()
         })
     end)
 end)
+
+-- Quick chmod'ing
+vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })

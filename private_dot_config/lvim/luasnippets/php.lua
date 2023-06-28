@@ -8,4 +8,7 @@ return {
             ' * @copyright Catalyst IT, 2023'
         }),
     }),
+    s('version', { t(os.date("%Y%m%d00")) }),
+    s('dt', { t(os.date("%Y%m%d00")) }),
+    s('time', { t(os.date("%Y%m%d00")) }),
 }

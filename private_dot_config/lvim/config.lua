@@ -26,8 +26,7 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
--- lvim.builtin.project.manual_mode (Call :ProjectRoot)
-lvim.builtin.project.patterns = { ".git", ">apps", ">projects", ">sites" }
+
 
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
@@ -83,6 +82,7 @@ formatters.setup {
 }
 local linters = require "lvim.lsp.null-ls.linters"
 linters.setup {
+    { command = "phpcs",  filetypes = { "php" } },
     { command = "flake8", filetypes = { "python" } },
     {
         command = "shellcheck",
@@ -121,12 +121,29 @@ lvim.plugins = {
                     -- adds current line nr in the url for normal mode
                     add_current_line_on_normal_mode = true,
                     -- callback for what to do with the url
-                    action_callback = require("gitlinker.actions").open_in_browser,
+                    action_callback = function(url)
+                        -- Get current value in clipboard
+                        local cb = nvim.clipboard -- Not sure how to do this one yet.
+
+                        -- Check if this is already the same value as the clipboard.
+                        -- If yes, open in browser
+                        if cb == url then
+                            require("gitlinker.actions").open_in_browser(url)
+                        end
+
+                        -- Otherwise, copy only and print message
+                        require("gitlinker.actions").copy_to_clipboard(url)
+                        print("Copied " .. url)
+                    end,
                     -- print the url after performing the action
                     print_url = false,
                     -- mapping to call url generation
-                    mappings = "<leader>gy",
+                    -- mappings = "<leader>gy",
                 },
+                mappings = "<C-S-0>",
+                callbacks = {
+                    ["git.catalyst-au.net"] = require "gitlinker.hosts".get_gitlab_type_url,
+                }
             }
         end,
         dependencies = "nvim-lua/plenary.nvim",
@@ -213,7 +230,11 @@ lvim.plugins = {
     {
         "chrisgrieser/nvim-various-textobjs",
         config = function()
-            require("various-textobjs").setup({ useDefaultKeymaps = true })
+            require("various-textobjs").setup({
+                useDefaultKeymaps = true,
+                -- disable some default keymaps, e.g. { "ai", "ii" }
+                disabledKeymaps = { "r" },
+            })
         end,
     },
 
@@ -348,6 +369,14 @@ lvim.plugins = {
             require("trim").setup({})
         end
     },
+
+    -- Pretty good, unusual keybinds though, may remap them. (W is unfold?)
+    {
+        "simrat39/symbols-outline.nvim",
+        config = function()
+            require("symbols-outline").setup({})
+        end
+    }
 }
 
 vim.o.foldcolumn = '1' -- '0' is not bad
@@ -439,3 +468,18 @@ require('keevan.colors')
 
 -- Treesiter highlighter error?
 -- :TSInstall
+require('telescope').setup({
+    defaults = {
+        layout_config = {
+            -- Bit wider mainly because of the file path.
+            center = { width = 120 }
+        }
+    }
+})
+
+
+vim.api.nvim_create_user_command("Cppath", function()
+    local path = vim.fn.expand("%:p")
+    vim.fn.setreg("+", path)
+    vim.notify('Copied "' .. path .. '" to the clipboard!')
+end, {})
