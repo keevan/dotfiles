@@ -21,9 +21,10 @@ vim.keymap.set('o', "p", "ip", {})
 -- vim.keymap.set('o', "il", "il", {})
 vim.keymap.set('o', "ie", "gG", {})   -- From textobj
 vim.keymap.set('n', "yie", "ygG", {}) -- From textobj
+lvim.keys.normal_mode["yie"] = "ygG"
 
 -- Mappings from theprimeagen (mixed with those from t9md's vmp)
-vim.keymap.set('n', "J", "mzJ`z", {})     -- Join the next line, but stay in the same pos
+-- vim.keymap.set('n', "J", "mzJ`z", {})  -- Join the next line, but stay in the same pos?
 vim.keymap.set('n', "<C-d>", "<C-d>zz")   -- Half page up & down with cursor in middle
 vim.keymap.set('n', "<C-u>", "<C-u>zz")   -- Half page up & down with cursor in middle
 vim.keymap.set('n', "n", "nzzzv")         -- Search keeps things in the middle
@@ -107,3 +108,19 @@ end)
 
 -- Quick chmod'ing
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+
+-- Toggling diagnoise-tics
+local diagnostics_active = true
+vim.keymap.set('n', '<leader>td', function()
+    diagnostics_active = not diagnostics_active
+    if diagnostics_active then
+        vim.diagnostic.show()
+    else
+        vim.diagnostic.hide()
+    end
+end)
+
+-- TODO: go through this and set it up to match https://github.com/t9md/atom-vim-mode-plus/wiki/DifferencesFromPureVim
+
+-- No highlight on ESC
+vim.keymap.set("n", "<ESC>", ":noh<CR><ESC>", { silent = true })

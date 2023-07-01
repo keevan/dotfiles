@@ -21,8 +21,6 @@ lvim.format_on_save = {
 
 require('keevan')
 
-lvim.builtin.alpha.active = true
-lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
@@ -90,18 +88,21 @@ linters.setup {
     },
 }
 
--- -- Additional Plugins <https://www.lunarvim.org/docs/configuration/plugins/user-plugins>
+-- Additional Plugins <https://www.lunarvim.org/docs/configuration/plugins/user-plugins>
 lvim.plugins = {
     {
         "folke/trouble.nvim",
         cmd = "TroubleToggle",
     },
     {
-        'jdhao/better-escape.vim', cmd = 'InsertEnter',
+        'jdhao/better-escape.vim',
+        cmd = 'InsertEnter',
     },
     {
-        'vim-scripts/ReplaceWithRegister'
+        'vim-scripts/ReplaceWithRegister',
+        event = "TextYankPost",
     },
+
     -- Syntax and indent files
     -- loading this on ft because that seems to work better for some reason
     -- otherwise indents for example only work after set ft=blade
@@ -123,12 +124,13 @@ lvim.plugins = {
                     -- callback for what to do with the url
                     action_callback = function(url)
                         -- Get current value in clipboard
-                        local cb = nvim.clipboard -- Not sure how to do this one yet.
-
+                        local cb = vim.fn.getreg("+")
                         -- Check if this is already the same value as the clipboard.
                         -- If yes, open in browser
                         if cb == url then
+                            print("Opening " .. url)
                             require("gitlinker.actions").open_in_browser(url)
+                            return
                         end
 
                         -- Otherwise, copy only and print message
@@ -148,31 +150,52 @@ lvim.plugins = {
         end,
         dependencies = "nvim-lua/plenary.nvim",
     },
+
+    -- Actually don't use it yet, but seems nice. (Does take some time to load)
+    -- {
+    --     "pwntester/octo.nvim",
+    --     dependencies = {
+    --         'nvim-lua/plenary.nvim',
+    --         'nvim-telescope/telescope.nvim',
+    --         'nvim-tree/nvim-web-devicons',
+    --     },
+    --     config = function()
+    --         require("octo").setup()
+    --     end,
+    -- },
+
+
+    -- { "metalelf0/jellybeans-nvim" },
     {
-        "pwntester/octo.nvim",
-        dependencies = {
-            'nvim-lua/plenary.nvim',
-            'nvim-telescope/telescope.nvim',
-            'nvim-tree/nvim-web-devicons',
-        },
+        "catppuccin/nvim",
+        name = "catppuccin",
+        priority = 1000,
         config = function()
-            require("octo").setup()
+            require("catppuccin").setup({
+                flavour = "mocha",
+                transparent_background = true, -- disables setting the background color.
+                integrations = {
+                    harpoon = true,
+                    leap = true, -- Yes, no weird blocks, just highlight the 3rd character
+                    which_key = true,
+                    cmp = true,
+                },
+                custom_highlights = function(colors)
+                    return {
+                        NormalFloat = { bg = colors.crust }, -- Diagnostics float window (shift+K)
+
+                    }
+                end
+            })
         end,
     },
-    {
-        "lvimuser/lsp-inlayhints.nvim",
-        config = function()
-            require("lsp-inlayhints").setup()
-        end,
-    },
-    { "metalelf0/jellybeans-nvim" },
-    { "catppuccin/nvim",          name = "catppuccin", priority = 1000 },
-    {
-        "rktjmp/lush.nvim"
-    },
+
+    -- Real time colorscheme helper
+    -- { "rktjmp/lush.nvim" },
+
     {
         "folke/flash.nvim",
-        event = "VeryLazy",
+        event = "BufReadPre",
         opts = {},
         keys = {
             {
@@ -193,42 +216,9 @@ lvim.plugins = {
         },
     },
 
-    -- {
-    --     "ggandor/leap.nvim",
-    --     name = "leap",
-    --     config = function()
-    --         require("leap").add_default_mappings()
-    --     end,
-    -- },
-    --
-
-    -- -- Tabnine (last working)
-    -- {
-    --   "tzachar/cmp-tabnine",
-    --   build = "./install.sh",
-    --   dependencies = "hrsh7th/nvim-cmp",
-    --   event = "InsertEnter",
-    --   config = function()
-    --     local tabnine = require "cmp_tabnine.config"
-    --     tabnine:setup {
-    --       max_lines = 1000,
-    --       max_num_results = 10,
-    --       sort = true,
-    --     }
-    --   end,
-    --   lazy = true,
-    -- },
-
-    -- {
-    --   "nvim-telescope/telescope-project.nvim",
-    --   event = "BufWinEnter",
-    --   init = function()
-    --     vim.cmd [[packadd telescope.nvim]]
-    --   end,
-    -- },
-
     {
         "chrisgrieser/nvim-various-textobjs",
+        event = "BufReadPre",
         config = function()
             require("various-textobjs").setup({
                 useDefaultKeymaps = true,
@@ -241,8 +231,19 @@ lvim.plugins = {
     -- autoclose and autorename html tag
     {
         "windwp/nvim-ts-autotag",
+        event = "InsertEnter",
         config = function()
-            require("nvim-ts-autotag").setup()
+            require("nvim-ts-autotag").setup({
+                filetypes = {
+                    'html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'svelte', 'vue', 'tsx',
+                    'jsx',
+                    'rescript',
+                    'xml',
+                    'php', 'blade',
+                    'markdown',
+                    'astro', 'glimmer', 'handlebars', 'hbs'
+                },
+            })
         end,
     },
 
@@ -266,16 +267,31 @@ lvim.plugins = {
     },
 
     -- Hey, check it out, it's pretty cool!
-    { "ThePrimeagen/harpoon" },
+    {
+        "ThePrimeagen/harpoon",
+        event = "VeryLazy",
+        config = function()
+            local mark = require("harpoon.mark")
+            local ui = require("harpoon.ui")
+
+            vim.keymap.set("n", "<leader>a", mark.add_file)
+            vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
+
+            vim.keymap.set("n", "<C-h>", function() ui.nav_file(1) end)
+            vim.keymap.set("n", "<C-j>", function() ui.nav_file(2) end)
+            vim.keymap.set("n", "<C-k>", function() ui.nav_file(3) end)
+            vim.keymap.set("n", "<C-l>", function() ui.nav_file(4) end)
+        end
+    },
 
     -- HTTP rest client - useful for testing, has ability to replay previous requests :-)
     -- File would be in the typical format of tests.http
     {
         "rest-nvim/rest.nvim",
+        ft = 'http',
         dependencies = {
             'nvim-lua/plenary.nvim',
         },
-        ft = 'http',
         config = function()
             require("rest-nvim").setup({
                 -- Open request results in a horizontal split
@@ -317,54 +333,36 @@ lvim.plugins = {
         end
     },
 
-    -- Was nice but I'm okay with using the preview in browser for now
-    -- {
-    --   "jackMort/ChatGPT.nvim",
-    --   event = "VeryLazy",
-    --   config = function()
-    --     require("chatgpt").setup()
-    --   end,
-    --   dependencies = {
-    --     "MunifTanjim/nui.nvim",
-    --     "nvim-lua/plenary.nvim",
-    --     "nvim-telescope/telescope.nvim"
-    --   }
-    -- }
-
     -- Comma split join plugin
     {
         'Wansmer/treesj',
         keys = { '<space>m', '<space>j', '<space>s' },
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = function()
-            require('treesj').setup({ --[[ your config ]] })
+            require('treesj').setup({
+                max_join_length = 500,
+            })
         end,
     },
-    -- {
-    --     "neovim/nvim-lspconfig",
-    --     config = function()
-    --         require("lspconfig").setup({
-    --             opts = {
-    --                 inlay_hints = { enabled = true },
-    --             },
-    --         })
-    --     end
-    -- }
-    -- { 'ludovicchabant/vim-gutentags' },
-
 
     -- UFO folds
     {
         'kevinhwang91/nvim-ufo',
+        event = "BufReadPre",
         dependencies = { 'kevinhwang91/promise-async' },
         config = function()
-            require('ufo').setup({ --[[ your config ]] })
+            require('ufo').setup({
+                provider_selector = function(bufnr, filetype, buftype)
+                    return { 'treesitter', 'indent' }
+                end,
+            })
         end,
     },
 
     -- Trim for whitespaces
     {
         "cappyzawa/trim.nvim",
+        event = "InsertLeave",
         config = function()
             require("trim").setup({})
         end
@@ -373,28 +371,52 @@ lvim.plugins = {
     -- Pretty good, unusual keybinds though, may remap them. (W is unfold?)
     {
         "simrat39/symbols-outline.nvim",
+        event = "BufReadPre",
         config = function()
             require("symbols-outline").setup({})
         end
-    }
+    },
+    {
+        "tpope/vim-surround",
+        event = "BufReadPre",
+    },
+    {
+        "nvim-neotest/neotest",
+        ft = "php", -- only test php things for now (lazy loaded= center)
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+            "antoinemadec/FixCursorHold.nvim",
+            "olimorris/neotest-phpunit",
+        },
+        config = function()
+            require("neotest").setup({
+                adapters = {
+                    require("neotest-phpunit")({
+                        phpunit_cmd = function()
+                            return "/home/kevinpham/scripts/ctrl test"
+                        end,
+                        root_files = { "composer.json", "phpunit.xml", ".gitignore" },
+                        filter_dirs = { ".git", "node_modules" }
+                    }),
+                },
+            })
+        end
+    },
+
+    -- Copilot
+    {
+        "zbirenbaum/copilot-cmp",
+        event = "InsertEnter",
+        dependencies = { "zbirenbaum/copilot.lua" },
+        config = function()
+            vim.defer_fn(function()
+                require("copilot").setup()     -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
+                require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
+            end, 100)
+        end,
+    },
 }
-
-vim.o.foldcolumn = '1' -- '0' is not bad
-vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
-vim.o.foldlevelstart = 99
-vim.o.foldenable = true
-require('ufo').setup({
-    provider_selector = function(bufnr, filetype, buftype)
-        return { 'treesitter', 'indent' }
-    end
-})
-
--- lvim.plugins = {
---     {
---       "folke/trouble.nvim",
---       cmd = "TroubleToggle",
---     },
--- }
 
 -- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
 -- vim.api.nvim_create_autocmd("FileType", {
@@ -406,80 +428,4 @@ require('ufo').setup({
 -- })
 --
 
--- Inlay
-vim.api.nvim_create_augroup("LspAttach_inlayhints", {})
-vim.api.nvim_create_autocmd("LspAttach", {
-    group = "LspAttach_inlayhints",
-    callback = function(args)
-        if not (args.data and args.data.client_id) then
-            return
-        end
-
-        local bufnr = args.buf
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        require("lsp-inlayhints").on_attach(client, bufnr)
-    end,
-})
-
-
--- Copilot
-table.insert(lvim.plugins, {
-    "zbirenbaum/copilot-cmp",
-    event = "InsertEnter",
-    dependencies = { "zbirenbaum/copilot.lua" },
-    config = function()
-        vim.defer_fn(function()
-            require("copilot").setup()     -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
-            require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
-        end, 100)
-    end,
-})
-
--- require('tabnine').setup({
---   disable_auto_comment=true,
---   accept_keymap="<Tab>",
---   dismiss_keymap = "<C-]>",
---   debounce_ms = 800,
---   suggestion_color = {gui = "#808080", cterm = 244},
---   exclude_filetypes = {"TelescopePrompt"},
---   log_file_path = nil, -- absolute path to Tabnine log file
--- })
---
-
--- PHP to include $ in word (php variables).
-vim.opt.iskeyword = vim.opt.iskeyword + "$"
-
--- Autotag config
-require('nvim-ts-autotag').setup()
-require('nvim-ts-autotag').setup({
-    filetypes = {
-        'html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'svelte', 'vue', 'tsx', 'jsx',
-        'rescript',
-        'xml',
-        'php', 'blade',
-        'markdown',
-        'astro', 'glimmer', 'handlebars', 'hbs'
-    },
-})
-
-
-print('hello from main config.lua')
 require('keevan.colors')
-
--- Treesiter highlighter error?
--- :TSInstall
-require('telescope').setup({
-    defaults = {
-        layout_config = {
-            -- Bit wider mainly because of the file path.
-            center = { width = 120 }
-        }
-    }
-})
-
-
-vim.api.nvim_create_user_command("Cppath", function()
-    local path = vim.fn.expand("%:p")
-    vim.fn.setreg("+", path)
-    vim.notify('Copied "' .. path .. '" to the clipboard!')
-end, {})

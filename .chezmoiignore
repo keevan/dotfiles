@@ -2,6 +2,7 @@ README.md
 LICENSE
 .vim/.netrwhist
 .vim/plugged/*/.git
+*.old
 **/session/*.vim
 **/Session.vim
 {{- if ne .email "keevan.pham@gmail.com" }}

@@ -1,7 +1,7 @@
 -- DOCS:
 -- https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md#textnode
 return {
-    s('dd', { t('echo"<pre>";print_r(${1:get_defined_vars()});die;') }),
+    s('dd', { t('echo"<pre>";print_r('), i(1, 'get_defined_vars()'), t(');die;'), i(2) }),
     s('copy', {
         t({
             ' * @author    Kevin Pham <kevinpham@catalyst-au.net>',

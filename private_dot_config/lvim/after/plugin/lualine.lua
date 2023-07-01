@@ -1,13 +1,14 @@
 -- Based on bubble theme circles
-require('lualine').setup {
+lvim.builtin.lualine.style = "default"
+local config = {
     options = {
-        -- theme = bubbles_theme,
+        -- theme = "catppucin",
         component_separators = '|',
         section_separators = { left = '', right = '' },
     },
     sections = {
         lualine_a = {
-            { 'mode', separator = { left = '' }, right_padding = 2 },
+            { 'mode', fmt = function(str) return str end, separator = { left = '' }, right_padding = 2 },
         },
         lualine_b = { 'filename', 'branch' },
         -- lualine_c = { 'fileformat' },
@@ -28,3 +29,6 @@ require('lualine').setup {
     -- tabline = {},
     -- extensions = {},
 }
+lvim.builtin.lualine.options = config.options
+lvim.builtin.lualine.sections = config.sections
+lvim.builtin.lualine.inactive_sections = config.inactive_sections
