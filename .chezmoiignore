@@ -3,6 +3,7 @@ LICENSE
 .vim/.netrwhist
 .vim/plugged/*/.git
 *.old
+**/*.old
 **/session/*.vim
 **/Session.vim
 {{- if ne .email "keevan.pham@gmail.com" }}
