@@ -189,6 +189,7 @@ workspace 4 output $monitor1
 workspace 5 output $monitor1
 # Monitor 2
 workspace 2 output $monitor2
+workspace 9 output $monitor2
 
 # Extra sauce to fix monitor order issues
 exec --no-startup-id xrandr --output HDMI-2 --auto --primary --left-of HDMI-1 &
@@ -198,7 +199,7 @@ exec --no-startup-id xrandr --output eDP --off ; xrandr --output DisplayPort-7 -
 # Use this command to find out the class: xprop | grep WM_CLASS
 assign [class="kitty"] $ws1
 assign [class="Brave-browser"] $ws2
-assign [class="Google-chrome"] $ws2
+assign [class="Google-chrome"] $ws9
 assign [class="firefox"] $ws2
 assign [class="catalystau-element-desktop"] $ws3
 assign [class="thunderbird"] $ws4
@@ -248,6 +249,7 @@ bindsym $super+G exec xdg-open https://google.com ; workspace number $ws2 ;
 bindsym $super+C exec catalystau-element-desktop
 bindsym $super+E exec nautilus ~
 bindsym $super+M exec xdg-open https://music.youtube.com ; workspace number $ws2 ;
+bindsym $super+9 exec google-chrome https://teams.microsoft.com ; workspace number $ws9 ;
 bindsym $super+T exec thunderbird
 bindsym $super+K exec keepassxc
 bindsym $super+O exec obinskit
