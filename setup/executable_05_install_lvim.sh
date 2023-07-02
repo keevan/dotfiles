@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # Install rust & cargo
 curl https://sh.rustup.rs -sSf | sh
