@@ -1,10 +1,10 @@
-#/usr/bin/bash
+#!/usr/bin/env bash
 
 #######
 # KITTY TERMINAL
 #######
 
-Install kitty (download if not already installed)
+# Install kitty (download if not already installed)
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin \
 launch=n
 
@@ -27,13 +27,13 @@ gsettings set org.gnome.desktop.default-applications.terminal exec 'kitty'
 
 echo "NVIM - Make sure to close all nvim instances otherwise this will not update"
 # Install "latest" nightly NVIM (if not already installed)
-sudo rm $HOME/bin/nvim
+sudo rm "$HOME/bin/nvim"
 # curl -LO https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
 curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
 chmod u+x nvim.appimage
 ./nvim.appimage --appimage-extract &> /dev/null
 ./squashfs-root/AppRun --version | grep 'NVIM v'
 # sudo mv squashfs-root /
-sudo ln -sf $(realpath ./squashfs-root/AppRun) $HOME/bin/nvim
+sudo ln -sf "$(realpath ./squashfs-root/AppRun)" "$HOME/bin/nvim"
 # nvim
 #mv nvim.appimage ~/bin/nvim
