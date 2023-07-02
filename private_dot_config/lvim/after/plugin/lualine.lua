@@ -8,7 +8,7 @@ local config = {
     },
     sections = {
         lualine_a = {
-            { 'mode', fmt = function(str) return str end, separator = { left = '' }, right_padding = 2 },
+            { 'mode', fmt = function(str) return str end, separator = { left = '' }, right_padding = 2 },
         },
         lualine_b = { 'filename', 'branch' },
         -- lualine_c = { 'fileformat' },

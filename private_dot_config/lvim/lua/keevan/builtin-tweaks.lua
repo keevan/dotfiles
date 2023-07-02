@@ -40,8 +40,6 @@ vim.o.foldenable = true
 
 
 -- [ LunarVim options ] --
-lvim.builtin.project.patterns = { ".git", ">apps", ">projects" }
-
 lvim.builtin.which_key.setup.plugins.presets.z = true
 
 -- Don't calculate root dir on specific directories
