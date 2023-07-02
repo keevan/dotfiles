@@ -124,3 +124,9 @@ end)
 
 -- No highlight on ESC
 vim.keymap.set("n", "<ESC>", ":noh<CR><ESC>", { silent = true })
+
+-- Neotest
+lvim.keys.normal_mode["<leader>tt"] = "<cmd>lua require('neotest').run.run()<CR>"
+lvim.keys.normal_mode["<leader>tf"] = "<cmd>lua require('neotest').run.run()<CR>"
+lvim.keys.normal_mode["<leader>te"] = '<cmd>lua require("neotest").run.run(vim.fn.expand("%"))<CR>'
+lvim.keys.normal_mode["<leader>ts"] = "<cmd>lua require('neotest').summary.toggle()<CR>"

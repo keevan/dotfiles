@@ -394,10 +394,11 @@ lvim.plugins = {
                 adapters = {
                     require("neotest-phpunit")({
                         phpunit_cmd = function()
-                            return "/home/kevinpham/scripts/ctrl test"
+                            return os.getenv("HOME") .. "/phpunit-test.sh"
+                            -- return os.getenv("HOME") .. "/scripts/ctrl test"
                         end,
                         root_files = { "composer.json", "phpunit.xml", ".gitignore" },
-                        filter_dirs = { ".git", "node_modules" }
+                        filter_dirs = { ".git", "node_modules", "vendor", "sdk" }
                     }),
                 },
             })
