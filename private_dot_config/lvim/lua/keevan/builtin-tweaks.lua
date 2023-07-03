@@ -24,7 +24,7 @@ end
 
 -- Disabling lunarvim core plugins
 lvim.builtin.alpha.active = false     -- Actually don't need it anymore
-lvim.builtin.dap.active = false
+-- lvim.builtin.dap.active = false
 
 -- [ Vim options ] --
 vim.opt.colorcolumn = "92"

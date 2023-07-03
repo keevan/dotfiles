@@ -131,9 +131,14 @@ lvim.keys.normal_mode["<leader>tf"] = "<cmd>lua require('neotest').run.run()<CR>
 lvim.keys.normal_mode["<leader>te"] = '<cmd>lua require("neotest").run.run(vim.fn.expand("%"))<CR>'
 lvim.keys.normal_mode["<leader>ts"] = "<cmd>lua require('neotest').summary.toggle()<CR>"
 
-
 -- NOTE: Also see "nvim-treesitter/nvim-treesitter-textobjects" settings for custom mappings
 vim.keymap.set("n", "[", "<Plug>(edgemotion-k)", { nowait = true })
 vim.keymap.set("n", "]", "<Plug>(edgemotion-j)", { nowait = true })
 vim.keymap.set("o", "[", "<Plug>(edgemotion-k)", { nowait = true })
 vim.keymap.set("o", "]", "<Plug>(edgemotion-j)", { nowait = true })
+
+-- Buffer: delete all but current - @kshenoy https://stackoverflow.com/questions/4545275/vim-close-all-buffers-but-this-one#comment84748132_42071865
+lvim.keys.normal_mode["<M-S-o>"] = "<cmd>%bd|e#|bd#<CR>"
+
+-- Toggle symbols (outline)
+lvim.keys.normal_mode["<M-o>"] = "<cmd>SymbolsOutline<CR>"

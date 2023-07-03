@@ -2,8 +2,8 @@ lvim.builtin.dap.on_config_done = function(dap)
     dap.adapters.php = {
         type = 'executable',
         command = 'node',
-        -- args = { os.getenv("HOME") .. '/.local/share/nvim/mason/packages/php-debug-adapter/extension/out/phpDebug.js' }
-        args = { '~/.local/share/nvim/mason/packages/php-debug-adapter/extension/out/phpDebug.js' }
+        args = { os.getenv("HOME") .. '/.local/share/nvim/mason/packages/php-debug-adapter/extension/out/phpDebug.js' }
+        -- args = { '~/.local/share/nvim/mason/packages/php-debug-adapter/extension/out/phpDebug.js' }
     }
     dap.configurations.php = {
         {
@@ -12,8 +12,8 @@ lvim.builtin.dap.on_config_done = function(dap)
             name = 'Listen for Xdebug',
             port = 9003,
             pathMappings = {
-                -- ["/var/www/client/admin/tool/dataflows"] = "${workspaceFolder}",
-                ["/var/www/${workspaceFolderBasename}"] = "${workspaceFolder}",
+                ["/var/www/client/admin/tool/dataflows"] = "${workspaceFolder}",
+                -- ["/var/www/${workspaceFolderBasename}"] = "${workspaceFolder}",
             }
         }
     }
