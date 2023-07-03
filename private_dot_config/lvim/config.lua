@@ -417,9 +417,52 @@ lvim.plugins = {
             end, 100)
         end,
     },
+
+    -- More text objects please.
+    {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
+        event = "BufReadPre",
+        config = function()
+            require 'nvim-treesitter.configs'.setup {
+                textobjects = {
+                    select = {
+                        enable = true,
+                        lookahead = true,
+                        keymaps = {
+                            -- Your custom capture.,
+                            -- ["aF"] = "@custom_capture",
+
+                            -- Built-in captures I would use
+                            ["if"] = "@function.inner",
+                            ["i,"] = "@parameter.inner",
+                            ["af"] = "@function.outer",
+                            ["a,"] = '@parameter.outer',
+                        },
+                    },
+                    swap = {
+                        -- Tbh, I'm used to parameter shifting like in Atom's VMP
+                        enable = true,
+                        swap_next = {
+                            ["g>"] = "@parameter.inner",
+                        },
+                        swap_previous = {
+                            ["g<"] = "@parameter.inner",
+                        },
+                    },
+                },
+            }
+        end,
+    },
+
+    -- Livin' on the edge. Would be nice if there was a port to lua which might give some performance benefits(?)
+    {
+        "haya14busa/vim-edgemotion",
+        event = "BufReadPre",
+    }
 }
 
--- -- Autocommands (`:help autocmd`) <https://neovim.io/doc/user/autocmd.html>
+-- -- Autocommands  <https://neovim.io/doc/user/autocmd.html>
 -- vim.api.nvim_create_autocmd("FileType", {
 --   pattern = "zsh",
 --   callback = function()

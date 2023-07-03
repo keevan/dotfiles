@@ -130,3 +130,10 @@ lvim.keys.normal_mode["<leader>tt"] = "<cmd>lua require('neotest').run.run()<CR>
 lvim.keys.normal_mode["<leader>tf"] = "<cmd>lua require('neotest').run.run()<CR>"
 lvim.keys.normal_mode["<leader>te"] = '<cmd>lua require("neotest").run.run(vim.fn.expand("%"))<CR>'
 lvim.keys.normal_mode["<leader>ts"] = "<cmd>lua require('neotest').summary.toggle()<CR>"
+
+
+-- NOTE: Also see "nvim-treesitter/nvim-treesitter-textobjects" settings for custom mappings
+vim.keymap.set("n", "[", "<Plug>(edgemotion-k)", { nowait = true })
+vim.keymap.set("n", "]", "<Plug>(edgemotion-j)", { nowait = true })
+vim.keymap.set("o", "[", "<Plug>(edgemotion-k)", { nowait = true })
+vim.keymap.set("o", "]", "<Plug>(edgemotion-j)", { nowait = true })
