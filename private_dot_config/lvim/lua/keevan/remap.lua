@@ -1,4 +1,5 @@
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
+-- Practice here: https://gist.githubusercontent.com/keevan/dc2179f8fe5ab36fee20399c8e941d9c/raw/64fde14d44823cecfde23c4b99156f725fe982f0/vmpDemo.js
 lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
@@ -16,21 +17,48 @@ lvim.keys.normal_mode["gT"] = ":BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<A-S-p>"] = ":Telescope projects<CR>"
 -- lvim.keys.normal_mode["<C-e>"] = ":Telescope live_grep<CR>"
 
+-- TODO: Stay mappings (affects yank and visual select)
+-- Manually do it for now until a better solution shows up.. (remember operator, starting pos, and position afterwards)
+vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)")
+
 -- Operator mappings
-vim.keymap.set('o', "p", "ip", {})
--- vim.keymap.set('o', "il", "il", {})
-vim.keymap.set('o', "ie", "gG", {})   -- From textobj
-vim.keymap.set('n', "yie", "ygG", {}) -- From textobj
-lvim.keys.normal_mode["yie"] = "ygG"
+vim.keymap.set("o", "p", "ip", {}) -- inner paragraph
+vim.keymap.set("o", "c", "iw", {}) -- inner word
+vim.keymap.set("o", "C", "iW", {}) -- inner WORD
+
+-- Line
+vim.keymap.set({ "o", "x" }, "il", '<cmd>lua require("various-textobjs").lineCharacterwise(false)<CR>')
+vim.keymap.set({ "o", "x" }, "al", '<cmd>lua require("various-textobjs").lineCharacterwise(true)<CR>')
+
+-- Visible in window
+vim.keymap.set({ "o", "x" }, "iv", '<cmd>lua require("various-textobjs").visibleInWindow()<CR>')
+vim.keymap.set({ "o", "x" }, "av", '<cmd>lua require("various-textobjs").visibleInWindow()<CR>')
+
+-- Entire buffer
+vim.keymap.set({ "o", "x" }, "ie", '<cmd>lua require("various-textobjs").entireBuffer()<CR>')
+vim.keymap.set({ "o", "x" }, "ae", '<cmd>lua require("various-textobjs").entireBuffer()<CR>')
+
+-- Subword
+vim.keymap.set({ "o", "x" }, "gd", '<cmd>lua require("various-textobjs").subword(false)<CR>')
+vim.keymap.set({ "o", "x" }, "id", '<cmd>lua require("various-textobjs").subword(false)<CR>')
+vim.keymap.set({ "o", "x" }, "ad", '<cmd>lua require("various-textobjs").subword(true)<CR>')
+
+-- TODO: find an equivalent to mark and replace all those VISIBLE on the page.
+-- Convenience for when  you don't care about if it's in a function, block, etc
+-- and you know it's in the visible area of the screen, but you don't want to
+-- update anything that might be located elsewhere (thus not using entire
+-- buffer textObj)
+
+-- TODO: set TAB to something useful? Maybe a function jump? Maybe a context-level block jump?
 
 -- Mappings from theprimeagen (mixed with those from t9md's vmp)
 -- vim.keymap.set('n', "J", "mzJ`z", {})  -- Join the next line, but stay in the same pos?
-vim.keymap.set('n', "<C-d>", "<C-d>zz")   -- Half page up & down with cursor in middle
-vim.keymap.set('n', "<C-u>", "<C-u>zz")   -- Half page up & down with cursor in middle
-vim.keymap.set('n', "n", "nzzzv")         -- Search keeps things in the middle
-vim.keymap.set('n', "N", "Nzzzv")         -- Search keeps things in the middle
+vim.keymap.set("n", "<C-d>", "<C-d>zz") -- Half page up & down with cursor in middle
+vim.keymap.set("n", "<C-u>", "<C-u>zz") -- Half page up & down with cursor in middle
+vim.keymap.set("n", "n", "nzzzv") -- Search keeps things in the middle
+vim.keymap.set("n", "N", "Nzzzv") -- Search keeps things in the middle
 
-vim.keymap.set('x', "<leader>p", "\"_dP") -- Search keeps things in the middle
+vim.keymap.set("x", "<leader>p", '"_dP') -- Search keeps things in the middle
 
 lvim.keys.normal_mode[",ht"] = "<Plug>RestNvim"
 
@@ -52,58 +80,58 @@ lvim.keys.normal_mode["<leader>O"] = '<cmd>lua require("persistence").load()<cr>
 lvim.keys.normal_mode["<leader>o"] = '<cmd>lua require("persistence").load({ last = true })<cr>'
 
 -- Replace with register (or thing in clipboard)
-vim.keymap.set('n', "-", "<Plug>ReplaceWithRegisterOperator")   -- Search keeps things in the middle
-vim.keymap.set('n', "-l", "<Plug>ReplaceWithRegisterLine")      -- Search keeps things in the middle
-vim.keymap.set('x', "-", "<Plug>ReplaceWithRegisterVisual")     -- Search keeps things in the middle
-vim.keymap.set('n', "--", "viw<Plug>ReplaceWithRegisterVisual") -- Search keeps things in the middle
+vim.keymap.set("n", "-", "<Plug>ReplaceWithRegisterOperator") -- Search keeps things in the middle
+vim.keymap.set("n", "-l", "<Plug>ReplaceWithRegisterLine") -- Search keeps things in the middle
+vim.keymap.set("x", "-", "<Plug>ReplaceWithRegisterVisual") -- Search keeps things in the middle
+vim.keymap.set("n", "--", "viw<Plug>ReplaceWithRegisterVisual") -- Search keeps things in the middle
 
 -- ctrl-shift-d logic, similar to Atom
 -- The column should stay at the same e.g. the duplicate needs a change in the same place, next line
 -- Also, duplicating shouldn't put the content into the default clipboard (so put it in "z" register)
 -- Duplicate and don't yank to default clipboard
-vim.keymap.set('n', "<C-S-d>", 'mz"zyy"zp`zj')
+vim.keymap.set("n", "<C-S-d>", 'mz"zyy"zp`zj')
 -- Duplicate selection, avoid default clipboard, keep selection range (for more
 -- duplication as required). Small bug where selection was done going up, the
 -- selection after the duplication is on the first line only.
-vim.keymap.set('x', "<C-S-d>", 'mz"zymx"zP`xV`z')
+vim.keymap.set("x", "<C-S-d>", 'mz"zymx"zP`xV`z')
 
 -- TKS - Insert time HH:MM when pressing F5
-vim.keymap.set('n', '<F5>', 'viW"=strftime("%H:%M")<CR>P') -- Replace inner Word (since you might be on top of a range)
-vim.keymap.set('i', '<F5>', '<C-R>=strftime("%H:%M")<CR>') -- Insert only the time.
+vim.keymap.set("n", "<F5>", 'viW"=strftime("%H:%M")<CR>P') -- Replace inner Word (since you might be on top of a range)
+vim.keymap.set("i", "<F5>", '<C-R>=strftime("%H:%M")<CR>') -- Insert only the time.
 
 -- Flash remote action
 -- Credits to max397574 here: https://github.com/folke/flash.nvim/discussions/24
 vim.keymap.set("o", "r", function()
-    local operator = vim.v.operator
-    local register = vim --[[  ]].v.register
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<esc>', true, true, true), "o", true)
-    vim.schedule(function()
-        require("flash").jump({
-            action = function(match, state)
-                local op_func = vim.go.operatorfunc
-                local saved_view = vim.fn.winsaveview()
-                vim.api.nvim_set_current_win(match.win)
-                vim.api.nvim_win_set_cursor(match.win, match.pos)
-                _G.flash_op = function()
-                    local start = vim.api.nvim_buf_get_mark(0, "[")
-                    local finish = vim.api.nvim_buf_get_mark(0, "]")
-                    vim.api.nvim_cmd({ cmd = "normal", bang = true, args = { "v" } }, {})
-                    vim.api.nvim_win_set_cursor(0, { start[1], start[2] })
-                    vim.cmd("normal! o")
-                    vim.api.nvim_win_set_cursor(0, { finish[1], finish[2] })
-                    vim.go.operatorfunc = op_func
-                    vim.api.nvim_input('"' .. register .. operator)
-                    vim.schedule(function()
-                        vim.api.nvim_set_current_win(state.win)
-                        vim.fn.winrestview(saved_view)
-                    end)
-                    _G.flash_op = nil
-                end
-                vim.go.operatorfunc = "v:lua.flash_op"
-                vim.api.nvim_feedkeys("g@", "n", false)
-            end,
-        })
-    end)
+	local operator = vim.v.operator
+	local register = vim --[[  ]].v.register
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "o", true)
+	vim.schedule(function()
+		require("flash").jump({
+			action = function(match, state)
+				local op_func = vim.go.operatorfunc
+				local saved_view = vim.fn.winsaveview()
+				vim.api.nvim_set_current_win(match.win)
+				vim.api.nvim_win_set_cursor(match.win, match.pos)
+				_G.flash_op = function()
+					local start = vim.api.nvim_buf_get_mark(0, "[")
+					local finish = vim.api.nvim_buf_get_mark(0, "]")
+					vim.api.nvim_cmd({ cmd = "normal", bang = true, args = { "v" } }, {})
+					vim.api.nvim_win_set_cursor(0, { start[1], start[2] })
+					vim.cmd("normal! o")
+					vim.api.nvim_win_set_cursor(0, { finish[1], finish[2] })
+					vim.go.operatorfunc = op_func
+					vim.api.nvim_input('"' .. register .. operator)
+					vim.schedule(function()
+						vim.api.nvim_set_current_win(state.win)
+						vim.fn.winrestview(saved_view)
+					end)
+					_G.flash_op = nil
+				end
+				vim.go.operatorfunc = "v:lua.flash_op"
+				vim.api.nvim_feedkeys("g@", "n", false)
+			end,
+		})
+	end)
 end)
 
 -- Quick chmod'ing
@@ -111,13 +139,13 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Toggling diagnoise-tics
 local diagnostics_active = true
-vim.keymap.set('n', '<leader>td', function()
-    diagnostics_active = not diagnostics_active
-    if diagnostics_active then
-        vim.diagnostic.show()
-    else
-        vim.diagnostic.hide()
-    end
+vim.keymap.set("n", "<leader>td", function()
+	diagnostics_active = not diagnostics_active
+	if diagnostics_active then
+		vim.diagnostic.show()
+	else
+		vim.diagnostic.hide()
+	end
 end)
 
 -- TODO: go through this and set it up to match https://github.com/t9md/atom-vim-mode-plus/wiki/DifferencesFromPureVim
@@ -142,3 +170,33 @@ lvim.keys.normal_mode["<M-S-o>"] = "<cmd>%bd|e#|bd#<CR>"
 
 -- Toggle symbols (outline)
 lvim.keys.normal_mode["<M-o>"] = "<cmd>SymbolsOutline<CR>"
+
+-- Substitute.nvim
+-- vim.keymap.set("n", "++", function() -- testing only
+-- 	require("substitute.range").operator()
+-- end, { noremap = true })
+
+-- Replace occurence with value in clipboard
+vim.keymap.set("n", "-o", function()
+	require("substitute.range").operator({ subject = { motion = "iw" }, register = "0" })
+end, { noremap = true })
+-- Change occurence
+vim.keymap.set("n", "co", function()
+	require("substitute.range").operator({ subject = { motion = "iw" } })
+end, { noremap = true })
+vim.keymap.set("x", "mc", require("substitute.range").visual, { noremap = true })
+-- Mark word visually, then edit all occurences based on range / motion. (edit after)
+vim.keymap.set("x", "mA", function()
+	require("substitute.range").visual({ prompt_current_text = true })
+end, { noremap = true })
+-- Mark word visually, then edit all occurences based on range / motion. (edit before)
+-- vim.keymap.set("n", "mI", function()
+-- 	require("substitute.range").visual({ prompt_current_text = true })
+-- end, { noremap = true })
+
+-- cx - exchange (like in vim mode plus)
+vim.keymap.set("n", "cx", function()
+	require("substitute.exchange").operator({ prompt_current_text = true })
+end, { noremap = true })
+
+-- Sort command (TODO)
