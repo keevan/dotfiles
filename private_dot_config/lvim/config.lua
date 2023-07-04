@@ -459,7 +459,14 @@ lvim.plugins = {
     {
         "haya14busa/vim-edgemotion",
         event = "BufReadPre",
-    }
+    },
+
+    -- SQL completion (full dad mode)
+    -- {
+    --     "kristijanhusak/vim-dadbod-ui",
+    --     dependencies = { "tpope/vim-dadbod" }
+    -- },
+    -- "kristijanhusak/vim-dadbod-completion",
 }
 
 -- -- Autocommands  <https://neovim.io/doc/user/autocmd.html>

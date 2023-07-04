@@ -23,7 +23,7 @@ for i = 1, #builtin_plugs do
 end
 
 -- Disabling lunarvim core plugins
-lvim.builtin.alpha.active = false     -- Actually don't need it anymore
+lvim.builtin.alpha.active = false -- Actually don't need it anymore
 -- lvim.builtin.dap.active = false
 
 -- [ Vim options ] --
@@ -46,9 +46,15 @@ lvim.builtin.which_key.setup.plugins.presets.z = true
 -- Ex: { "~/.cargo/*", ... }
 -- lvim.builtin.project.exclude_dirs = { "~/apps/super-pancake/*" }
 -- lvim.builtin.project.manual_mode (Call :ProjectRoot)
-lvim.builtin.project.patterns = { ".git", ">apps", ">projects", ">sites" }
+lvim.builtin.project.patterns = { ".git", ">apps", ">projects", ">sites", ">work" }
 lvim.builtin.project.manual_mode = true -- true to make it manual
 lvim.builtin.project.silent_chdir = false
+lvim.builtin.project.exclude_dirs = { "~/" }
+lvim.builtin.nvimtree.setup.sync_root_with_cwd = true
+lvim.builtin.nvimtree.setup.respect_buf_cwd = true
+lvim.builtin.nvimtree.setup.actions.change_dir.enable = false
+lvim.builtin.nvimtree.setup.update_focused_file.enable = true
+lvim.builtin.nvimtree.setup.update_focused_file.update_root = false -- Don't automatically switch the project root on change
 
 
 -- Wait a bit longer for autoformat to kick in
