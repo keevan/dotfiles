@@ -27,8 +27,8 @@ vim.keymap.set("o", "c", "iw", {}) -- inner word
 vim.keymap.set("o", "C", "iW", {}) -- inner WORD
 
 -- Line
-vim.keymap.set({ "o", "x" }, "il", '<cmd>lua require("various-textobjs").lineCharacterwise(false)<CR>')
-vim.keymap.set({ "o", "x" }, "al", '<cmd>lua require("various-textobjs").lineCharacterwise(true)<CR>')
+vim.keymap.set({ "o", "x" }, "il", '<cmd>lua require("various-textobjs").lineCharacterwise(true)<CR>')
+vim.keymap.set({ "o", "x" }, "al", '<cmd>lua require("various-textobjs").lineCharacterwise(false)<CR>')
 
 -- Visible in window
 vim.keymap.set({ "o", "x" }, "iv", '<cmd>lua require("various-textobjs").visibleInWindow()<CR>')
@@ -39,9 +39,9 @@ vim.keymap.set({ "o", "x" }, "ie", '<cmd>lua require("various-textobjs").entireB
 vim.keymap.set({ "o", "x" }, "ae", '<cmd>lua require("various-textobjs").entireBuffer()<CR>')
 
 -- Subword
-vim.keymap.set({ "o", "x" }, "gd", '<cmd>lua require("various-textobjs").subword(false)<CR>')
-vim.keymap.set({ "o", "x" }, "id", '<cmd>lua require("various-textobjs").subword(false)<CR>')
-vim.keymap.set({ "o", "x" }, "ad", '<cmd>lua require("various-textobjs").subword(true)<CR>')
+vim.keymap.set({ "o", "x" }, "gd", '<cmd>lua require("various-textobjs").subword(true)<CR>')
+vim.keymap.set({ "o", "x" }, "id", '<cmd>lua require("various-textobjs").subword(true)<CR>')
+vim.keymap.set({ "o", "x" }, "ad", '<cmd>lua require("various-textobjs").subword(false)<CR>')
 
 -- TODO: find an equivalent to mark and replace all those VISIBLE on the page.
 -- Convenience for when  you don't care about if it's in a function, block, etc
@@ -103,7 +103,7 @@ vim.keymap.set("i", "<F5>", '<C-R>=strftime("%H:%M")<CR>') -- Insert only the ti
 -- Credits to max397574 here: https://github.com/folke/flash.nvim/discussions/24
 vim.keymap.set("o", "r", function()
 	local operator = vim.v.operator
-	local register = vim --[[  ]].v.register
+	local register = vim.v.register
 	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, true, true), "o", true)
 	vim.schedule(function()
 		require("flash").jump({
@@ -115,6 +115,7 @@ vim.keymap.set("o", "r", function()
 				_G.flash_op = function()
 					local start = vim.api.nvim_buf_get_mark(0, "[")
 					local finish = vim.api.nvim_buf_get_mark(0, "]")
+					print(start[2])
 					vim.api.nvim_cmd({ cmd = "normal", bang = true, args = { "v" } }, {})
 					vim.api.nvim_win_set_cursor(0, { start[1], start[2] })
 					vim.cmd("normal! o")
