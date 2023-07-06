@@ -136,7 +136,7 @@ vim.keymap.set("o", "r", function()
 end)
 
 -- Quick chmod'ing
-vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+vim.keymap.set("n", "<leader>X", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Toggling diagnoise-tics
 local diagnostics_active = true
@@ -199,5 +199,3 @@ end, { noremap = true })
 vim.keymap.set("n", "cx", function()
 	require("substitute.exchange").operator({ prompt_current_text = true })
 end, { noremap = true })
-
--- Sort command (TODO)
