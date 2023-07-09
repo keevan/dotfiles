@@ -200,7 +200,12 @@ vim.keymap.set("n", "cx", function()
 	require("substitute.exchange").operator({ prompt_current_text = true })
 end, { noremap = true })
 
-
 vim.keymap.set("x", "C", function()
 	require("concise").selection()
 end, { noremap = true })
+
+-- Kill bad habits - i.e. very hard mode :-)
+vim.keymap.set("n", "h", "<nop>")
+vim.keymap.set("n", "j", "<nop>")
+vim.keymap.set("n", "k", "<nop>")
+vim.keymap.set("n", "l", "<nop>")
