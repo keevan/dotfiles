@@ -199,3 +199,8 @@ end, { noremap = true })
 vim.keymap.set("n", "cx", function()
 	require("substitute.exchange").operator({ prompt_current_text = true })
 end, { noremap = true })
+
+
+vim.keymap.set("x", "C", function()
+	require("concise").selection()
+end, { noremap = true })

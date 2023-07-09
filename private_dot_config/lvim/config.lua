@@ -3,8 +3,8 @@
  `lvim` is the global options object
 ]]
 -- vim options
-vim.opt.shiftwidth = 4
-vim.opt.tabstop = 4
+-- vim.opt.shiftwidth = 4
+-- vim.opt.tabstop = 4
 vim.opt.relativenumber = true
 
 -- general
@@ -15,10 +15,29 @@ lvim.format_on_save = {
 	timeout = 1000,
 }
 
+lvim.lazy.opts.performance.rtp.disabled_plugins = {
+	"gzip",
+	"matchit",
+	"matchparen",
+	"netrwPlugin",
+	"tarPlugin",
+	"tohtml",
+	"tutor",
+	"zipPlugin",
+	"rplugin",
+	"shada",
+	"spellfile",
+}
+lvim.lazy.opts.dev = {
+	path = "~/projects", -- directory where you store your local plugin projects
+	patterns = {}, -- For example {"folke"}
+	fallback = true, -- Fallback to git when local plugin doesn't exist
+}
+
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
-require("keevan")
+require("keevan.builtin-tweaks")
 
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
@@ -525,7 +544,52 @@ lvim.plugins = {
 			})
 		end,
 	},
+
+	-- Custom plugin (concise.nvim)
+	{
+		"keevan/concise.nvim",
+		dir = os.getenv("HOME" .. "/projects/concise.nvim"),
+		config = true,
+		dev = true,
+		-- config = function()
+		--     require("concise").setup({
+		--         withDefaultReplacements = false
+		--     })
+		-- end,
+	},
+
+	-- project.nvim
+	{
+		-- "keevan/project.nvim",
+		"ahmedkhalf/project.nvim",
+		dir = os.getenv("HOME" .. "/projects/project.nvim"),
+		dev = true,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+		config = function()
+			require("lvim.core.project").setup()
+
+			-- require("project_nvim").setup({
+			-- 	transform_path = function(path)
+			-- 		return vim.fn.fnamemodify(path, ":~")
+			-- 	end,
+			-- })
+		end,
+		enabled = lvim.builtin.project.active,
+		event = "VimEnter",
+		cmd = "Telescope projects",
+	},
 }
+
+lvim.builtin.project.transform_path = function(path)
+	return vim.fn.fnamemodify(path, ":~")
+end
+
+lvim.builtin.project.transform_name = function(path)
+	return vim.fn.fnamemodify(path, ":t")
+end
 
 -- -- Autocommands  <https://neovim.io/doc/user/autocmd.html>
 -- vim.api.nvim_create_autocmd("FileType", {
@@ -536,5 +600,4 @@ lvim.plugins = {
 --   end,
 -- })
 --
-
-require("keevan.colors")
+require("keevan")
