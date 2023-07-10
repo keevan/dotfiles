@@ -259,6 +259,9 @@ bindsym $super+K exec keepassxc
 bindsym $super+O exec obinskit
 bindsym $super+U exec xdg-open https://youtube.com ; workspace number $ws2 ;
 
+# Wall(paper) changer - swaps the current wallpaper randomly (easier than iterating for now).
+bindsym $super+B exec "$HOME/.config/i3/wall-switcher" ; exec feh --bg-scale $HOME/Pictures/bg.png ;
+
 # TKSS
 # for_window [title="tkss"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
 # bindsym $mod+t exec kitty -T tkss -e $HOME/scripts/tkss && sleep 2
@@ -267,3 +270,5 @@ bindsym $super+U exec xdg-open https://youtube.com ; workspace number $ws2 ;
 # Switch to browser, refresh (and hit enter in case a warning shows up) then returns back to code workspace
 # Not sure what alt-M does in VIM so using it for now
 bindsym $mod+M workspace number $ws2 ; exec sleep 0.1 && xdotool key 'F5' && sleep 0.1 && xdotool key 'space' && xdotool key 'alt+1'
+
+# gaps outer 16px
