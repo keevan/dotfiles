@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+dir="$HOME/walls"  # Replace with the actual directory path
+
+files=("$dir"/*)
+random_file="${files[RANDOM % ${#files[@]}]}"
+
+echo "Random file: $random_file"
+cp "$random_file" "$HOME/Pictures/bg.png"
