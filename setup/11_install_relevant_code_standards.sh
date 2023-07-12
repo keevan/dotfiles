@@ -21,3 +21,4 @@ phpcbf --config-set installed_paths "$WORK_DIR/moodle-local_codechecker,$WORK_DI
 # Set the default (for use outside of nvim, and when phpcs.xml doesn't exist or when you need to specify the standard)
 # --
 phpcs --config-set default_standard moodle
+phpcbf --config-set default_standard moodle
