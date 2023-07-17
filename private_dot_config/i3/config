@@ -179,8 +179,8 @@ bar {
 }
 
 # Set monitors
-set $monitor1 HDMI-2 DisplayPort-7
-set $monitor2 HDMI-1 DisplayPort-8
+set $monitor1 HDMI-2 DisplayPort-9
+set $monitor2 HDMI-1 DisplayPort-10
 
 # Monitor 1
 workspace 1 output $monitor1
@@ -195,7 +195,7 @@ workspace 9 output $monitor2
 
 # Extra sauce to fix monitor order issues
 exec --no-startup-id xrandr --output HDMI-2 --auto --primary --left-of HDMI-1 &
-exec --no-startup-id xrandr --output eDP --off ; xrandr --output DisplayPort-7 --auto --primary --left-of DisplayPort-8 &
+exec --no-startup-id xrandr --output eDP --off ; xrandr --output DisplayPort-9 --auto --primary --left-of DisplayPort-10 &
 
 # Assign certain apps to certain workspaces
 # Use this command to find out the class: xprop | grep WM_CLASS
@@ -208,6 +208,7 @@ assign [class="catalystau-element-desktop"] $ws3
 assign [class="thunderbird"] $ws4
 assign [class="KeePassXC"] $ws5
 assign [class="ObinsKit"] $ws5
+assign [class="obsidian"] $ws6
 
 # Suspend/Sleep - similar to the lock screen but shift for more power.
 bindsym $super+Shift+L exec systemctl suspend
@@ -257,6 +258,7 @@ bindsym $super+9 exec google-chrome https://teams.microsoft.com ; workspace numb
 bindsym $super+T exec thunderbird
 bindsym $super+K exec keepassxc
 bindsym $super+O exec obinskit
+bindsym $mod+Shift+N exec obsidian ;
 bindsym $super+U exec xdg-open https://youtube.com ; workspace number $ws2 ;
 
 # Wall(paper) changer - swaps the current wallpaper randomly (easier than iterating for now).
