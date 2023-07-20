@@ -58,7 +58,7 @@ lvim.lsp.installer.setup.automatic_installation = false
 
 -- ---configure a server manually. IMPORTANT: Requires `:LvimCacheReset` to take effect
 -- ---see the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`
--- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tsserver", "tailwindcss-language-server" })
 -- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tailwindcss-language-server" })
 -- local opts = {} -- check the lspconfig documentation for a list of all possible options
 -- require("lvim.lsp.manager").setup("pyright", opts)
@@ -636,7 +636,7 @@ lvim.plugins = {
 	{ "nvim-telescope/telescope-ui-select.nvim", event = "VimEnter" },
 
 	-- Bionic like reading? Sure let's try it out.
-	{ "JellyApple102/easyread.nvim", event = "VimEnter" },
+	-- { "JellyApple102/easyread.nvim", event = "VimEnter" },
 }
 
 -- To get ui-select loaded and working with telescope, you need to call
