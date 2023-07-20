@@ -46,8 +46,18 @@ lvim.builtin.which_key.setup.plugins.presets.z = true
 -- Ex: { "~/.cargo/*", ... }
 -- lvim.builtin.project.exclude_dirs = { "~/apps/super-pancake/*" }
 -- lvim.builtin.project.manual_mode (Call :ProjectRoot)
-lvim.builtin.project.patterns = { ".git", ">apps", ">projects", ">sites", ">work", "!.local/share", "!~" }
-lvim.builtin.project.manual_mode = true -- true to make it manual
+lvim.builtin.project.patterns = {
+	-- Includes
+	".git",
+	">apps",
+	">projects",
+	">sites",
+	">work",
+	-- Skips
+	"!.local/share",
+	"!~",
+}
+lvim.builtin.project.manual_mode = true -- true to make it manual, false for automatically adding things which fit a pattern (currently it auto changes CWDs which is annoying)
 lvim.builtin.project.silent_chdir = false
 lvim.builtin.project.exclude_dirs = { "~/" }
 lvim.builtin.nvimtree.setup.sync_root_with_cwd = true
@@ -77,3 +87,30 @@ end, {})
 lvim.builtin.telescope.defaults.path_display = { truncate = 3 }
 lvim.builtin.telescope.defaults.file_ignore_patterns =
 	{ ".git/*", "yuilib/*", "yui/build", "aws/sdk", "lib/google/src" }
+
+-- Project updates to display
+lvim.builtin.project.transform_path = function(path)
+	return vim.fn.fnamemodify(path, ":~")
+end
+
+-- lvim.builtin.project.transform_name = function(path)
+-- 	-- Shorten the docker-dev path to always include the site/client name before the repo name
+-- 	local name = vim.fn.fnamemodify(path, ":t")
+-- 	local ddev_root = "/home/kevinpham/work/docker-dev"
+-- 	if ddev_root ~= "" then
+-- 		-- Extract the name of the site from the path, given the docker dev root which leads up to the docker-dev directory
+-- 		-- local sitename = path:gsub(ddev_root .. "/([^/]+)/")
+-- 		-- name = "[" .. sitename .. "] " .. name
+-- 	end
+-- 	return name
+-- end
+
+-- -- Autocommands  <https://neovim.io/doc/user/autocmd.html>
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "zsh",
+--   callback = function()
+--     -- let treesitter use bash highlight for zsh files as well
+--     require("nvim-treesitter.highlight").attach(0, "bash")
+--   end,
+-- })
+--

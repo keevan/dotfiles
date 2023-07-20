@@ -24,7 +24,7 @@ lvim.lazy.opts.performance.rtp.disabled_plugins = {
 	"tohtml",
 	"tutor",
 	"zipPlugin",
-	"rplugin",
+	"rplugin", -- Neotest needs this?
 	"shada",
 	"spellfile",
 }
@@ -54,11 +54,12 @@ lvim.builtin.treesitter.auto_install = true
 -- -- generic LSP settings <https://www.lunarvim.org/docs/languages#lsp-support>
 
 -- --- disable automatic installation of servers
--- lvim.lsp.installer.setup.automatic_installation = false
+lvim.lsp.installer.setup.automatic_installation = false
 
 -- ---configure a server manually. IMPORTANT: Requires `:LvimCacheReset` to take effect
 -- ---see the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tsserver" })
+-- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
+-- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tailwindcss-language-server" })
 -- local opts = {} -- check the lspconfig documentation for a list of all possible options
 -- require("lvim.lsp.manager").setup("pyright", opts)
 
@@ -93,12 +94,17 @@ formatters.setup({
 	-- },
 	{
 		command = "phpcbf",
+		-- extra_args = { "--standard=moodle" },
 	},
 })
+
 local linters = require("lvim.lsp.null-ls.linters")
 linters.setup({
 	{ command = "phpcs", filetypes = { "php" } },
 	{ command = "flake8", filetypes = { "python" } },
+	{ command = "vale", filetypes = { "markdown", "tks", "txt" } },
+	-- { command = "proselint", filetypes = { "markdown" } },
+	-- { command = "prosemd-lsp", filetypes = { "markdown" } },
 	{
 		command = "shellcheck",
 		args = { "--severity", "warning" },
@@ -418,6 +424,7 @@ lvim.plugins = {
 	},
 	{
 		"nvim-neotest/neotest",
+		-- enabled = false,
 		ft = "php", -- only test php things for now (lazy loaded= center)
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -429,12 +436,12 @@ lvim.plugins = {
 			require("neotest").setup({
 				adapters = {
 					require("neotest-phpunit")({
-						phpunit_cmd = function()
-							-- return os.getenv("HOME") .. "/phpunit-test.sh"
-							return os.getenv("HOME") .. "/scripts/ctrl test"
-						end,
+						-- phpunit_cmd = function()
+						-- 	-- return os.getenv("HOME") .. "/phpunit-test.sh"
+						-- 	-- return os.getenv("HOME") .. "/scripts/ctrl test"
+						-- end,
 						root_files = { "composer.json", "phpunit.xml", ".gitignore", "version.php" },
-						filter_dirs = { ".git", "node_modules", "vendor", "sdk" },
+						-- filter_dirs = { ".git", "node_modules", "vendor", "sdk" },
 					}),
 				},
 			})
@@ -448,7 +455,21 @@ lvim.plugins = {
 		dependencies = { "zbirenbaum/copilot.lua" },
 		config = function()
 			vim.defer_fn(function()
-				require("copilot").setup() -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
+				require("copilot").setup({
+					suggestion = {
+						enabled = true,
+						auto_trigger = false,
+						debounce = 75,
+						keymap = {
+							accept = "<M-;>",
+							accept_word = false,
+							accept_line = false,
+							next = "<M-]>",
+							prev = "<M-[>",
+							dismiss = "<C-]>",
+						},
+					},
+				}) -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
 				require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
 			end, 100)
 		end,
@@ -548,21 +569,13 @@ lvim.plugins = {
 	-- Custom plugin (concise.nvim)
 	{
 		"keevan/concise.nvim",
-		dir = os.getenv("HOME" .. "/projects/concise.nvim"),
-		config = true,
+		dir = "~/projects/concise.nvim",
+		-- config = true,
 		dev = true,
-		-- config = function()
-		--     require("concise").setup({
-		--         withDefaultReplacements = false
-		--     })
-		-- end,
-	},
-
-	{
-		"pmizio/typescript-tools.nvim",
-		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
 		config = function()
-			require("typescript-tools").setup({})
+			require("concise").setup({
+				withDefaultReplacements = false,
+			})
 		end,
 	},
 
@@ -570,7 +583,7 @@ lvim.plugins = {
 	{
 		-- "keevan/project.nvim",
 		"ahmedkhalf/project.nvim",
-		dir = os.getenv("HOME" .. "/projects/project.nvim"),
+		dir = os.getenv("HOME") .. "/projects/project.nvim",
 		dev = true,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -589,23 +602,51 @@ lvim.plugins = {
 		event = "VimEnter",
 		cmd = "Telescope projects",
 	},
+
+	{
+		"lewis6991/hover.nvim",
+		event = "VimEnter",
+		config = function()
+			require("hover").setup({
+				init = function()
+					-- Require providers
+					require("hover.providers.lsp")
+					require("hover.providers.gh")
+					-- require('hover.providers.gh_user')
+					-- require('hover.providers.jira')
+					-- require('hover.providers.man')
+					require("hover.providers.dictionary")
+				end,
+				preview_opts = {
+					border = nil,
+				},
+				-- Whether the contents of a currently open hover window should be moved
+				-- to a :h preview-window when pressing the hover keymap.
+				preview_window = false,
+				title = true,
+			})
+
+			-- Setup keymaps
+			vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
+			vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
+		end,
+	},
+
+	-- Code actions in a telescopic menu? Yes.
+	{ "nvim-telescope/telescope-ui-select.nvim", event = "VimEnter" },
+
+	-- Bionic like reading? Sure let's try it out.
+	{ "JellyApple102/easyread.nvim", event = "VimEnter" },
 }
 
-lvim.builtin.project.transform_path = function(path)
-	return vim.fn.fnamemodify(path, ":~")
-end
+-- To get ui-select loaded and working with telescope, you need to call
+-- load_extension, somewhere after setup function:
+require("telescope").load_extension("ui-select")
 
-lvim.builtin.project.transform_name = function(path)
-	return vim.fn.fnamemodify(path, ":t")
-end
+require("null-ls").setup({
+	sources = {
+		require("null-ls").builtins.diagnostics.vale,
+	},
+})
 
--- -- Autocommands  <https://neovim.io/doc/user/autocmd.html>
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "zsh",
---   callback = function()
---     -- let treesitter use bash highlight for zsh files as well
---     require("nvim-treesitter.highlight").attach(0, "bash")
---   end,
--- })
---
 require("keevan")

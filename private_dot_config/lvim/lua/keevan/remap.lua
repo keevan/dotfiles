@@ -1,3 +1,6 @@
+-- Reload this keymap file, until I figure out a better solution.
+vim.keymap.set("n", "<F6>", ":so ~/.config/lvim/lua/keevan/remap.lua<CR>") -- Replace inner Word (since you might be on top of a range)
+
 -- keymappings <https://www.lunarvim.org/docs/configuration/keybindings>
 -- Practice here: https://gist.githubusercontent.com/keevan/dc2179f8fe5ab36fee20399c8e941d9c/raw/64fde14d44823cecfde23c4b99156f725fe982f0/vmpDemo.js
 lvim.leader = "space"
@@ -147,7 +150,7 @@ vim.keymap.set("n", "<leader>td", function()
 	else
 		vim.diagnostic.hide()
 	end
-end)
+end, { nowait = true, noremap = true })
 
 -- TODO: go through this and set it up to match https://github.com/t9md/atom-vim-mode-plus/wiki/DifferencesFromPureVim
 
@@ -204,8 +207,13 @@ vim.keymap.set("x", "C", function()
 	require("concise").selection()
 end, { noremap = true })
 
--- -- Kill bad habits - i.e. very hard mode :-)
+-- Kill bad habits - i.e. very hard mode :-)
 -- vim.keymap.set("n", "h", "<nop>")
 -- vim.keymap.set("n", "j", "<nop>")
 -- vim.keymap.set("n", "k", "<nop>")
 -- vim.keymap.set("n", "l", "<nop>")
+
+-- Pasting in visual mode, to NOT replace the current register/clipboard value
+vim.keymap.set("x", "p", function()
+	return 'pgv"' .. vim.v.register .. "y"
+end, { remap = false, expr = true })
