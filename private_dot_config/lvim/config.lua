@@ -637,6 +637,10 @@ lvim.plugins = {
 
 	-- Bionic like reading? Sure let's try it out.
 	-- { "JellyApple102/easyread.nvim", event = "VimEnter" },
+	{
+		"kevinhwang91/nvim-bqf",
+		ft = "qf",
+	},
 }
 
 -- To get ui-select loaded and working with telescope, you need to call

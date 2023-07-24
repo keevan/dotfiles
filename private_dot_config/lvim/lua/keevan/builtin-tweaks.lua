@@ -93,17 +93,20 @@ lvim.builtin.project.transform_path = function(path)
 	return vim.fn.fnamemodify(path, ":~")
 end
 
--- lvim.builtin.project.transform_name = function(path)
--- 	-- Shorten the docker-dev path to always include the site/client name before the repo name
--- 	local name = vim.fn.fnamemodify(path, ":t")
--- 	local ddev_root = "/home/kevinpham/work/docker-dev"
--- 	if ddev_root ~= "" then
--- 		-- Extract the name of the site from the path, given the docker dev root which leads up to the docker-dev directory
--- 		-- local sitename = path:gsub(ddev_root .. "/([^/]+)/")
--- 		-- name = "[" .. sitename .. "] " .. name
--- 	end
--- 	return name
--- end
+lvim.builtin.project.transform_name = function(path)
+	-- Shorten the docker-dev path to always include the site/client name before the repo name
+	local name = vim.fn.fnamemodify(path, ":t")
+	local prefix = "docker%-dev/sites/"
+	local input_string = path
+
+	local start_pos, end_pos = string.find(input_string, prefix .. "(%w+)/")
+	if start_pos then
+		local extracted_word = string.sub(input_string, start_pos + #prefix - 1, end_pos - 1)
+		name = extracted_word .. " -> " .. name
+	end
+
+	return name
+end
 
 -- -- Autocommands  <https://neovim.io/doc/user/autocmd.html>
 -- vim.api.nvim_create_autocmd("FileType", {
