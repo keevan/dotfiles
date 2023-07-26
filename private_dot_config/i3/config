@@ -251,7 +251,7 @@ tiling_drag off
 
 # "Super" launcher
 bindsym $super+G exec xdg-open https://google.com ; workspace number $ws2 ;
-bindsym $super+C exec catalystau-element-desktop
+bindsym $super+C exec CatalystElementDesktop || catalystau-element-desktop
 bindsym $super+E exec nautilus ~
 bindsym $super+M exec xdg-open https://music.youtube.com ; workspace number $ws2 ;
 bindsym $super+8 exec flatpak run org.telegram.desktop ; workspace number $ws8 ;
