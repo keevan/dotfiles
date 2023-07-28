@@ -1,0 +1,20 @@
+{
+  "intelephense.files.exclude": [
+    "**/.git/**",
+    "**/.svn/**",
+    "**/.hg/**",
+    "**/CVS/**",
+    "**/.DS_Store/**",
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**/{Tests,tests}/**",
+    "**/.history/**",
+    "**/vendor/**/vendor/**",
+    "**/sitedata/**",
+    "**/fleet-tracker/moodle/**"
+  ],
+  "intelephense.files.maxSize": 500000,
+  "intelephense.maxMemory": 0,
+  "intelephense.telemetry.enabled": false,
+  "intelephense.diagnostics.enable": false
+}

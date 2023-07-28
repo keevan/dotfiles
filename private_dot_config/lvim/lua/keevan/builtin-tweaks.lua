@@ -117,3 +117,8 @@ end
 --   end,
 -- })
 --
+-- Add new sources
+-- https://github.com/LunarVim/LunarVim/issues/4204
+vim.list_extend(lvim.builtin.cmp.sources, {
+	{ name = "tksrc_aliases" },
+})

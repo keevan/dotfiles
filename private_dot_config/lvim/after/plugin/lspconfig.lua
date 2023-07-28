@@ -5,4 +5,4 @@ lvim.lsp.on_attach_callback = function(client, bufnr)
 end
 
 local lspconfig = require("lspconfig")
-lspconfig.phpactor.setup({})
+-- lspconfig.phpactor.setup({})

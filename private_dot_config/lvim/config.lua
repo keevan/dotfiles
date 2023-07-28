@@ -58,7 +58,10 @@ lvim.lsp.installer.setup.automatic_installation = false
 
 -- ---configure a server manually. IMPORTANT: Requires `:LvimCacheReset` to take effect
 -- ---see the full default list `:lua =lvim.lsp.automatic_configuration.skipped_servers`
-vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tsserver", "tailwindcss-language-server" })
+vim.list_extend(
+	lvim.lsp.automatic_configuration.skipped_servers,
+	{ "tsserver", "tailwindcss-language-server", "intelliphense" }
+)
 -- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "tailwindcss-language-server" })
 -- local opts = {} -- check the lspconfig documentation for a list of all possible options
 -- require("lvim.lsp.manager").setup("pyright", opts)
@@ -101,6 +104,7 @@ formatters.setup({
 local linters = require("lvim.lsp.null-ls.linters")
 linters.setup({
 	{ command = "phpcs", filetypes = { "php" } },
+	-- { name = "psalm", filetypes = { "php" } },
 	{ command = "flake8", filetypes = { "python" } },
 	{ command = "vale", filetypes = { "markdown", "tks", "txt" } },
 	-- { command = "proselint", filetypes = { "markdown" } },
@@ -616,6 +620,7 @@ lvim.plugins = {
 					-- require('hover.providers.jira')
 					-- require('hover.providers.man')
 					require("hover.providers.dictionary")
+					require("keevan.hover.provider.wr")
 				end,
 				preview_opts = {
 					border = nil,
@@ -650,6 +655,7 @@ require("telescope").load_extension("ui-select")
 require("null-ls").setup({
 	sources = {
 		require("null-ls").builtins.diagnostics.vale,
+		-- require("null-ls").builtins.diagnostics.psalm,
 	},
 })
 
