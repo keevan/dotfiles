@@ -45,10 +45,11 @@ local function process(result)
 	end
 
 	---@type string[]
-	local lines = {}
-	lines[#lines + 1] = "__WR-" .. res.response.request.request_id .. "__ " .. res.response.request.brief
-	lines[#lines + 1] = res.response.request.status_desc
-	lines[#lines + 1] = ""
+	local lines = {
+		"__WR-" .. res.response.request.request_id .. "__ " .. res.response.request.brief,
+		res.response.request.status_desc,
+		"",
+	}
 	for s in res.response.request.detailed:gmatch("[^\r\n]+") do
 		table.insert(lines, s)
 	end
