@@ -242,6 +242,11 @@ lvim.plugins = {
 	},
 
 	{
+		"David-Kunz/treesitter-unit",
+		event = "BufReadPre",
+	},
+
+	{
 		"chrisgrieser/nvim-various-textobjs",
 		event = "BufReadPre",
 		config = function()
