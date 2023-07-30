@@ -390,9 +390,7 @@ lvim.plugins = {
 		keys = { "<space>m", "<space>j", "<space>s" },
 		dependencies = { "nvim-treesitter/nvim-treesitter" },
 		config = function()
-			require("treesj").setup({
-				max_join_length = 500,
-			})
+			require("treesj").setup({ max_join_length = 500 })
 		end,
 	},
 
@@ -644,6 +642,14 @@ lvim.plugins = {
 
 	-- Code actions in a telescopic menu? Yes.
 	{ "nvim-telescope/telescope-ui-select.nvim", event = "VimEnter" },
+
+	-- Faster typescript language server
+	{
+		"pmizio/typescript-tools.nvim",
+		-- ft = { "typescript", "typescriptreact", "typescript.tsx" },
+		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+		opts = {},
+	},
 
 	-- Bionic like reading? Sure let's try it out.
 	-- { "JellyApple102/easyread.nvim", event = "VimEnter" },

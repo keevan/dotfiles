@@ -6,6 +6,9 @@ end
 local source = {}
 
 local enabled = true
+if vim.fn.executable("tksrc_aliases") ~= 1 then
+	enabled = false
+end
 
 source.new = function()
 	local self = setmetatable({ cache = {} }, { __index = source })

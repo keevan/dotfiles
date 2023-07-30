@@ -6,6 +6,10 @@ local async = require("hover.async")
 -- Matches the WR request pattern
 -- Or is an request alias mapped in .tksrc
 local function enabled()
+	if vim.fn.executable("tksrc_aliases") ~= 1 then
+		return false
+	end
+
 	local matches_wr_pattern = vim.fn.expand("<cWORD>"):match(WR_PATTERN) ~= nil
 	if matches_wr_pattern then
 		return true
