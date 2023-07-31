@@ -1,28 +1,41 @@
 " Vim syntax file
 " Language: tks
-" Maintainer:   Martyn Smith <martyn@catalyst.net.nz>
-" Last Change:  2008 May 26
+" Maintainer:   Kevin Pham <kevinpham@catalyst-au.net>
+" Last Change:  2023 July 31
 
 " Quit when a (custom) syntax file was already loaded
 if exists("b:current_syntax")
   finish
 endif
 
-syntax match tksWR "^\s*\S\+" nextgroup=tksTime skipwhite
-syntax match tksTime "\s[0-9.:-]\+" nextgroup=tksDescription skipwhite contained
-syntax region tksDescription start="\S" end="$" skipwhite contained keepend contains=tksReviewflag
-syntax match tksReviewflag "\[review\]" containedin=tksDescription
+syn match tksWR "^\s*\S\+" nextgroup=tksTime skipwhite
+syn match tksTime "\s[0-9.:-]\+\s" nextgroup=tksDescription skipwhite contained
+syn region tksDescription start="\S" end="$" skipwhite contained keepend contains=tksReviewTag
+
+" Extra highlights in a tks description
+syn match tksClient "\S\+:\s" containedin=tksDescription
+syn match tksReviewTag "\[review\]" containedin=tksDescription
+syn match tksLearnTag "\[learn\]" containedin=tksDescription
+
+" Keywords
+syn keyword tksTags MR PR LEARN REVIEW TEST IMPLEMENT DOCUMENT LESSON containedin=tksDescription
 
 syn region comment    start="#" end="$"
 syn match date "^\d\d\d\d-\d\d-\d\d"
 syn match date "^\d\+/\d\+/\d\d\(\d\d\)\?"
 
-hi def link date Label
+" Highlight links?
+syn match matchURL /http[s]\?:\/\/[[:alnum:]%\/_#.-]*/ containedin=tksDescription
+hi def link matchURL Underline
+
+hi def link date @attribute
 hi def link comment Comment
-hi def link tksWR PreProc
-hi def link tksTime Type
+hi def link tksWR Error
+hi def link tksTime Text
 hi def link tksDescription String
-hi def link tksReviewflag Statement
+hi def link tksClient Exception
+hi def link tksTags Todo
+hi def link tksReviewTag Statement
+hi def link tksLearnTag Todo
 
 let b:current_syntax = "tks"
-
