@@ -263,6 +263,10 @@ bindsym $super+O exec obinskit
 bindsym $mod+Shift+N exec obsidian ;
 bindsym $super+U exec xdg-open https://youtube.com ; workspace number $ws2 ;
 
+# Toggle visual notifications (i.e. do not disturb mode)
+bindsym $super+Shift+N exec dunstctl set-paused toggle && notify-send ToggleNotifications "`date`";
+# if [[ $(dunstctl is-paused) == "true" ]]; then echo "is paused"; else echo "not paused"; fi
+
 # Failsafe - if I can't see anything, I want to see everything! Might help debug some sleep issues.
 bindsym $super+$mod+C exec xrandr --auto;
 
