@@ -3,13 +3,13 @@
 mkdir -p "$HOME/notes/"
 file="$HOME/notes/note-$(date +%Y-%m-%d).md"
 
-if [ ! -f $file ]; then
-  echo "# Notes for $(date +%Y-%m-%d)" > $file
+if [ ! -f "$file" ]; then
+  echo "# Notes for $(date +%Y-%m-%d)" > "$file"
 fi
 
+cd "$HOME/notes" || exit 2
 lvim -c "norm Go" \
   -c "norm Go## $(date +%H:%M)" \
   -c "norm G2o" \
   -c "norm zz" \
-  -c "startinsert" $file
-
+  -c "startinsert" "$file"
