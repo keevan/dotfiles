@@ -138,6 +138,10 @@ vim.keymap.set("o", "r", function()
 	end)
 end)
 
+-- For some reason this was broken?
+vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<cr>")
+vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<cr>")
+
 -- Quick chmod'ing
 vim.keymap.set("n", "<leader>X", "<cmd>!chmod +x %<CR>", { silent = true })
 
