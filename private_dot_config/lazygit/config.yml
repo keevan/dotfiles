@@ -23,7 +23,7 @@ gui:
     selectedLineBgColor:
       - '#363a4f' # set to `default` to have no background colour
     selectedRangeBgColor:
-      - '#363a4f'
+      - '#a6e3a1'
     cherryPickedCommitBgColor:
       - '#363a4f'
     cherryPickedCommitFgColor:
@@ -61,6 +61,7 @@ git:
     # extra args passed to `git merge`, e.g. --no-ff
     args: ''
   log:
+    args: '--no-merges'
     # one of date-order, author-date-order, topo-order or default.
     # topo-order makes it easier to read the git log graph, but commits may not
     # appear chronologically. See https://git-scm.com/docs/git-log#_commit_ordering
@@ -85,10 +86,12 @@ git:
   diffContextSize: 3 # how many lines of context are shown around a change in diffs
 os:
   copyToClipboardCmd: '' # See 'Custom Command for Copying to Clipboard' section
-  editPreset: '' # see 'Configuring File Editing' section
-  edit: ''
-  editAtLine: ''
-  editAtLineAndWait: ''
+  # editPreset: '' # see 'Configuring File Editing' section
+  edit: 'lvim {{filename}}'
+  editAtLine: 'lvim +{{line}} {{filename}}'
+  editAtLineAndWait: 'lvim --remote-wait +{{line}} {{filename}}'
+  editInTerminal: true
+  openDirInEditor: 'lvim {{dir}}'
   open: ''
   openLink: ''
 refresher:
