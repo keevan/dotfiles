@@ -21,6 +21,8 @@ syn match tksLearnTag "\[learn\]" containedin=tksDescription
 syn keyword tksTags MR PR LEARN REVIEW TEST IMPLEMENT DOCUMENT LESSON containedin=tksDescription
 
 syn region comment    start="#" end="$"
+syn keyword commentTags TODO containedin=comment
+
 syn match date "^\d\d\d\d-\d\d-\d\d"
 syn match date "^\d\+/\d\+/\d\d\(\d\d\)\?"
 
@@ -35,6 +37,7 @@ hi def link tksTime Text
 hi def link tksDescription String
 hi def link tksClient Exception
 hi def link tksTags Todo
+hi def link commentTags Todo
 hi def link tksReviewTag Statement
 hi def link tksLearnTag Todo
 
