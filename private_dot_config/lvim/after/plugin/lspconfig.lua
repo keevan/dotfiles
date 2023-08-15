@@ -4,5 +4,7 @@ lvim.lsp.on_attach_callback = function(client, bufnr)
 	end
 end
 
+-- Docs: https://github.com/neovim/nvim-lspconfig
 local lspconfig = require("lspconfig")
--- lspconfig.phpactor.setup({})
+lspconfig.phpactor.setup({ autostart = false })
+lspconfig.sqlls.setup({})

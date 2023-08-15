@@ -11,7 +11,7 @@ vim.opt.relativenumber = true
 lvim.log.level = "info"
 lvim.format_on_save = {
 	enabled = true,
-	pattern = "*.lua",
+	pattern = { "*.lua", "*.tks" },
 	timeout = 1000,
 }
 
@@ -91,6 +91,11 @@ formatters.setup({
 		extra_args = { "--print-width", "100" },
 		filetypes = { "typescript", "typescriptreact" },
 	},
+	-- {
+	-- 	command = "tkss",
+	-- 	extra_args = { "format" },
+	-- 	filetypes = { "tks" },
+	-- },
 	-- {
 	--     command = "pint",
 	--     filetypes = { "php" },
@@ -534,16 +539,16 @@ lvim.plugins = {
 	--
 
 	-- Explains regex strings nicely (trying it out)
-	{
-		"tomiis4/Hypersonic.nvim",
-		event = "CmdlineEnter",
-		cmd = "Hypersonic",
-		config = function()
-			require("hypersonic").setup({
-				-- config
-			})
-		end,
-	},
+	-- {
+	-- 	"tomiis4/Hypersonic.nvim",
+	-- 	event = "CmdlineEnter",
+	-- 	cmd = "Hypersonic",
+	-- 	config = function()
+	-- 		require("hypersonic").setup({
+	-- 			-- config
+	-- 		})
+	-- 	end,
+	-- },
 
 	-- Mainly used for yanking and keeping the cursor in place.
 	-- Huge QoL.
@@ -657,17 +662,13 @@ lvim.plugins = {
 		"kevinhwang91/nvim-bqf",
 		ft = "qf",
 	},
+
+	-- FZF (bqf fzf and probably other things)
+	{ "junegunn/fzf", dir = "~/.fzf", build = "./install --all" },
 }
 
 -- To get ui-select loaded and working with telescope, you need to call
 -- load_extension, somewhere after setup function:
 require("telescope").load_extension("ui-select")
-
-require("null-ls").setup({
-	sources = {
-		require("null-ls").builtins.diagnostics.vale,
-		-- require("null-ls").builtins.diagnostics.psalm,
-	},
-})
 
 require("keevan")

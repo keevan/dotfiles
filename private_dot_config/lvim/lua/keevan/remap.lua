@@ -98,6 +98,14 @@ vim.keymap.set("n", "<C-S-d>", 'mz"zyy"zp`zj')
 -- selection after the duplication is on the first line only.
 vim.keymap.set("x", "<C-S-d>", 'mz"zymx"zP`xV`z')
 
+-- Copy relative path (ctrl+shift+x) and print path in status-line
+vim.keymap.set(
+	"n",
+	"<C-S-x>",
+	':let relpath = fnamemodify(expand("%"), ":~:.") <bar> let @+ = relpath <bar> echo relpath<CR>',
+	{ silent = true }
+)
+
 -- TKS - Insert time HH:MM when pressing F5
 vim.keymap.set("n", "<F5>", 'viW"=strftime("%H:%M")<CR>P') -- Replace inner Word (since you might be on top of a range)
 vim.keymap.set("i", "<F5>", '<C-R>=strftime("%H:%M")<CR>') -- Insert only the time.

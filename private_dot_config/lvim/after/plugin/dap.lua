@@ -17,4 +17,14 @@ lvim.builtin.dap.on_config_done = function(dap)
 			},
 		},
 	}
+	dap.element_mappings.watches = {
+		remove = "d",
+		edit = "c",
+		repl = "y",
+	}
+	dap.element_mappings.scopes = {
+		edit = "c",
+		expand = "<CR>",
+		repl = "y",
+	}
 end
