@@ -1,4 +1,10 @@
 -- Strip Whitespace
-vim.cmd("autocmd BufWritePre * %s/\\s+$//e")
+-- vim.cmd("autocmd BufWritePre * %s/\\s+$//e")
 
-vim.cmd("au BufRead,BufNewFile *.tks set filetype=tks")
+-- BufWritePost (purge string/lang cache after writing to a lang file)
+_ = vim.cmd([[
+  augroup MDLLangFiles
+    au!
+    autocmd BufWritePost **/lang/en/*.php lua vim.cmd('silent !ctrl lang &')
+  augroup END
+]])

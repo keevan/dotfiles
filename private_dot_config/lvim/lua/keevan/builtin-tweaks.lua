@@ -28,7 +28,8 @@ lvim.builtin.alpha.active = false -- Actually don't need it anymore
 -- lvim.builtin.dap.active = false
 
 -- [ Vim options ] --
-vim.opt.colorcolumn = "92"
+vim.opt.colorcolumn = "132" -- Default to limit for now, might be conditional later.
+-- vim.opt.colorcolumn = "92"
 
 -- PHP to include $ in word (php variables).
 vim.opt.iskeyword = vim.opt.iskeyword + "$"
@@ -99,7 +100,7 @@ lvim.builtin.project.transform_name = function(path)
 	local prefix = "docker%-dev/sites/"
 	local input_string = path
 
-	local start_pos, end_pos = string.find(input_string, prefix .. "(%w+)/")
+	local start_pos, end_pos = string.find(input_string, prefix .. "([%w%-]+)/")
 	if start_pos then
 		local extracted_word = string.sub(input_string, start_pos + #prefix - 1, end_pos - 1)
 		name = extracted_word .. " -> " .. name

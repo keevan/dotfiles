@@ -120,7 +120,7 @@ cmp.setup({
 		{ name = "buffer", keyword_length = 5 },
 	}, {
 		{ name = "gh_issues" },
-		{ name = "tksrc_aliases" },
+		-- { name = "tksrc_aliases" },
 	}),
 
 	sorting = {
@@ -169,7 +169,7 @@ cmp.setup({
 				path = "[path]",
 				luasnip = "[snip]",
 				gh_issues = "[issues]",
-				tksrc_aliases = "[tksrc]",
+				-- tksrc_aliases = "[tksrc]",
 				tn = "[TabNine]",
 				eruby = "[erb]",
 			},
