@@ -1,7 +1,7 @@
 ;/* vi: set filetype=gitconfig: */
 [user]
 	email = keevan.pham@gmail.com
-	name = {{ .name }}
+	name = Kevin Pham
   ; GPG key
 	signingkey = F7A418BDB8DB38E3
 
@@ -65,12 +65,13 @@
 	enabled = true
 	autoupdate = true
 [safe]
-	directory = {{ .chezmoi.homeDir }}/personal/music
+	directory = ~/personal/music
 [gpg]
 	; format = ssh
 [gpg "ssh"]
-	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowed_signers
+	allowedSignersFile = ~/.ssh/allowed_signers
 [init]
 	defaultBranch = main
 [core]
   editor = lvim
+	excludesfile = ~/.gitignore_global
