@@ -23,6 +23,7 @@ lvim.keys.normal_mode["<A-S-p>"] = ":Telescope projects<CR>"
 -- TODO: Stay mappings (affects yank and visual select)
 -- Manually do it for now until a better solution shows up.. (remember operator, starting pos, and position afterwards)
 vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)")
+vim.keymap.set({ "n" }, "Y", "y$")
 
 -- Operator mappings
 vim.keymap.set("o", "p", "ip", {}) -- inner paragraph
@@ -150,6 +151,10 @@ end)
 vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<cr>")
 vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<cr>")
 
+-- Start and stop the LSP (on demand via remap) -- off by default = faster edits/movements by default until some drilling required.
+vim.keymap.set("n", "<leader>l1", "<cmd>LspStart<cr>")
+vim.keymap.set("n", "<leader>l2", "<cmd>LspStop<cr>")
+
 -- Quick chmod'ing
 vim.keymap.set("n", "<leader>X", "<cmd>!chmod +x %<CR>", { silent = true })
 
@@ -174,6 +179,7 @@ lvim.keys.normal_mode["<leader>tt"] = "<cmd>lua require('neotest').run.run()<CR>
 lvim.keys.normal_mode["<leader>tf"] = "<cmd>lua require('neotest').run.run()<CR>"
 lvim.keys.normal_mode["<leader>te"] = '<cmd>lua require("neotest").run.run(vim.fn.expand("%"))<CR>'
 lvim.keys.normal_mode["<leader>ts"] = "<cmd>lua require('neotest').summary.toggle()<CR>"
+lvim.keys.normal_mode["<leader>th"] = "<cmd>Hardtime toggle<CR>"
 
 -- NOTE: Also see "nvim-treesitter/nvim-treesitter-textobjects" settings for custom mappings
 vim.keymap.set("n", "[", "<Plug>(edgemotion-k)", { nowait = true })

@@ -666,6 +666,60 @@ lvim.plugins = {
 
 	-- FZF (bqf fzf and probably other things)
 	{ "junegunn/fzf", dir = "~/.fzf", build = "./install --all" },
+
+	{
+		"m4xshen/hardtime.nvim",
+		dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
+		opts = {
+			restriction_mode = "hint",
+			disable_mouse = false, -- This is fine, I use it seldomly and mainly when pairing
+		},
+	},
+	{
+		"m4xshen/smartcolumn.nvim",
+		opts = {
+			colorcolumn = "92",
+			custom_colorcolumn = { php = "132" },
+		},
+	},
+	{
+		"nvim-telescope/telescope-live-grep-args.nvim",
+		config = function()
+			require("telescope").load_extension("live_grep_args")
+		end,
+	},
+
+	-- Debugging
+	{
+		"mfussenegger/nvim-dap",
+		config = function()
+			lvim.builtin.dap.ui.config.element_mappings.watches = {
+				remove = "d",
+				edit = "c",
+				repl = "y",
+			}
+			lvim.builtin.dap.ui.config.element_mappings.watches = {
+				edit = "c",
+				expand = "<CR>",
+				repl = "y",
+			}
+			require("lvim.core.dap").setup()
+		end,
+		lazy = true,
+		dependencies = {
+			"rcarriga/nvim-dap-ui",
+			"williamboman/mason-lspconfig.nvim",
+		},
+		enabled = lvim.builtin.dap.active,
+	},
+	-- {
+	-- 	"theHamsta/nvim-dap-virtual-text",
+	-- 	dependencies = {
+	-- 		"mfussenegger/nvim-dap",
+	-- 		"nvim-treesitter/nvim-treesitter",
+	-- 	},
+	-- 	opts = {},
+	-- },
 }
 
 -- To get ui-select loaded and working with telescope, you need to call
