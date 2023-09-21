@@ -75,3 +75,4 @@
 [core]
   editor = lvim
 	excludesfile = ~/.gitignore_global
+	hooksPath = ~/.git_hook
