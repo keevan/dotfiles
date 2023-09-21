@@ -720,6 +720,11 @@ lvim.plugins = {
 	-- 	},
 	-- 	opts = {},
 	-- },
+	--
+	{ "rebelot/kanagawa.nvim" },
+	-- { "ellisonleao/gruvbox.nvim" },
+	{ "sainnhe/everforest" },
+	{ "sainnhe/gruvbox-material" },
 }
 
 -- To get ui-select loaded and working with telescope, you need to call

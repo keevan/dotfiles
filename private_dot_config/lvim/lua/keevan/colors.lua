@@ -1,5 +1,13 @@
 -- Change theme settings
-lvim.colorscheme = "catppuccin-mocha"
+-- lvim.colorscheme = "catppuccin-mocha"
+lvim.colorscheme = "gruvbox-material"
+-- vim.cmd("let g:gruvbox_material_background = 'hard'")
+vim.cmd("let g:gruvbox_material_better_performance = 1")
+
+-- lvim.colorscheme = "everforest"
+-- vim.cmd("let g:everforest_background = 'soft'")
+-- vim.cmd("let g:everforest_better_performance = 1")
+-- lvim.colorscheme = "kanagawa-dragon"
 
 -- require("catppuccin").setup({
 --     flavour = "mocha",
