@@ -52,3 +52,11 @@ esac
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
+
+# composer
+export COMPOSER_INSTALL="$HOME/.config/composer"
+export PATH=$COMPOSER_INSTALL/vendor/bin:$PATH
+
+# Deno
+export DENO_INSTALL="$HOME/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
