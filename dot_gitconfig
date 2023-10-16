@@ -29,10 +29,12 @@
 	uncommit=reset HEAD^
 	rename=branch -m
 	cp=cherry-pick
+	cpc=!ctrl cp-confirm
 	pushh=!git push --set-upstream origin $(git branch --show-current)
 	remote-delete-branch=push origin --delete
   lg=log --color=always --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   lge=log --color=always --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%ae>%Creset' --abbrev-commit
+  lgs=log --format='%C(auto) %h %s'
   hs=log --color=always --pretty='%C(yellow)%h %C(cyan)%cd %Cblue%aN%C(auto)%d %Creset%s' --graph --date=relative --date-order
   hse=log --color=always --pretty='%C(yellow)%h %C(cyan)%cd %Cblue%ae%C(auto)%d %Creset%s' --date=relative --date-order
   psychic=!ctl --psychic
@@ -76,3 +78,5 @@
   editor = lvim
 	excludesfile = ~/.gitignore_global
 	hooksPath = ~/.git_hook
+[url "ssh://git@github.com"]
+	insteadOf = https://github.com
