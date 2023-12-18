@@ -188,6 +188,7 @@ workspace 1 output $monitor1
 workspace 3 output $monitor1
 workspace 4 output $monitor1
 workspace 5 output $monitor1
+workspace 6 output $monitor1
 # Monitor 2
 workspace 2 output $monitor2
 workspace 7 output $monitor2
@@ -223,11 +224,13 @@ exec_always --no-startup-id feh --bg-scale ~/Pictures/bg.png
 # Honestly, no idea why 1 is the default. This fixes clicking the scrollbar in browsers.
 for_window [class="^.*"] border pixel 0
 
+
+# WM_CLASS(STRING) = "Toolkit", "firefox"
 # (Windows Explorer equivalent) Open nautilus in a floating window using super+E
-for_window [class="Org.gnome.Nautilus"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
+for_window [class="Org.gnome.Nautilus"] floating enable ; [class="Org.gnome.Nautilus"] resize set 1200 800 ; [class="Org.gnome.Nautilus"] move position center
 
 # Take a quick note using mod+n
-for_window [title="take_note"] floating enable ; [floating] resize set 1200 800 ; [floating] move position center
+for_window [title="take_note"] floating enable ; [title="take_note"] resize set 1200 800 ; [title="take_note"] move position center
 bindsym $mod+n exec kitty -T take_note -e $HOME/bin/take-note ; workspace number $ws1 ;
 
 # This was annoying, so turning it off.
