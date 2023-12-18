@@ -225,7 +225,6 @@ exec_always --no-startup-id feh --bg-scale ~/Pictures/bg.png
 for_window [class="^.*"] border pixel 0
 
 
-# WM_CLASS(STRING) = "Toolkit", "firefox"
 # (Windows Explorer equivalent) Open nautilus in a floating window using super+E
 for_window [class="Org.gnome.Nautilus"] floating enable ; [class="Org.gnome.Nautilus"] resize set 1200 800 ; [class="Org.gnome.Nautilus"] move position center
 
