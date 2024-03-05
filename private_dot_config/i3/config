@@ -116,6 +116,7 @@ bindsym $mod+3 workspace number $ws3
 bindsym $mod+4 workspace number $ws4
 bindsym $mod+5 workspace number $ws5
 bindsym $mod+6 workspace number $ws6
+bindsym $mod+grave workspace number $ws6
 bindsym $mod+7 workspace number $ws7
 bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
@@ -283,5 +284,7 @@ bindsym $super+B exec "$HOME/.config/i3/wall-switcher" ; exec feh --bg-scale $HO
 # Switch to browser, refresh (and hit enter in case a warning shows up) then returns back to code workspace
 # Not sure what alt-M does in VIM so using it for now
 bindsym $mod+M workspace number $ws2 ; exec sleep 0.1 && xdotool key 'F5' && sleep 0.1 && xdotool key 'space' && xdotool key 'alt+1'
+
+bindsym $mod+Shift+V exec sh -c 'sleep 0.5 && xdotool type "$(xclip -o -selection clipboard)"'
 
 # gaps outer 16px
