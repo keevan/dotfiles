@@ -50,7 +50,7 @@ local function process(result)
 
 	---@type string[]
 	local lines = {
-		"__WR-" .. res.response.request.request_id .. "__ " .. res.response.request.brief,
+		"WR-" .. res.response.request.request_id .. " " .. res.response.request.brief,
 		res.response.request.status_desc,
 		"",
 	}
@@ -61,7 +61,7 @@ local function process(result)
 	return lines
 end
 
-local execute = async.void(function(done)
+local execute = async.void(function(opts, done)
 	local word = vim.fn.expand("<cword>")
 
 	local job = require("hover.async.job").job

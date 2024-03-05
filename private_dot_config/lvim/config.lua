@@ -43,6 +43,7 @@ require("keevan.builtin-tweaks")
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+lvim.builtin.treesitter.context_commentstring = nil -- https://github.com/LunarVim/LunarVim/issues/4468
 
 -- Automatically install missing parsers when entering buffer
 lvim.builtin.treesitter.auto_install = true
@@ -87,6 +88,10 @@ vim.list_extend(
 local formatters = require("lvim.lsp.null-ls.formatters")
 formatters.setup({
 	{ command = "stylua" },
+	{
+		command = "yamlfmt",
+		filetypes = { "yaml", "yml" },
+	},
 	{
 		command = "prettier",
 		extra_args = { "--print-width", "100" },
@@ -197,7 +202,8 @@ lvim.plugins = {
 	--     end,
 	-- },
 
-	-- { "metalelf0/jellybeans-nvim" },
+	{ "metalelf0/jellybeans-nvim" },
+	{ "rose-pine/neovim", name = "rose-pine" },
 	{
 		"catppuccin/nvim",
 		name = "catppuccin",
@@ -295,12 +301,18 @@ lvim.plugins = {
 	},
 
 	-- Hint as you type
+	-- {
+	-- 	"ray-x/lsp_signature.nvim",
+	-- 	event = "BufRead",
+	-- 	config = function()
+	-- 		require("lsp_signature").on_attach()
+	-- 	end,
+	-- },
+
+	--
 	{
-		"ray-x/lsp_signature.nvim",
+		"hrsh7th/cmp-nvim-lsp-signature-help",
 		event = "BufRead",
-		config = function()
-			require("lsp_signature").on_attach()
-		end,
 	},
 
 	-- Session management
@@ -316,30 +328,30 @@ lvim.plugins = {
 	},
 
 	-- Hey, check it out, it's pretty cool!
-	{
-		"ThePrimeagen/harpoon",
-		event = "VeryLazy",
-		config = function()
-			local mark = require("harpoon.mark")
-			local ui = require("harpoon.ui")
+	-- {
+	-- 	"ThePrimeagen/harpoon",
+	-- 	event = "VeryLazy",
+	-- 	config = function()
+	-- 		local mark = require("harpoon.mark")
+	-- 		local ui = require("harpoon.ui")
 
-			vim.keymap.set("n", "<leader>a", mark.add_file)
-			vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
+	-- 		vim.keymap.set("n", "<leader>a", mark.add_file)
+	-- 		vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
 
-			vim.keymap.set("n", "<C-h>", function()
-				ui.nav_file(1)
-			end)
-			vim.keymap.set("n", "<C-j>", function()
-				ui.nav_file(2)
-			end)
-			vim.keymap.set("n", "<C-k>", function()
-				ui.nav_file(3)
-			end)
-			vim.keymap.set("n", "<C-l>", function()
-				ui.nav_file(4)
-			end)
-		end,
-	},
+	-- 		vim.keymap.set("n", "<C-h>", function()
+	-- 			ui.nav_file(1)
+	-- 		end)
+	-- 		vim.keymap.set("n", "<C-j>", function()
+	-- 			ui.nav_file(2)
+	-- 		end)
+	-- 		vim.keymap.set("n", "<C-k>", function()
+	-- 			ui.nav_file(3)
+	-- 		end)
+	-- 		vim.keymap.set("n", "<C-l>", function()
+	-- 			ui.nav_file(4)
+	-- 		end)
+	-- 	end,
+	-- },
 
 	-- HTTP rest client - useful for testing, has ability to replay previous requests :-)
 	-- File would be in the typical format of tests.http
@@ -667,25 +679,101 @@ lvim.plugins = {
 	-- FZF (bqf fzf and probably other things)
 	{ "junegunn/fzf", dir = "~/.fzf", build = "./install --all" },
 
-	{
-		"m4xshen/hardtime.nvim",
-		dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
-		opts = {
-			restriction_mode = "hint",
-			disable_mouse = false, -- This is fine, I use it seldomly and mainly when pairing
-		},
-	},
+	-- {
+	-- 	"m4xshen/hardtime.nvim",
+	-- 	dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
+	-- 	opts = {
+	-- 		restriction_mode = "hint",
+	-- 		disable_mouse = false, -- This is fine, I use it seldomly and mainly when pairing
+	-- 	},
+	-- },
 	{
 		"m4xshen/smartcolumn.nvim",
 		opts = {
+			disabled_filetypes = {
+				"alpha",
+				"help",
+				"text",
+				"markdown",
+				"NvimTree",
+				"lazy",
+				"mason",
+				"help",
+				"checkhealth",
+				"lspinfo",
+				"noice",
+				"Trouble",
+				"fish",
+				"zsh",
+			},
 			colorcolumn = "92",
 			custom_colorcolumn = { php = "132" },
 		},
 	},
+
+	-- {
+	-- 	"nvim-telescope/telescope-live-grep-args.nvim",
+	-- 	config = function()
+	-- 		require("telescope").load_extension("live_grep_args")
+	-- 	end,
+	-- },
+
 	{
-		"nvim-telescope/telescope-live-grep-args.nvim",
+		"nvim-telescope/telescope.nvim",
+		dependencies = {
+			{ "nvim-telescope/telescope-live-grep-args.nvim" },
+		},
 		config = function()
-			require("telescope").load_extension("live_grep_args")
+			-- require("telescope").load_extension("live_grep_args")
+			local telescope = require("telescope")
+			local actions = require("telescope.actions")
+			local lga_actions = require("telescope-live-grep-args.actions")
+			telescope.setup({
+				defaults = {
+					mappings = {
+						i = {
+							["<C-n>"] = actions.move_selection_next,
+							["<C-p>"] = actions.move_selection_previous,
+							["<C-c>"] = actions.close,
+							["<C-j>"] = actions.cycle_history_next,
+							["<C-k>"] = actions.cycle_history_prev,
+							["<C-q>"] = function(...)
+								actions.smart_send_to_qflist(...)
+								actions.open_qflist(...)
+							end,
+							["<CR>"] = actions.select_default,
+						},
+						n = {
+							["<C-n>"] = actions.move_selection_next,
+							["<C-p>"] = actions.move_selection_previous,
+							["<C-q>"] = function(...)
+								actions.smart_send_to_qflist(...)
+								actions.open_qflist(...)
+							end,
+						},
+					},
+				},
+				extensions = {
+					live_grep_args = {
+						auto_quoting = true, -- enable/disable auto-quoting
+						-- define mappings, e.g.
+						mappings = { -- extend mappings
+							i = {
+								["<C-s>"] = lga_actions.quote_prompt({ postfix = " -t" }),
+								["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+								["<C-f>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+							},
+							n = {
+								["<leader>s"] = lga_actions.quote_prompt({ postfix = " -iglob **" }),
+							},
+						},
+						-- ... also accepts theme settings, for example:
+						-- theme = "dropdown", -- use dropdown theme
+						-- theme = { }, -- use own theme spec
+						-- layout_config = { mirror=true }, -- mirror preview pane
+					},
+				},
+			})
 		end,
 	},
 
@@ -725,10 +813,134 @@ lvim.plugins = {
 	-- { "ellisonleao/gruvbox.nvim" },
 	{ "sainnhe/everforest" },
 	{ "sainnhe/gruvbox-material" },
+
+	-- Supercharge rust?
+	-- {
+	-- 	"mrcjkb/rustaceanvim",
+	-- 	version = "^4", -- Recommended
+	-- 	ft = { "rust" },
+	-- },
+	--
+	{
+		url = "https://gitlab.com/schrieveslaach/sonarlint.nvim",
+		ft = { "php" },
+		config = function()
+			-- note: sudo apt install openjdk-17-jre-headless # for appropriate version
+			require("sonarlint").setup({
+				autostart = false,
+				server = {
+					cmd = {
+						"sonarlint-language-server",
+						-- Ensure that sonarlint-language-server uses stdio channel
+						"-stdio",
+						"-analyzers",
+						-- paths to the analyzers you need, using those for python and java in this example
+						vim.fn.expand("$MASON/share/sonarlint-analyzers/sonarphp.jar"),
+						-- vim.fn.expand("$MASON/share/sonarlint-analyzers/sonarpython.jar"),
+						-- vim.fn.expand("$MASON/share/sonarlint-analyzers/sonarcfamily.jar"),
+						-- vim.fn.expand("$MASON/share/sonarlint-analyzers/sonarjava.jar"),
+					},
+					settings = {
+						sonarlint = {
+							rules = {
+								["php:S103"] = { level = "off" }, -- char count
+								["php:S6600"] = { level = "off" }, -- require_once
+								["php:S4833"] = { level = "off" }, -- require_once
+								["php:S101"] = { level = "off" }, -- naming
+								["php:S100"] = { level = "off" }, -- naming
+								["php:S1793"] = { level = "off" }, -- elseif vs else if
+								["php:S1192"] = { level = "off" }, -- duplicate strings to be constants (sometimes good, usually noise)
+							},
+						},
+					},
+				},
+				filetypes = {
+					-- Tested and working
+					"php",
+					-- "python",
+					-- "cpp",
+					-- "java",
+				},
+			})
+		end,
+	},
+	{ "tandy1229/wordswitch.nvim" },
+
+	-- Some alpha ness.
+	{
+		"goolord/alpha-nvim",
+		event = "VimEnter",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		opts = function()
+			require("alpha")
+			require("alpha.term")
+			local dashboard = require("alpha.themes.dashboard")
+
+			dashboard.section.buttons.val = {
+				dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
+				dashboard.button("f", "󰈞 " .. " Find file", ":Telescope find_files <CR>"),
+				dashboard.button("r", "󰊄 " .. " Recent files", ":Telescope oldfiles <CR>"),
+				dashboard.button("g", "󰈬 " .. " Find text", ":Telescope live_grep <CR>"),
+				dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
+				dashboard.button("s", " " .. " Open last session", [[:lua require("persistence").load() <cr>]]),
+				dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
+				dashboard.button("q", " " .. " Quit", ":qa<CR>"),
+			}
+
+			for _, button in ipairs(dashboard.section.buttons.val) do
+				button.opts.hl = "AlphaButtons"
+				button.opts.hl_shortcut = "AlphaShortcut"
+			end
+
+			local width = 46
+			local height = 25 -- two pixels per vertical space
+
+			dashboard.section.terminal.command = "cat | " .. os.getenv("HOME") .. "/.config/art/thisisfine.sh"
+			dashboard.section.terminal.width = width
+			dashboard.section.terminal.height = height
+			dashboard.section.terminal.opts.redraw = true
+
+			dashboard.section.header.val = "Today is going to be fine."
+
+			dashboard.config.layout = {
+				{ type = "padding", val = 1 },
+				dashboard.section.terminal,
+				{ type = "padding", val = 1 },
+				dashboard.section.header,
+				{ type = "padding", val = 1 },
+				dashboard.section.buttons,
+				{ type = "padding", val = 0 },
+				dashboard.section.footer,
+			}
+			lvim.builtin.alpha.dashboard.config = dashboard.config
+			return dashboard.config
+		end,
+	},
+	{
+		"stevearc/oil.nvim",
+		opts = {},
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+	},
+	-- Lua
+	{
+		"folke/zen-mode.nvim",
+		opts = {
+			-- your configuration comes here
+			-- or leave it empty to use the default settings
+			-- refer to the configuration section below
+		},
+	},
 }
+
+-- The need for speeeeeeed
+if vim.loader then
+	vim.loader.enable()
+end
 
 -- To get ui-select loaded and working with telescope, you need to call
 -- load_extension, somewhere after setup function:
 require("telescope").load_extension("ui-select")
 
 require("keevan")
+-- Slow editing experience? Try the command :TSBufDisable highlight

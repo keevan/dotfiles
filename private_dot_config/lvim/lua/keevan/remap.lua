@@ -19,11 +19,15 @@ lvim.keys.normal_mode["gT"] = ":BufferLineCyclePrev<CR>"
 -- Open projects
 lvim.keys.normal_mode["<A-S-p>"] = ":Telescope projects<CR>"
 -- lvim.keys.normal_mode["<C-e>"] = ":Telescope live_grep<CR>"
+lvim.keys.normal_mode["<leader>sT"] = ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>"
 
 -- TODO: Stay mappings (affects yank and visual select)
 -- Manually do it for now until a better solution shows up.. (remember operator, starting pos, and position afterwards)
 vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)")
 vim.keymap.set({ "n" }, "Y", "y$")
+
+-- Toggle ___
+vim.keymap.set("n", "tw", ":set wrap!<CR>", {}) -- toggle line/word wrap
 
 -- Operator mappings
 vim.keymap.set("o", "p", "ip", {}) -- inner paragraph
@@ -46,6 +50,13 @@ vim.keymap.set({ "o", "x" }, "ae", '<cmd>lua require("various-textobjs").entireB
 vim.keymap.set({ "o", "x" }, "gd", '<cmd>lua require("various-textobjs").subword(true)<CR>')
 vim.keymap.set({ "o", "x" }, "id", '<cmd>lua require("various-textobjs").subword(true)<CR>')
 vim.keymap.set({ "o", "x" }, "ad", '<cmd>lua require("various-textobjs").subword(false)<CR>')
+
+-- Open list of files containing the word under the cursor
+vim.keymap.set(
+	"n",
+	"<C-e>",
+	"<cmd>lua require('telescope.builtin').live_grep({ default_text = vim.fn.expand('<cword>') })<CR>"
+)
 
 -- TODO: find an equivalent to mark and replace all those VISIBLE on the page.
 -- Convenience for when  you don't care about if it's in a function, block, etc
@@ -241,3 +252,15 @@ vim.api.nvim_set_keymap("x", "iu", ':lua require"treesitter-unit".select()<CR>',
 vim.api.nvim_set_keymap("x", "au", ':lua require"treesitter-unit".select(true)<CR>', { noremap = true })
 vim.api.nvim_set_keymap("o", "iu", ':<c-u>lua require"treesitter-unit".select()<CR>', { noremap = true })
 vim.api.nvim_set_keymap("o", "au", ':<c-u>lua require"treesitter-unit".select(true)<CR>', { noremap = true })
+
+-- Terminal mode remaps
+-- :tnoremap jk <C-\><C-N>
+-- :tnoremap <C-K> <Up>
+-- :tnoremap <C-J> <Down>
+-- vim.keymap.set("t", "<Esc>", "<C-\\><C-N>")
+vim.keymap.set("t", "<C-k>", "<Up>")
+vim.keymap.set("t", "<C-j>", "<Down>")
+vim.keymap.set("n", "<leader>0", ":ToggleTerm direction=horizontal<CR>")
+
+-- Toggle through words (word switch)
+vim.g.wordswitch_keymap = "<A-r>"

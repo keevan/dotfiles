@@ -1,0 +1,12 @@
+{
+    "$schema": "/home/kevinpham/.local/share/nvim/mason/packages/phpactor/phpactor.schema.json",
+    "indexer.exclude_patterns": [
+        "/moodle/*",
+        "/sitedata/*",
+        "/gocd-pipelines/*",
+        "/vendor/**/Tests/**/*",
+        "/vendor/**/tests/**/*",
+        "/var/cache/**/*",
+        "/vendor/composer/**/*"
+    ]
+}

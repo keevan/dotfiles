@@ -23,7 +23,8 @@ for i = 1, #builtin_plugs do
 end
 
 -- Disabling lunarvim core plugins
-lvim.builtin.alpha.active = false -- Actually don't need it anymore
+lvim.builtin.alpha.active = true -- Actually don't need it anymore
+lvim.builtin.indentlines.active = false -- Might be causing lag?
 -- lvim.builtin.project.active = false -- Actually don't need it anymore
 -- lvim.builtin.dap.active = false
 
@@ -122,4 +123,5 @@ end
 -- https://github.com/LunarVim/LunarVim/issues/4204
 vim.list_extend(lvim.builtin.cmp.sources, {
 	{ name = "tksrc_aliases" },
+	{ name = "nvim_lsp_signature_help" },
 })
