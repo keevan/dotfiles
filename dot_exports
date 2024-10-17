@@ -14,7 +14,7 @@
 
 
 # GOLANG
-export GOROOT=/usr/local/go
+export GOROOT=$HOME/.nix-profile/bin
 export GOPATH=$HOME/projects/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
@@ -60,3 +60,6 @@ export PATH=$COMPOSER_INSTALL/vendor/bin:$PATH
 # Deno
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
+
+# TKS
+export TKSS_TIMESHEET_DIR="$HOME/tks"
