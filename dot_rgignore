@@ -7,3 +7,5 @@ node_modules
 target
 .git/*
 aws/sdk/*
+build
+# *_bundle*.js
