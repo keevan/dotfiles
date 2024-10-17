@@ -444,12 +444,18 @@ lvim.plugins = {
 		end,
 	},
 	{
-		"tpope/vim-surround",
-		event = "BufReadPre",
+		"kylechui/nvim-surround",
+		version = "*", -- Use for stability; omit to use `main` branch for the latest features
+		event = "VeryLazy",
+		config = function()
+			require("nvim-surround").setup({
+				-- Configuration here, or leave empty to use defaults
+			})
+		end,
 	},
 	{
 		"nvim-neotest/neotest",
-		-- enabled = false,
+		enabled = false,
 		ft = "php", -- only test php things for now (lazy loaded= center)
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -498,6 +504,21 @@ lvim.plugins = {
 				require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
 			end, 100)
 		end,
+	},
+
+	-- Copilot chat
+	{
+		"CopilotC-Nvim/CopilotChat.nvim",
+		branch = "canary",
+		dependencies = {
+			{ "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+			{ "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+		},
+		opts = {
+			debug = true, -- Enable debugging
+			-- See Configuration section for rest
+		},
+		-- See Commands section for default commands if you want to lazy load on them
 	},
 
 	-- More text objects please.
@@ -729,6 +750,21 @@ lvim.plugins = {
 			local actions = require("telescope.actions")
 			local lga_actions = require("telescope-live-grep-args.actions")
 			telescope.setup({
+				-- Ensure hidden files can be filterd and selected by find_files picker.
+				pickers = {
+					find_files = {
+						hidden = true,
+						find_command = {
+							"rg",
+							"--files",
+							"--iglob",
+							"!.git",
+							"--hidden",
+							"--ignore-file",
+							"~/.rgignore",
+						},
+					},
+				},
 				defaults = {
 					mappings = {
 						i = {
@@ -922,7 +958,7 @@ lvim.plugins = {
 		-- Optional dependencies
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
-	-- Lua
+	{ "lunarvim/bigfile.nvim" },
 	{
 		"folke/zen-mode.nvim",
 		opts = {
@@ -930,6 +966,21 @@ lvim.plugins = {
 			-- or leave it empty to use the default settings
 			-- refer to the configuration section below
 		},
+	},
+	{
+		-- "toppair/peek.nvim", -- official repo
+		"keevan/peek.nvim",
+		branch = "links",
+		event = { "VeryLazy" },
+		build = "deno task --quiet build:fast",
+		config = function()
+			require("peek").setup({
+				app = "browser",
+				theme = "light",
+			})
+			vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+			vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+		end,
 	},
 }
 

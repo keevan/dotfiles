@@ -88,7 +88,7 @@ end, {})
 -- Path display of items shown.. no longer trapped by a directory and file, but can see further into the abyss.
 lvim.builtin.telescope.defaults.path_display = { truncate = 3 }
 lvim.builtin.telescope.defaults.file_ignore_patterns =
-	{ ".git/*", "yuilib/*", "yui/build", "aws/sdk", "lib/google/src" }
+	{ ".git/*", "yuilib/*", "yui/build", "aws/sdk", "lib/google/src", "build/*" }
 
 -- Project updates to display
 lvim.builtin.project.transform_path = function(path)

@@ -16,6 +16,7 @@ syn region tksDescription start="\S" end="$" skipwhite contained keepend contain
 syn match tksClient "\S\+:\s" containedin=tksDescription
 syn match tksReviewTag "\[review\]" containedin=tksDescription
 syn match tksLearnTag "\[learn\]" containedin=tksDescription
+syn match tksExpenseTag "\[expense\]" containedin=tksDescription
 
 " Keywords
 syn keyword tksTags MR PR LEARN REVIEW TEST IMPLEMENT DOCUMENT LESSON containedin=tksDescription
@@ -40,5 +41,6 @@ hi def link tksTags Todo
 hi def link commentTags Todo
 hi def link tksReviewTag Statement
 hi def link tksLearnTag Todo
+hi def link tksExpenseTag Todo
 
 let b:current_syntax = "tks"

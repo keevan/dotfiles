@@ -264,3 +264,9 @@ vim.keymap.set("n", "<leader>0", ":ToggleTerm direction=horizontal<CR>")
 
 -- Toggle through words (word switch)
 vim.g.wordswitch_keymap = "<A-r>"
+
+-- Open Copilot chat
+lvim.keys.normal_mode["<leader>lc"] = ":CopilotChatToggle<cr>"
+
+-- Toggle for line wrapping.
+lvim.keys.normal_mode["<leader>gw"] = ":set wrap!<CR>:set lbr"
