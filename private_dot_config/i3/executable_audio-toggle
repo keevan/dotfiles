@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+app_name="mgba-qt"
+sink1="alsa_output.pci-0000_00_1b.0.analog-stereo"
+sink2="alsa_output.usb-Logitech_USB_Headset-00.analog-stereo"
+
+
+# Get the list of sinks
+sinks=($(pactl list short sinks | awk '{print $2}' | sort))
+
+# Get the current default sink
+# current_sink=$(pactl get-default-sink)
+# This works better (only cares about what is currently set)
+current_sink=$(pactl list short | grep sink | grep -v monitor | grep RUNNING | awk '{print $2}')
+
+# Find the index of the current sink in the list
+current_index=-1
+for i in "${!sinks[@]}"; do
+  if [ "${sinks[$i]}" == "$current_sink" ]; then
+    current_index=$i
+    break
+  fi
+done
+
+# Determine the next sink index
+next_index=$(( (current_index + 1) % ${#sinks[@]} ))
+
+# Set the next sink as the default
+next_sink=${sinks[$next_index]}
+pactl set-default-sink "$next_sink"
+
+# Move all currently playing streams to the new sink
+for stream in $(pactl list short sink-inputs | awk '{print $1}'); do
+  pactl move-sink-input "$stream" "$next_sink"
+done
