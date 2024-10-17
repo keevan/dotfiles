@@ -129,6 +129,7 @@ bindsym $mod+Shift+3 move container to workspace number $ws3
 bindsym $mod+Shift+4 move container to workspace number $ws4
 bindsym $mod+Shift+5 move container to workspace number $ws5
 bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+grave move container to workspace number $ws6
 bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
@@ -218,7 +219,7 @@ assign [class="obsidian"] $ws6
 bindsym $super+Shift+L exec systemctl suspend
 
 # Lock screen
-bindsym $super+L exec ~/i3lock.sh || i3lock xautolock -i ~/Pictures/lockscreen.png
+bindsym $super+L exec ~/i3lock.sh || i3lock xautolock -i ~/Pictures/lockscreen.png --color 000000
 
 exec_always --no-startup-id feh --bg-scale ~/Pictures/bg.png
 
@@ -288,3 +289,12 @@ bindsym $mod+M workspace number $ws2 ; exec sleep 0.1 && xdotool key 'F5' && sle
 bindsym $mod+Shift+V exec sh -c 'sleep 0.5 && xdotool type "$(xclip -o -selection clipboard)"'
 
 # gaps outer 16px
+
+# Media player controls (doesn't really work.. maybe it's an OS/i3 limitation)
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPause exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+# Toggle audio output devices
+bindsym $mod+Shift+M exec ~/.config/i3/audio-toggle
