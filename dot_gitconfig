@@ -30,6 +30,7 @@
 	rename=branch -m
 	cp=cherry-pick
 	cpc=!ctrl cp-confirm
+	cl=!ctrl sparsey
 	pushh=!git push --set-upstream origin $(git branch --show-current)
 	remote-delete-branch=push origin --delete
   lg=log --color=always --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
@@ -80,3 +81,12 @@
 	hooksPath = ~/.git_hook
 [url "ssh://git@github.com"]
 	insteadOf = https://github.com
+[url "ssh://git@gitlab.com"]
+  insteadOf = https://gitlab.com
+[url "ssh://git@bitbucket.org"]
+  insteadOf = https://bitbucket.org
+[protocol "file"]
+	allow = always
+[submodule "files/converter/librelambda"]
+  url = git@github.com:catalyst/moodle-fileconverter_librelambda.git
+  ignore = all
