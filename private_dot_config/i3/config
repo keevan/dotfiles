@@ -215,12 +215,15 @@ assign [class="thunderbird"] $ws4
 assign [class="KeePassXC"] $ws5
 assign [class="ObinsKit"] $ws5
 assign [class="obsidian"] $ws6
+assign [class="signal"] $ws8
+assign [class="Signal"] $ws8
+assign [class="Wfica"] $ws2
 
 # Suspend/Sleep - similar to the lock screen but shift for more power.
 bindsym $super+Shift+L exec systemctl suspend
 
 # Lock screen
-bindsym $super+L exec ~/i3lock.sh || i3lock xautolock -i ~/Pictures/lockscreen.png --color 000000
+bindsym $super+L exec ~/i3lock.sh || xset dpms force off && i3lock xautolock -i ~/Pictures/lockscreen.png --color 000000
 
 exec_always --no-startup-id feh --bg-scale ~/Pictures/bg.png
 
@@ -232,8 +235,8 @@ for_window [class="^.*"] border pixel 0
 for_window [class="Org.gnome.Nautilus"] floating enable ; [class="Org.gnome.Nautilus"] resize set 1200 800 ; [class="Org.gnome.Nautilus"] move position center
 
 # Take a quick note using mod+n
-for_window [title="take_note"] floating enable ; [title="take_note"] resize set 1200 800 ; [title="take_note"] move position center
-bindsym $mod+n exec kitty -T take_note -e $HOME/bin/take-note ; workspace number $ws1 ;
+# for_window [title="take_note"] floating enable ; [title="take_note"] resize set 1200 800 ; [title="take_note"] move position center
+# bindsym $mod+n exec kitty -T take_note -e $HOME/bin/take-note ; workspace number $ws1 ;
 
 # This was annoying, so turning it off.
 focus_follows_mouse no
@@ -288,7 +291,8 @@ bindsym $super+B exec "$HOME/.config/i3/wall-switcher" ; exec feh --bg-scale $HO
 # Not sure what alt-M does in VIM so using it for now
 bindsym $mod+M workspace number $ws2 ; exec sleep 0.1 && xdotool key 'F5' && sleep 0.1 && xdotool key 'space' && xdotool key 'alt+1'
 
-bindsym $mod+Shift+V exec sh -c 'sleep 0.5 && xdotool type "$(xclip -o -selection clipboard)"'
+bindsym $mod+Shift+V exec sh -c 'sleep 0.5 && xdotool type "$(xclip -o -selection clipboard | tr "\\n" "\\r")"'
+
 
 # gaps outer 16px
 
@@ -299,4 +303,8 @@ bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
 # Toggle audio output devices
-bindsym $mod+Shift+M exec ~/.config/i3/audio-toggle
+# bindsym $mod+Shift+M exec ~/.config/i3/audio-toggle
+
+# Toggles bluetooth headset
+bindsym $mod+Shift+M exec bluetoothctl -- devices Connected | grep AC:80:0A:B6:D9:A5 && bluetoothctl -- disconnect AC:80:0A:B6:D9:A5 || bluetoothctl -- connect AC:80:0A:B6:D9:A5
+bindsym $mod+O exec ~/scripts/meet
