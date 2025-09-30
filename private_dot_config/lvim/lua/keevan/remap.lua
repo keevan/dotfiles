@@ -270,3 +270,7 @@ lvim.keys.normal_mode["<leader>lc"] = ":CopilotChatToggle<cr>"
 
 -- Toggle for line wrapping.
 lvim.keys.normal_mode["<leader>gw"] = ":set wrap!<CR>:set lbr"
+
+-- Remap j and k to gj and gk (since I don't want to think about doing something different in wrap mode)
+vim.keymap.set("n", "j", "gj")
+vim.keymap.set("n", "k", "gk")

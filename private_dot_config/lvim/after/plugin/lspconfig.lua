@@ -8,4 +8,5 @@
 -- Docs: https://github.com/neovim/nvim-lspconfig
 local lspconfig = require("lspconfig")
 lspconfig.phpactor.setup({ autostart = false })
+lspconfig.rust_analyzer.setup({ autostart = false })
 lspconfig.sqlls.setup({})

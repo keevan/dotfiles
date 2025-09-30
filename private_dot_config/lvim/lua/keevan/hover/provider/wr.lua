@@ -61,23 +61,32 @@ local function process(result)
 	return lines
 end
 
-local execute = async.void(function(opts, done)
+local function execute(opts, done)
 	local word = vim.fn.expand("<cword>")
 
-	local job = require("hover.async.job").job
+	-- local job = require("hover.async.job").job
+
+	vim.system({ "get_wr_details", word }, {}, function(out)
+		local results = process(out.stdout, out.stderr)
+		if not results then
+			results = { "no request returned for " .. word }
+		end
+		done(results and { lines = results, filetype = "markdown" })
+	end)
 
 	---@type string[]
-	local output = job({
-		"get_wr_details",
-		word,
-	})
+	-- local output = job({
+	-- 	"get_wr_details",
+	-- 	word,
+	-- })
 
-	local results = process(output)
-	if not results then
-		results = { "no request returned for " .. word }
-	end
-	done(results and { lines = results, filetype = "markdown" })
-end)
+	-- local results = process(output)
+	-- if not results then
+	-- 	results = { "no request returned for " .. word }
+	-- end
+	-- done(results and { lines = results, filetype = "markdown" })
+
+end
 
 require("hover").register({
 	name = "WR",
