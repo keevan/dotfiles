@@ -338,3 +338,17 @@ vim.keymap.set('x', '<leader>p', [["_dP]])
 -- Move to next items inside quickfix list
 vim.keymap.set('n', ']q', '<cmd>cnext<CR>zz')
 vim.keymap.set('n', '[q', '<cmd>cprev<CR>zz')
+
+-- Buffer switching
+vim.keymap.set('n', 'gt', ':BufferNext<CR>')
+vim.keymap.set('n', 'gT', ':BufferPrev<CR>')
+vim.keymap.set('n', '<S-l>', ':BufferNext<CR>')
+vim.keymap.set('n', '<S-h>', ':BufferPrev<CR>')
+
+vim.keymap.set('n', '<C-S-d>', 'mz"zyy"zp`zj')
+-- Duplicate selection, avoid default clipboard, keep selection range (for more
+-- duplication as required). Small bug where selection was done going up, the
+-- selection after the duplication is on the first line only.
+vim.keymap.set('x', '<C-S-d>', 'mz"zymx"zP`xV`z')
+
+--
