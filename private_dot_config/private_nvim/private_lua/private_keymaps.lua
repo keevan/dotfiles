@@ -14,7 +14,7 @@ local map = function(keys, func, desc, mode)
   end
 end
 
-map('<leader>cp', '<cmd>Legendary<CR>', '[C]ommand [P]alette')
+-- map('<leader>cp', '<cmd>Legendary<CR>', '[C]ommand [P]alette')
 map('<leader>qq', '<cmd>q!<CR><cmd>Neotree close<CR>', 'Quickly quit (aborting everything in the same time)')
 
 map('<leader>/', '<cmd>gcc<CR>', 'Comment the line or selection')
@@ -71,6 +71,12 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
     -- TODO: let it search through all files
     multigrep.live_multigrep()
   end, '[F]ind (all) [W]ords (including hidden & gitignored ones)')
+
+  map('<leader>st', multigrep.live_multigrep, 'Search Text')
+  map('<leader>sT', function()
+    -- TODO: let it search through all files
+    multigrep.live_multigrep()
+  end, 'Search Text (including hidden & gitignored)')
 
   -- Normal word search through git included files, with ability to filter via extension
   -- map('<leader>fw', telescope_builtin.live_grep, '[F]ind [W]ord (by using multigrep)')
@@ -351,4 +357,4 @@ vim.keymap.set('n', '<C-S-d>', 'mz"zyy"zp`zj')
 -- selection after the duplication is on the first line only.
 vim.keymap.set('x', '<C-S-d>', 'mz"zymx"zP`xV`z')
 
---
+map('<leader>lc', ':CopilotChatToggle<cr>', '[L]lm [C]hat')

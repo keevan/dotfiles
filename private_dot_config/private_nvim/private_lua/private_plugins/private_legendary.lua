@@ -2,7 +2,7 @@
 return {
   'mrjones2014/legendary.nvim',
 
-  enabled = true,
+  enabled = false,
   version = 'v2.13.9',
   -- since legendary.nvim handles all your keymaps/commands,
   -- its recommended to load legendary.nvim before other plugins

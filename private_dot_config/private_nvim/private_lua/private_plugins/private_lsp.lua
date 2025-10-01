@@ -81,7 +81,7 @@ return {
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -127,6 +127,9 @@ return {
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      ---@class LspServersConfig
+      ---@field mason table<string, vim.lsp.Config>
+      ---@field others table<string, vim.lsp.Config>
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -144,7 +147,7 @@ return {
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
-
+        mason = {},
         -- lua_ls = {
         --   -- cmd = {...},
         --   -- filetypes = { ...},
@@ -163,7 +166,7 @@ return {
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
+      local ensure_installed = vim.tbl_keys(servers.mason or {})
 
       -- Install on startup if there are any LSPs missing
       vim.api.nvim_create_user_command('MasonInstallEnsured', function()
@@ -197,20 +200,33 @@ return {
         ensure_installed = ensure_installed,
       })
 
-      require('mason-lspconfig').setup({
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
-      })
+      -- Either merge all additional server configs from the `servers.mason` and `servers.others` tables
+      -- to the default language server configs as provided by nvim-lspconfig or
+      -- define a custom server config that's unavailable on nvim-lspconfig.
+      for server, config in pairs(servers) do
+        if not vim.tbl_isempty(config) then
+          vim.lsp.config(server, config)
+        end
+      end
 
-      require('lspconfig').rust_analyzer.setup({})
+      require('mason-lspconfig').setup({
+        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        automatic_enable = true, -- automatically run vim.lsp.enable() for all servers that are installed via Mason
+      })
+      -- require('mason-lspconfig').setup({
+      --   handlers = {
+      --     function(server_name)
+      --       local server = servers[server_name] or {}
+      --       -- This handles overriding only values explicitly passed
+      --       -- by the server configuration above. Useful when disabling
+      --       -- certain features of an LSP (for example, turning off formatting for ts_ls)
+      --       server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+      --       vim.lsp.config(server_name).setup(server)
+      --     end,
+      --   },
+      -- })
+
+      vim.lsp.config('rust_analyzer', {})
     end,
   },
 }
