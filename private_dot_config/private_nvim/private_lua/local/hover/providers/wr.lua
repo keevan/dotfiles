@@ -1,0 +1,103 @@
+local WR_PATTERN = '%d%d%d%d%d+'
+-- local async = require('hover.async')
+
+-- Enabled if:
+--
+-- Matches the WR request pattern
+-- Or is an request alias mapped in .tksrc
+local function enabled()
+  if vim.fn.executable('tksrc_aliases') ~= 1 then
+    return false
+  end
+
+  local matches_wr_pattern = vim.fn.expand('<cWORD>'):match(WR_PATTERN) ~= nil
+  if matches_wr_pattern then
+    return true
+  end
+
+  -- Blocking call as method doesn't support async.
+  local handle = io.popen('tksrc_aliases')
+  if not handle then
+    return false
+  end
+
+  local result = handle:read('*a')
+  handle:close()
+
+  -- Decode results
+  local ok, parsed = pcall(vim.json.decode, result)
+  if not ok or not parsed then
+    return false
+  end
+
+  -- Check if any of the aliases match the word, if yes, return true. Otherwise return false.
+  local word = vim.fn.expand('<cword>')
+  for _, tks_item in ipairs(parsed) do
+    if tks_item.title == word then
+      return true
+    end
+  end
+
+  -- Otherwise leave this as disabled.
+  return false
+end
+
+local function process(result)
+  local ok, res = pcall(vim.json.decode, result)
+  if not ok or not res or res.response == nil then
+    return
+  end
+
+  ---@type string[]
+  local lines = {
+    'WR-' .. res.response.request.request_id .. ' ' .. res.response.request.brief,
+    res.response.request.status_desc,
+    '',
+  }
+  for s in res.response.request.detailed:gmatch('[^\r\n]+') do
+    table.insert(lines, s)
+  end
+
+  return lines
+end
+
+local function execute(_, done)
+  local original_iskeyword = vim.bo.iskeyword
+  vim.bo.iskeyword = original_iskeyword .. ',-'
+  local word = vim.fn.expand('<cword>')
+  vim.bo.iskeyword = original_iskeyword
+  -- local word = vim.fn.expand('<cword>')
+
+  -- local job = require("hover.async.job").job
+
+  vim.system({ 'get_wr_details', word }, {}, function(out)
+    local results = process(out.stdout)
+    if not results then
+      results = { 'no request returned for ' .. word }
+    end
+    done(results and { lines = results, filetype = 'markdown' })
+  end)
+
+  ---@type string[]
+  -- local output = job({
+  -- 	"get_wr_details",
+  -- 	word,
+  -- })
+
+  -- local results = process(output)
+  -- if not results then
+  -- 	results = { "no request returned for " .. word }
+  -- end
+  -- done(results and { lines = results, filetype = "markdown" })
+end
+
+local provider = {
+  name = 'WR',
+  enabled = enabled,
+  execute = execute,
+}
+
+return {
+  priority = 1000,
+  providers = { provider },
+}

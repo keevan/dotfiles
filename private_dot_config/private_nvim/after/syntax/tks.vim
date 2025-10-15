@@ -17,6 +17,8 @@ syn match tksClient "\S\+:\s" containedin=tksDescription
 syn match tksReviewTag "\[review\]" containedin=tksDescription
 syn match tksLearnTag "\[learn\]" containedin=tksDescription
 syn match tksExpenseTag "\[expense\]" containedin=tksDescription
+syn match tksKevin "KEVIN:" containedin=tksDescription
+syn match tksKevin2 "Kevin:" containedin=tksDescription
 
 " Keywords
 syn keyword tksTags MR PR LEARN REVIEW TEST IMPLEMENT DOCUMENT LESSON containedin=tksDescription
@@ -33,6 +35,8 @@ hi def link matchURL Underline
 
 hi def link date @attribute
 hi def link comment Comment
+" hi tksRed guifg=#F13721
+" hi tksWhite guifg=#ffffff
 hi def link tksWR Error
 hi def link tksTime Text
 hi def link tksDescription String
@@ -42,5 +46,7 @@ hi def link commentTags Todo
 hi def link tksReviewTag Statement
 hi def link tksLearnTag Todo
 hi def link tksExpenseTag Todo
+hi def link tksKevin Todo
+hi def link tksKevin2 Todo
 
 let b:current_syntax = "tks"

@@ -124,6 +124,8 @@ vim.opt.ignorecase = true -- ignore case in search patterns
 vim.opt.smartcase = true -- smart case
 vim.opt.smartindent = true -- make indenting smarter again
 
+vim.g.ai_cmp = true
+
 -- Colorscheme is unfortunetly set in lua/plugins/catppuccin.lua, because barbar wasn't applying catppuccin styles
 -- when setting colorscheme was placed here :(
 --

@@ -25,6 +25,9 @@ return {
         opts = {},
         version = not vim.g.lazyvim_blink_main and '*',
       },
+      {
+        "fang2hou/blink-copilot",
+      },
     },
     event = 'InsertEnter',
 
@@ -76,7 +79,8 @@ return {
           auto_show_delay_ms = 200,
         },
         ghost_text = {
-          enabled = vim.g.ai_cmp,
+          -- enabled = vim.g.ai_cmp,
+          enabled = true,
         },
       },
 
@@ -165,18 +169,29 @@ return {
     end,
   },
 
-  -- lazydev
+  -- lazydev and copilot support
   {
     'saghen/blink.cmp',
     opts = {
       sources = {
         -- add lazydev to your completion providers
-        default = { 'lazydev' },
+        -- default = { 'lazydev' },
+        default = { 'lazydev', 'copilot' },
         providers = {
           lazydev = {
             name = 'LazyDev',
             module = 'lazydev.integrations.blink',
             score_offset = 100, -- show at a higher priority than lsp
+          },
+          copilot = {
+            name = 'copilot',
+            module = 'blink-copilot',
+            opts = {
+              max_completions = 3,
+              max_attempts = 4,
+            },
+            score_offset = 100,
+            async = true,
           },
         },
       },

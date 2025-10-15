@@ -93,6 +93,7 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
   -- It's like running grep for a specific string or word without further input, typically on the current word or a provided string.
   -- Example use case: You place your cursor on a word (e.g., functionName) and then press <leader>fw. It will immediately search all occurrences of that word across your project without any further input.
   map('<leader>fcw', telescope_builtin.grep_string, '[F]ind [C]urrent [W]ord')
+  map('<C-e>', telescope_builtin.grep_string, '[F]ind [C]urrent [W]ord')
 
   map('<leader>fh', telescope_builtin.help_tags, '[F]ind [H]elp')
   map('<leader>fk', telescope_builtin.keymaps, '[F]ind [K]eymaps')
@@ -125,6 +126,7 @@ helpers.on_lazy_plugin_loaded('telescope.builtin', function(telescope_builtin)
   --  Useful when you're not sure what type a variable is and you want to see
   --  the definition of its *type*, not where it was *defined*.
   map('<leader>ltd', require('telescope.builtin').lsp_type_definitions, '[L]SP [T]ype [D]efinition')
+  map('<leader>td', require('lsp_lines').toggle, '[T]oggle [D]iagnostics')
 
   -- Fuzzy find all the symbols in your current document.
   --  Symbols are things like variables, functions, types, etc.
@@ -230,7 +232,7 @@ map('<A-0>', '<Cmd>BufferLast<CR>', 'Go to last buffer')
 
 -- Buffer actions
 map('<A-p>', '<Cmd>BufferPin<CR>', 'Pin/unpin buffer')
-map('<A-c>', '<Cmd>BufferClose<CR>', 'Close buffer')
+map('<leader>c', '<Cmd>BufferClose<CR>', 'Close buffer')
 map('<C-p>', '<Cmd>BufferPick<CR>', 'Magic buffer-picking mode')
 map('<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>', 'Order buffers by number')
 map('<Space>bn', '<Cmd>BufferOrderByName<CR>', 'Order buffers by name')
@@ -358,3 +360,76 @@ vim.keymap.set('n', '<C-S-d>', 'mz"zyy"zp`zj')
 vim.keymap.set('x', '<C-S-d>', 'mz"zymx"zP`xV`z')
 
 map('<leader>lc', ':CopilotChatToggle<cr>', '[L]lm [C]hat')
+
+-- project.nvim
+map('<A-S-p>', ':Telescope projects<CR>', 'Show [P]rojects') -- Open projects
+
+-- TKS - Insert time HH:MM when pressing F5
+vim.keymap.set('n', '<F5>', 'viW"=strftime("%H:%M")<CR>P') -- Replace inner Word (since you might be on top of a range)
+vim.keymap.set('i', '<F5>', '<C-R>=strftime("%H:%M")<CR>') -- Insert only the time.
+
+-- Buffer: delete all but current - @kshenoy https://stackoverflow.com/questions/4545275/vim-close-all-buffers-but-this-one#comment84748132_42071865
+vim.keymap.set('n', '<M-S-o>', '<cmd>%bd|e#|bd#<CR>', { noremap = true, silent = true })
+
+-- Remap j and k to gj and gk (since I don't want to think about doing something different in wrap mode)
+vim.keymap.set('n', 'j', 'gj')
+vim.keymap.set('n', 'k', 'gk')
+
+-- Toggle for line wrapping.
+-- lvim.keys.normal_mode['<leader>gw'] = ':set wrap!<CR>:set lbr'
+vim.keymap.set('n', 'tw', ':set wrap!<CR>:set lbr', {}) -- toggle line/word wrap
+
+-- Toggle through words (word switch)
+vim.g.wordswitch_keymap = '<A-r>'
+
+-- Copy relative path (ctrl+shift+x) and print path in status-line
+vim.keymap.set('n', '<C-S-x>', ':let relpath = fnamemodify(expand("%"), ":~:.") <bar> let @+ = relpath <bar> echo relpath<CR>', { silent = true })
+
+-- Replace with register (or thing in clipboard)
+vim.keymap.set('n', '-', '<Plug>ReplaceWithRegisterOperator')
+vim.keymap.set('n', '-l', '<Plug>ReplaceWithRegisterLine')
+vim.keymap.set('x', '-', '<Plug>ReplaceWithRegisterVisual')
+vim.keymap.set('n', '--', 'viw<Plug>ReplaceWithRegisterVisual')
+
+vim.keymap.set('n', '<C-d>', '<C-d>zz') -- Half page up & down with cursor in middle
+vim.keymap.set('n', '<C-u>', '<C-u>zz') -- Half page up & down with cursor in middle
+vim.keymap.set('n', 'n', 'nzzzv') -- Search keeps things in the middle
+vim.keymap.set('n', 'N', 'Nzzzv') -- Search keeps things in the middle
+
+-- Subtitute.nvim
+-- Replace occurence with value in clipboard
+-- vim.keymap.set('n', '-o', function()
+--   require('substitute.range').operator({ subject = { motion = 'iw' }, register = '0' })
+-- end, { noremap = true })
+-- -- Change occurence
+-- vim.keymap.set('n', 'co', function()
+--   require('substitute.range').operator({ subject = { motion = 'iw' } })
+-- end, { noremap = true })
+-- vim.keymap.set('x', 'mc', require('substitute.range').visual, { noremap = true })
+-- -- Mark word visually, then edit all occurences based on range / motion. (edit after)
+-- vim.keymap.set('x', 'mA', function()
+--   require('substitute.range').visual({ prompt_current_text = true })
+-- end, { noremap = true })
+-- -- Mark word visually, then edit all occurences based on range / motion. (edit before)
+-- -- vim.keymap.set("n", "mI", function()
+-- -- 	require("substitute.range").visual({ prompt_current_text = true })
+-- -- end, { noremap = true })
+--
+-- cx - exchange (like in vim mode plus)
+vim.keymap.set('n', 'cx', function()
+  require('substitute.exchange').operator({ prompt_current_text = true })
+end, { noremap = true })
+
+-- Buffer close
+
+-- vim.keymap.set('i', '<A-[>', 'copilot#Previous()', { expr = true, silent = true, noremap = true })
+-- vim.keymap.set('i', '<A-]>', 'copilot#Next()', { expr = true, silent = true, noremap = true })
+
+vim.keymap.set('o', 'p', 'ip', {}) -- inner paragraph
+vim.keymap.set('o', 'c', 'iw', {}) -- inner word
+vim.keymap.set('o', 'C', 'iW', {}) -- inner WORD
+
+-- Pasting in visual mode, to NOT replace the current register/clipboard value
+vim.keymap.set('x', 'p', function()
+  return 'pgv"' .. vim.v.register .. 'y'
+end, { remap = false, expr = true })

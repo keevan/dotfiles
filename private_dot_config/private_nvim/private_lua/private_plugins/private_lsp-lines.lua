@@ -7,7 +7,7 @@ return {
   -- INFO: used previously
   -- 'Frestein/lsp_lines.nvim',
   'Maan2003/lsp_lines.nvim',
-  enabled = false,
+  enabled = true,
   event = 'LspAttach',
   opts = {},
   -- init = function()
