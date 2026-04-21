@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""
+sqlclean: Moodle SQL style auto-formatter
+
+- Ensures SQL keywords are UPPERCASE
+- Converts INNER JOIN to JOIN
+- Ensures table names use curly braces {table}
+- Aligns SELECT, FROM, JOIN, WHERE, GROUP BY, HAVING to new lines and right-aligned
+- Uses double quotes for SQL strings
+- Adds AS for column aliases, never for table aliases
+- Does not modify parameter placeholders or logic
+
+Usage: sqlclean <file>
+
+Outputs the transformed file to stdout.
+"""
+import re
+import sys
+
+KEYWORDS = [
+    'SELECT', 'FROM', 'JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LEFT JOIN', 'RIGHT JOIN',
+    'ON', 'AND', 'OR', 'AS', 'UPDATE', 'SET', 'INSERT', 'INTO', 'VALUES', 'DELETE', 'INNER JOIN', 'OUTER JOIN'
+]
+
+KEYWORD_PATTERN = re.compile(r'\b(' + '|'.join([k.replace(' ', r'\s+') for k in KEYWORDS]) + r')\b', re.IGNORECASE)
+
+# For right-aligning SQL clauses
+CLAUSE_PATTERN = re.compile(r'\b(SELECT|FROM|JOIN|WHERE|GROUP BY|HAVING|ORDER BY|LEFT JOIN|RIGHT JOIN|ON)\b', re.IGNORECASE)
+
+# Table name pattern: {table}
+TABLE_PATTERN = re.compile(r'\{\w+\}')
+
+# Column alias pattern: <col> as <alias>
+ALIAS_PATTERN = re.compile(r'(\w+)\s+as\s+(\w+)', re.IGNORECASE)
+
+# Table alias pattern: <table> as <alias>
+TABLE_ALIAS_PATTERN = re.compile(r'\{\w+\}\s+as\s+\w+', re.IGNORECASE)
+
+# INNER JOIN to JOIN
+INNER_JOIN_PATTERN = re.compile(r'INNER\s+JOIN', re.IGNORECASE)
+
+# Single quote SQL string pattern
+SINGLE_QUOTE_SQL = re.compile(r'("[^"]*"|\'[^\']*\')')
+
+
+def format_sql(sql, base_indent=0):
+    lines = sql.split('\n')
+    out = []
+    clause_keywords = [
+        'SELECT', 'FROM', 'JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LEFT JOIN', 'RIGHT JOIN', 'ON'
+    ]
+    # Find the column where SELECT starts (first non-empty, non-comment line)
+    select_col = None
+    for l in lines:
+        if l.strip():
+            m = re.search(r'(\S*SELECT)\b', l, re.IGNORECASE)
+            if m:
+                select_col = m.start(0)
+                break
+    if select_col is None:
+        select_col = 0
+    for idx, line in enumerate(lines):
+        # UPPERCASE keywords, INNER JOIN to JOIN
+        line = KEYWORD_PATTERN.sub(lambda m: m.group(0).upper().replace('INNER JOIN', 'JOIN'), line)
+        # Remove AS for table aliases
+        line = TABLE_ALIAS_PATTERN.sub(lambda m: m.group(0).replace(' AS ', ' '), line)
+        # Ensure AS for column aliases
+        line = ALIAS_PATTERN.sub(lambda m: f"{m.group(1)} AS {m.group(2)}", line)
+        # Align major clauses (except first line)
+        if idx > 0:
+            for kw in clause_keywords:
+                pat = re.compile(rf'^(\s*)({kw})\b', re.IGNORECASE)
+                def aligner(m):
+                    # Right-align the keyword to select_col
+                    spaces = ' ' * max(select_col - len(m.group(1)), 0)
+                    rest = line[m.end(2):]
+                    return f"{spaces}{m.group(2).upper()}{rest}"
+                # Only match if keyword is at the start (after indent)
+                line = pat.sub(aligner, line, count=1)
+                break  # Only align the first matching clause per line
+        out.append(line)
+    return '\n'.join(out)
+
+# Update process_file to detect base_indent
+
+def process_file(path):
+    with open(path, 'r') as f:
+        content = f.read()
+
+    def sql_replacer(match):
+        sql = match.group(2)
+        # Detect base indentation from the line containing the opening quote
+        prefix = match.group(1)
+        base_indent = len(prefix) - len(prefix.lstrip())
+        formatted = format_sql(sql, base_indent)
+        return f'{prefix}{formatted}{match.group(3)}'
+
+    pattern = re.compile(r'(\$sql\s*=\s*")(.*?)("(?:\s*\.|;))', re.DOTALL)
+    content = pattern.sub(sql_replacer, content)
+    return content
+
+
+def process_file(path):
+    with open(path, 'r') as f:
+        content = f.read()
+
+    # Regex to match all double-quoted SQL strings (including concatenated)
+    def sql_replacer(match):
+        sql = match.group(2)
+        formatted = format_sql(sql)
+        return f'{match.group(1)}{formatted}{match.group(3)}'
+
+    # Handles: $sql = "..."; or $sql = "..." . ...;
+    pattern = re.compile(r'(\$sql\s*=\s*")(.*?)("(?:\s*\.|;))', re.DOTALL)
+    content = pattern.sub(sql_replacer, content)
+    return content
+
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: sqlclean <file>", file=sys.stderr)
+        sys.exit(1)
+    print(process_file(sys.argv[1]))
+
+if __name__ == "__main__":
+    main()
