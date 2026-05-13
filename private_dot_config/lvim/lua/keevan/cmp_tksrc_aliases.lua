@@ -75,7 +75,7 @@ source.complete = function(self, request, callback)
 				end
 
 				callback({ items = items, isIncomplete = false })
-				-- self.cache[bufnr] = items -- disable cache
+				self.cache[bufnr] = items -- disable cache
 			end,
 		}):start()
 	else
