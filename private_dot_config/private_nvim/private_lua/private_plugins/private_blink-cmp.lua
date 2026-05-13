@@ -18,6 +18,7 @@ return {
     },
     dependencies = {
       'rafamadriz/friendly-snippets',
+      { 'L3MON4D3/LuaSnip', version = 'v2.*' },
       -- add blink.compat to dependencies
       {
         'saghen/blink.compat',
@@ -34,6 +35,7 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
+      snippets = { preset = 'luasnip' },
       -- cmdline = function()
       --   local type = vim.fn.cetcmdtype()
       --   -- Search forward and backwars
@@ -91,7 +93,7 @@ return {
         -- adding any nvim-cmp sources here will enable them
         -- with blink.compat
         compat = {},
-        default = { 'lsp', 'path', 'snippets', 'buffer' },
+        default = { 'snippets', 'lsp',  'path', 'buffer' },
       },
 
       keymap = {
@@ -157,6 +159,7 @@ return {
         end
       end
 
+      require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/lua/snippets" })
       require('blink.cmp').setup(opts)
     end,
   },

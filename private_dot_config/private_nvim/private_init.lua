@@ -21,3 +21,4 @@ require('lazy_plugin_manager')
 
 -- and finally polish the experience
 require('overrides')
+

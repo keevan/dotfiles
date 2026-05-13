@@ -10,6 +10,9 @@ local M = {}
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- PHP to include $ in word (php variables).
+vim.opt.iskeyword = vim.opt.iskeyword + "$"
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -125,6 +128,44 @@ vim.opt.smartcase = true -- smart case
 vim.opt.smartindent = true -- make indenting smarter again
 
 vim.g.ai_cmp = true
+
+-- Firenvim
+vim.api.nvim_create_autocmd({ 'UIEnter' }, {
+  callback = function(event)
+    local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
+    if client ~= nil and client.name == 'Firenvim' then
+      vim.o.laststatus = 0
+      vim.o.showtabline = 0
+      -- vim.o.guifont = ":h10"
+      -- vim.o.guifont = 'JetBrainsMono NFM:h10'
+      vim.opt.guifont = 'JetBrainsMono\\ NFM:h10'
+      -- vim.o.guifont = "JetBrainsMono:h10"
+      -- vim.o.guifont = "JetBrainsMono_NF:h10"
+      -- vim.o.guifont = "JetBrainsMono_Nerd_Font_Mono:h10"
+      -- vim.o.guifont = "JetBrainsMono\ Nerd\ Font\ Mono:h10"
+      -- vim.cmd.colorscheme('catppuccin-latte')
+    end
+  end,
+})
+
+-- Set filetype based on filename pattern
+vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+  pattern = '*',
+  callback = function(args)
+    local name = vim.api.nvim_buf_get_name(args.buf)
+    if name:match('sql') then
+      vim.bo[args.buf].filetype = 'sql'
+    end
+  end,
+})
+
+-- Sleek autoformat breaks sql table references. This undoes probable breakage
+-- vim.api.nvim_create_autocmd("User", {
+--   pattern = "ConformDone",
+--   callback = function()
+--     vim.cmd([[%s/{\s\+\(.\{-}\)\s\+}/{\1}/ge]])
+--   end,
+-- })
 
 -- Colorscheme is unfortunetly set in lua/plugins/catppuccin.lua, because barbar wasn't applying catppuccin styles
 -- when setting colorscheme was placed here :(

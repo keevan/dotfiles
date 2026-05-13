@@ -8,6 +8,9 @@ return { -- Autoformat
       '<leader>lf',
       function()
         require('conform').format({ async = true, lsp_format = 'fallback' })
+        vim.defer_fn(function()
+          vim.cmd([[%s/{\s\+\(.\{-}\)\s\+}/{\1}/ge]])
+        end, 100)
       end,
       mode = '',
       desc = '[L]SP [F]ormat file',
@@ -43,6 +46,12 @@ return { -- Autoformat
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      sql = function()
+        return { 'sleek' }
+      end,
+      -- sql = { "sqlformat" },
+      -- sql = { "sqruff" },
+      -- sql = { "sqlfmt fix --dialect postgres" },
     },
   },
 }

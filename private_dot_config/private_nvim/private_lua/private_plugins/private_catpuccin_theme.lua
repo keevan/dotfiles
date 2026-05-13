@@ -1,6 +1,6 @@
 return {
   'catppuccin/nvim',
-  enabled = false,
+  enabled = true,
   name = 'catppuccin',
   lazy = true,
   priority = 1000,
@@ -8,13 +8,22 @@ return {
     -- Load the colorscheme here.
     -- Like many other themes, this one has different styles, and you could load
     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-    vim.cmd.colorscheme('catppuccin-mocha')
+    -- vim.cmd.colorscheme('catppuccin-mocha')
+    vim.api.nvim_create_autocmd({ 'UIEnter' }, {
+      callback = function(event)
+        local client = vim.api.nvim_get_chan_info(vim.v.event.chan).client
+        if client ~= nil and client.name == 'Firenvim' then
+          vim.cmd.colorscheme('catppuccin-latte')
+        end
+      end,
+    })
 
     -- You can configure highlights by doing something like:
-    vim.cmd.hi('Comment gui=none')
+    -- vim.cmd.hi('Comment gui=none')
   end,
   setup = {
-    flavour = 'mocha', -- latte, frappe, macchiato, mocha
+    -- flavour = 'mocha', -- latte, frappe, macchiato, mocha
+    flavour = 'latte', -- latte, frappe, macchiato, mocha
     background = { -- :h background
       light = 'latte',
       dark = 'mocha',
